@@ -60,19 +60,20 @@ public:
   }
 
 
-  virtual void audioDeviceIOCallback(const float** inputChannelData,
-    int numInputChannels,
-    float** outputChannelData,
-    int numOutputChannels,
-    int numSamples)
+  virtual void audioDeviceIOCallbackWithContext(const float* const* inputChannelData,
+                                                int numInputChannels,
+                                                float* const* outputChannelData,
+                                                int numOutputChannels,
+                                                int numSamples,
+                                                const AudioIODeviceCallbackContext& context)
   {
     assert(_buffers);
     assert(static_cast<size_t>(numInputChannels) <= _numberBuffers);
     assert(static_cast<size_t>(numOutputChannels) <= _numberBuffers);
     assert(static_cast<size_t>(numSamples) <= _bufferSize);
 
-    _audioSourcePlayer.audioDeviceIOCallback(inputChannelData, numInputChannels, _buffers, numOutputChannels, numSamples);
-    _audioProcessorPlayer.audioDeviceIOCallback(const_cast<const float**>(_buffers), numOutputChannels, outputChannelData, numOutputChannels, numSamples);
+    _audioSourcePlayer.audioDeviceIOCallbackWithContext(inputChannelData, numInputChannels, _buffers, numOutputChannels, numSamples, context);
+    _audioProcessorPlayer.audioDeviceIOCallbackWithContext(const_cast<const float**>(_buffers), numOutputChannels, outputChannelData, numOutputChannels, numSamples, context);
   }
 
 
@@ -96,7 +97,7 @@ public:
 
 
   virtual void audioDeviceStopped()
-  { 
+  {
     _audioSourcePlayer.audioDeviceStopped();
     _audioProcessorPlayer.audioDeviceStopped();
 
@@ -135,10 +136,10 @@ public:
     DevelopmentApplicationWindow() :
     DocumentWindow("KlangFalter - Development Application", Colours::black, DocumentWindow::minimiseButton | DocumentWindow::closeButton),
     _editor(nullptr),
-    _deviceManager(),  
+    _deviceManager(),
     _audioFileSource(nullptr),
     _audioProcessor(nullptr),
-    _audioSourceProcessorPlayer()  
+    _audioSourceProcessorPlayer()
   {
     // Audio
     AudioFormatManager formatManager;
@@ -152,7 +153,7 @@ public:
       formatManager.registerBasicFormats();
       AudioFormatReader* reader = formatManager.createReaderFor(audioFile);
       if (reader)
-      { 
+      {
         // Audio file
         _audioFileSource.reset(new AudioFormatReaderSource(reader, true));
 
@@ -164,7 +165,7 @@ public:
           _editor.reset(dynamic_cast<KlangFalterEditor*>(_audioProcessor->createEditor()));
           if (_editor)
           {
-            setContentNonOwned(_editor.get(), true);  
+            setContentNonOwned(_editor.get(), true);
           }
 
           _deviceManager.initialise(2, 2, nullptr, true);
@@ -181,7 +182,7 @@ public:
                 _deviceManager.setCurrentAudioDeviceType(device->getTypeName(), true);
               }
             }
-          }        
+          }
           _audioSourceProcessorPlayer.init(_audioFileSource.get(), _audioProcessor.get());
           _deviceManager.addAudioCallback(&_audioSourceProcessorPlayer);
 
@@ -198,14 +199,14 @@ public:
           }
         }
       }
-    }  
+    }
   }
 
 
   virtual ~DevelopmentApplicationWindow()
   {
     _editor = nullptr;
-    _deviceManager.closeAudioDevice();  
+    _deviceManager.closeAudioDevice();
     _deviceManager.removeAudioCallback(&_audioSourceProcessorPlayer);
   }
 
@@ -226,8 +227,8 @@ public:
   }
 
 private:
-  std::unique_ptr<KlangFalterEditor> _editor;  
-  AudioDeviceManager _deviceManager;  
+  std::unique_ptr<KlangFalterEditor> _editor;
+  AudioDeviceManager _deviceManager;
   std::unique_ptr<AudioFormatReaderSource> _audioFileSource;
   std::unique_ptr<AudioProcessor> _audioProcessor;
   AudioSourceProcessorPlayer _audioSourceProcessorPlayer;
@@ -246,17 +247,17 @@ public:
     _applicationWindow(nullptr)
   {
   }
-  
+
   virtual ~DevelopmentApplication()
   {
   }
-  
+
   void initialise (const String&)
   {
     _applicationWindow = new DevelopmentApplicationWindow();
     _applicationWindow->setVisible(true);
   }
-  
+
   void shutdown()
   {
     deleteAndZero(_applicationWindow);
@@ -266,26 +267,26 @@ public:
   {
     quit();
   }
-  
+
   const String getApplicationName()
   {
     return "KlangFalter";
   }
-  
+
   const String getApplicationVersion()
   {
     return ProjectInfo::versionString;
   }
-  
+
   bool moreThanOneInstanceAllowed()
   {
     return true;
   }
-  
+
   void anotherInstanceStarted (const String&)
   {
   }
-  
+
 private:
   DevelopmentApplicationWindow* _applicationWindow;
 };

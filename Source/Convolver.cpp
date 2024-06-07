@@ -25,18 +25,18 @@ public:
     juce::Thread("ConvolverBackgroundThread"),
     _convolver(convolver)
   {
-    startThread(8); // Use a priority higher than the priority of normal threads
+    startThread(juce::Thread::Priority::high); // Use a priority higher than the priority of normal threads
   }
-  
-  
+
+
   virtual ~ConvolverBackgroundThread()
   {
     signalThreadShouldExit();
     notify();
     stopThread(1000);
   }
-  
-  
+
+
   virtual void run()
   {
     while (!threadShouldExit())
@@ -51,10 +51,10 @@ public:
       _convolver._backgroundProcessingFinishedEvent.signal();
     }
   }
-  
+
 private:
   Convolver& _convolver;
-  
+
   ConvolverBackgroundThread(const ConvolverBackgroundThread&);
   ConvolverBackgroundThread& operator=(const ConvolverBackgroundThread&);
 };
