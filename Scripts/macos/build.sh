@@ -12,7 +12,7 @@ unzip $SCRIPT_DIR/../../juce-$JUCE_VERSION-osx.zip
 
 echo "=== Setting module paths ==="
 PROJECT_DIR=$SCRIPT_DIR/../..
-sed -i '' -e 's#../../../../../../../SDKs/JUCE/modules#JUCE/modules#g' $PROJECT_DIR/KlangFalter.jucer
+sed -i '' -e 's#../../../SDKs/JUCE/modules#JUCE/modules#g' $PROJECT_DIR/KlangFalter.jucer
 
 echo "=== Generating project ==="
 JUCE_HOME=$SCRIPT_DIR/../../JUCE
