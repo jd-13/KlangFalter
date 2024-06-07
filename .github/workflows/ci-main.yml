@@ -1,0 +1,33 @@
+name: CI Main
+
+on: [push, pull_request]
+
+jobs:
+  BuildMacOS:
+    runs-on: macos-12
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: RunBuild
+        run: Scripts/macos/build.sh
+      - uses: actions/upload-artifact@v2
+        if: ${{ success() }}
+        with:
+          name: klangfalter-macOS
+          path: Scripts/macos/dist
+
+  BuildWindows:
+    runs-on: windows-2019
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: SetupMSBuild
+        uses: microsoft/setup-msbuild@v1.0.2
+      - name: RunBuild
+        shell: cmd
+        run: Scripts\windows\build.bat
+      - uses: actions/upload-artifact@v2
+        if: ${{ success() }}
+        with:
+          name: klangfalter-windows
+          path: Release
