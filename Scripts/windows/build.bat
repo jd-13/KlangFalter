@@ -22,6 +22,13 @@ cd Release\BodyAndSoul.vst3\Contents
 
 mkdir x86_64-win
 cd x86_64-win
+
+cd %PROJECT_DIR%\Builds\VisualStudio2019\x64\Release\VST3
+dir
+
+cd BodyAndSoul.vst3\Contents\x86_64-win
+dir
+
 copy %PROJECT_DIR%\Builds\VisualStudio2019\x64\Release\VST3\BodyAndSoul.vst3\Contents\x86_64-win\BodyAndSoul.vst3 || exit /b
 
 cd ..
