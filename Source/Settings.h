@@ -30,12 +30,8 @@ public:
   void addChangeListener(juce::ChangeListener* listener);
   void removeChangeListener(juce::ChangeListener* listener);
 
-  size_t getConvolverBlockSize();
-  void setConvolverBlockSize(size_t blockSize);
-
   juce::File getImpulseResponseDirectory();
-  void setImpulseResponseDirectory(const juce::File& directory);
-  
+
   enum ResultLevelMeterDisplay
   {
     Wet,
@@ -43,7 +39,7 @@ public:
   };
   ResultLevelMeterDisplay getResultLevelMeterDisplay();
   void setResultLevelMeterDisplay(ResultLevelMeterDisplay resultDisplay);
-  
+
   enum TimelineUnit
   {
     Seconds,

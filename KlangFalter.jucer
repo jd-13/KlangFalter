@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="IRcjcT" name="KlangFalter" projectType="audioplug" bundleIdentifier="com.hifi-lofi.KlangFalter"
-              buildVST="0" buildRTAS="0" buildAU="1" pluginName="KlangFalter"
-              pluginDesc="Simple Audio Convolution Plugin" pluginManufacturer="HiFi-LoFi"
-              pluginManufacturerCode="HiLo" pluginCode="HLKF" pluginChannelConfigs="{1, 1}, {2, 2}, {1, 2}"
+<JUCERPROJECT id="IRcjcT" name="KlangFalter" projectType="audioplug" bundleIdentifier="com.whiteelephantaudio.BodyAndSoul"
+              buildVST="0" buildRTAS="0" buildAU="1" pluginName="BodyAndSoul"
+              pluginDesc="BodyAndSoul" pluginManufacturer="White Elephant Audio"
+              pluginManufacturerCode="Wele" pluginCode="Wtbs" pluginChannelConfigs="{1, 1}, {2, 2}, {1, 2}"
               pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
               pluginSilenceInIsSilenceOut="0" pluginTailLength="0" pluginEditorRequiresKeys="0"
-              pluginAUExportPrefix="KlangFalterAU" pluginAUViewClass="KlangFalterAU_V1"
-              pluginRTASCategory="" companyName="HiFi-LoFi" aaxIdentifier="com.hifi-lofi.KlangFalter"
+              pluginAUExportPrefix="BodyAndSoulAU" pluginAUViewClass="KlangFalterAU_V1"
+              pluginRTASCategory="" companyName="White Elephant Audio" aaxIdentifier="com.whiteelephantaudio.BodyAndSoul"
               pluginAAXCategory="2" buildAAX="0" buildVST3="1" pluginIsMidiEffectPlugin="0"
               includeBinaryInAppConfig="1" buildAUv3="0" pluginFormats="buildAU,buildVST3"
               projectLineFeed="&#10;" buildStandalone="0" enableIAA="0" defines="JUCE_USE_CUSTOM_PLUGIN_STANDALONE_APP"
-              jucerFormatVersion="1" version="1.0.0">
+              jucerFormatVersion="1" version="1.0.0" companyWebsite="www.whiteelephantaudio.com"
+              companyEmail="info@whiteelephantaudio.com">
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX" objCExtraSuffix="C54DO8" extraCompilerFlags=""
                extraFrameworks="Accelerate" extraDefs="AUDIOFFT_APPLE_ACCELERATE=1">
@@ -98,10 +99,6 @@
             file="Source/UI/KlangFalterEditor.h"/>
       <FILE id="VEaG8F" name="LevelMeter.cpp" compile="1" resource="0" file="Source/UI/LevelMeter.cpp"/>
       <FILE id="zRwaj0" name="LevelMeter.h" compile="0" resource="0" file="Source/UI/LevelMeter.h"/>
-      <FILE id="dj5ePy" name="SettingsDialogComponent.cpp" compile="1" resource="0"
-            file="Source/UI/SettingsDialogComponent.cpp"/>
-      <FILE id="wgowyX" name="SettingsDialogComponent.h" compile="0" resource="0"
-            file="Source/UI/SettingsDialogComponent.h"/>
       <FILE id="xM5QfR" name="WaveformComponent.cpp" compile="1" resource="0"
             file="Source/UI/WaveformComponent.cpp"/>
       <FILE id="WU2LwP" name="WaveformComponent.h" compile="0" resource="0"

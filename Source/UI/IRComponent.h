@@ -1,26 +1,23 @@
 /*
   ==============================================================================
 
-  This is an automatically generated file created by the Jucer!
-
-  Creation date:  8 Mar 2013 10:37:54am
+  This is an automatically generated GUI class created by the Projucer!
 
   Be careful when adding custom code to these files, as only the code within
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Jucer version: 1.12
+  Created with Projucer version: 7.0.9
 
   ------------------------------------------------------------------------------
 
-  The Jucer is part of the JUCE library - "Jules' Utility Class Extensions"
-  Copyright 2004-6 by Raw Material Software ltd.
+  The Projucer is part of the JUCE library.
+  Copyright (c) 2020 - Raw Material Software Limited.
 
   ==============================================================================
 */
 
-#ifndef __JUCER_HEADER_IRCOMPONENT_IRCOMPONENT_7F964DEC__
-#define __JUCER_HEADER_IRCOMPONENT_IRCOMPONENT_7F964DEC__
+#pragma once
 
 //[Headers]     -- You can add your own extra header files here --
 #include "JuceHeader.h"
@@ -40,15 +37,14 @@
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class IRComponent	: public Component,
-					  public ChangeNotifier::Listener,
-					   public Button::Listener,
-					   public ComboBox::Listener
+class IRComponent  : public Component,
+                     public ChangeNotifier::Listener,
+                     public juce::Button::Listener
 {
 public:
     //==============================================================================
     IRComponent ();
-    ~IRComponent();
+    ~IRComponent() override;
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
@@ -59,15 +55,11 @@ public:
 
     //[/UserMethods]
 
-    void paint (Graphics& g);
-    void resized();
-    void buttonClicked (Button* buttonThatWasClicked);
-    void comboBoxChanged (ComboBox* comboBoxThatHasChanged);
+    void paint (juce::Graphics& g) override;
+    void resized() override;
+    void buttonClicked (juce::Button* buttonThatWasClicked) override;
 
 
-
-    //==============================================================================
-    juce_UseDebuggingNewOperator
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
@@ -75,18 +67,14 @@ private:
     //[/UserVariables]
 
     //==============================================================================
-    WaveformComponent* _waveformComponent;
-    TextButton* _loadButton;
-    TextButton* _clearButton;
-    ComboBox* _channelComboBox;
-    Label* _channelHeaderLabel;
+    std::unique_ptr<WaveformComponent> _waveformComponent;
+    std::unique_ptr<juce::TextButton> _loadButton;
 
 
     //==============================================================================
-    // (prevent copy constructor and operator= being generated..)
-    IRComponent (const IRComponent&);
-    const IRComponent& operator= (const IRComponent&);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (IRComponent)
 };
 
+//[EndFile] You can add extra defines here...
+//[/EndFile]
 
-#endif   // __JUCER_HEADER_IRCOMPONENT_IRCOMPONENT_7F964DEC__

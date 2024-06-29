@@ -22,12 +22,12 @@ Settings::Settings() :
   _properties()
 {
   juce::PropertiesFile::Options fileOptions;
-  fileOptions.applicationName = "KlangFalter";
+  fileOptions.applicationName = "WEA_KlangFalter";
   fileOptions.filenameSuffix = "settings";
-#ifdef JUCE_LINUX 
-  fileOptions.folderName = ".config/KlangFalter";
+#ifdef JUCE_LINUX
+  fileOptions.folderName = ".config/WEA_KlangFalter";
 #else
-  fileOptions.folderName = "KlangFalter";
+  fileOptions.folderName = "WEA_KlangFalter";
 #endif
   fileOptions.osxLibrarySubFolder = "Application Support"; // Recommended by Apple resp. the Juce documentation
   fileOptions.commonToAllUsers = false;
@@ -62,58 +62,10 @@ void Settings::removeChangeListener(juce::ChangeListener* listener)
   }
 }
 
-
-size_t Settings::getConvolverBlockSize()
-{
-  size_t blockSize = 4096;
-  juce::PropertiesFile* propertiesFile = _properties.getUserSettings();
-  if (propertiesFile)
-  {
-    blockSize = propertiesFile->getIntValue("ConvolverBlockSize", blockSize);
-  }
-  return blockSize;
-}
-
-
-void Settings::setConvolverBlockSize(size_t blockSize)
-{
-  juce::PropertiesFile* propertiesFile = _properties.getUserSettings();
-  if (propertiesFile)
-  {
-    propertiesFile->setValue("ConvolverBlockSize", static_cast<int>(blockSize));
-    propertiesFile->saveIfNeeded();
-  }
-}
-
-
 juce::File Settings::getImpulseResponseDirectory()
 {
-  juce::PropertiesFile* propertiesFile = _properties.getUserSettings();
-  if (propertiesFile)
-  {
-    const juce::File dir = juce::File::createFileWithoutCheckingPath(propertiesFile->getValue("ImpulseResponseDirectory", juce::String()));
-    if (dir.exists() && dir.isDirectory())
-    {
-      return dir;
-    }
-  }
-  return juce::File();
+  return juce::File::getSpecialLocation(juce::File::currentExecutableFile).getParentDirectory().getSiblingFile("Resources").getChildFile("IRs");
 }
-
-
-void Settings::setImpulseResponseDirectory(const juce::File& directory)
-{
-  if (directory.exists() && directory.isDirectory())
-  {
-    juce::PropertiesFile* propertiesFile = _properties.getUserSettings();
-    if (propertiesFile)
-    {
-      propertiesFile->setValue("ImpulseResponseDirectory", directory.getFullPathName());
-      propertiesFile->saveIfNeeded();
-    }
-  }
-}
-
 
 Settings::ResultLevelMeterDisplay Settings::getResultLevelMeterDisplay()
 {

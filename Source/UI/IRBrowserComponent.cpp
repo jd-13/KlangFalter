@@ -20,7 +20,6 @@
 #include "../IRAgent.h"
 #include "../Settings.h"
 
-
 IRBrowserComponent::IRBrowserComponent() :
   juce::Component(),
   _timeSliceThread(),
@@ -62,20 +61,20 @@ void IRBrowserComponent::init(Processor* processor)
     _timeSliceThread.reset(new juce::TimeSliceThread("IRBrowserThread"));
     _timeSliceThread->startThread();
   }
-  
+
   juce::AudioFormatManager formatManager;
   formatManager.registerBasicFormats();
   _fileFilter.reset(new juce::WildcardFileFilter(formatManager.getWildcardForAllFormats(),
                                                                       "*",
                                                                       "Audio Files"));
-  
+
   _directoryContent.reset(new juce::DirectoryContentsList(_fileFilter.get(), *_timeSliceThread));
   _directoryContent->setDirectory(settings ? settings->getImpulseResponseDirectory() : juce::File(), true, true);
-  
+
   _fileTreeComponent.reset(new juce::FileTreeComponent(*_directoryContent));
   _fileTreeComponent->addListener(this);
   addAndMakeVisible(_fileTreeComponent.get());
-  
+
   _infoLabel.reset(new juce::Label());
   addAndMakeVisible(_infoLabel.get());
 
@@ -89,14 +88,14 @@ void IRBrowserComponent::updateLayout()
   {
     const int width = getWidth();
     const int height = getHeight();
-    
+
     const int treeWidth = std::min(static_cast<int>(0.75 * static_cast<double>(width)), width - 280) - 2;
     const int treeHeight = height - 2;
     const int infoMargin = 8;
     const int infoX = treeWidth + infoMargin;
     const int infoWidth = width - (infoX + infoMargin);
-    const int infoHeight = height - (2 * infoMargin); 
-    
+    const int infoHeight = height - (2 * infoMargin);
+
     _fileTreeComponent->setBounds(1, 1, treeWidth, treeHeight);
     _infoLabel->setBounds(infoX, infoMargin, infoWidth, infoHeight);
   }
@@ -109,10 +108,10 @@ void IRBrowserComponent::paint(juce::Graphics& g)
   {
     const int width = getWidth();
     const int height = getHeight();
-    
+
     g.setColour(juce::Colour(0xE5, 0xE5, 0xF0));
     g.fillRect(0.0f, 0.0f, static_cast<float>(width), static_cast<float>(height));
-    
+
     g.setColour(juce::Colours::grey);
     g.drawRect(0.0f, 0.0f, static_cast<float>(width), static_cast<float>(height));
     g.drawVerticalLine(_fileTreeComponent->getX()+_fileTreeComponent->getWidth(), 0.0f, static_cast<float>(height-1));
@@ -131,7 +130,7 @@ void IRBrowserComponent::selectionChanged()
   if (_infoLabel)
   {
     juce::String infoText;
-    
+
     const juce::File file = _fileTreeComponent ? _fileTreeComponent->getSelectedFile() : juce::File();
 
     if (!file.isDirectory() && _processor)
@@ -154,7 +153,7 @@ void IRBrowserComponent::selectionChanged()
 
         if (_processor->getTotalNumInputChannels() >= 2 && _processor->getTotalNumOutputChannels() >= 2)
         {
-          const TrueStereoPairs trueStereoPairs = findTrueStereoPairs(file, sampleCount, sampleRate);        
+          const TrueStereoPairs trueStereoPairs = findTrueStereoPairs(file, sampleCount, sampleRate);
           for (size_t i=0; i<trueStereoPairs.size(); ++i)
           {
             if (trueStereoPairs[i].first != file && trueStereoPairs[i].first.existsAsFile())
@@ -173,7 +172,7 @@ void IRBrowserComponent::selectionChanged()
         infoText += juce::String("\n\nError!\n\nNo information available.");
       }
     }
-    
+
     _infoLabel->setJustificationType(juce::Justification(juce::Justification::topLeft));
     _infoLabel->setText(infoText, juce::sendNotification);
   }
@@ -191,7 +190,7 @@ void IRBrowserComponent::fileDoubleClicked(const File &file)
   {
     return;
   }
-  
+
   size_t channelCount = 0;
   size_t sampleCount = 0;
   double sampleRate = 0.0;
@@ -199,15 +198,15 @@ void IRBrowserComponent::fileDoubleClicked(const File &file)
   {
     return;
   }
-  
+
   IRAgent* agent00 = _processor->getAgent(0, 0);
   IRAgent* agent01 = _processor->getAgent(0, 1);
   IRAgent* agent10 = _processor->getAgent(1, 0);
   IRAgent* agent11 = _processor->getAgent(1, 1);
-  
+
   const int inputChannels = _processor->getTotalNumInputChannels();
   const int outputChannels = _processor->getTotalNumOutputChannels();
-  
+
   if (inputChannels == 1 && outputChannels == 1)
   {
     if (channelCount >= 1)

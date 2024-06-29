@@ -1,26 +1,23 @@
 /*
   ==============================================================================
 
-  This is an automatically generated file created by the Jucer!
-
-  Creation date:  19 Apr 2013 4:40:05pm
+  This is an automatically generated GUI class created by the Projucer!
 
   Be careful when adding custom code to these files, as only the code within
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Jucer version: 1.12
+  Created with Projucer version: 7.0.9
 
   ------------------------------------------------------------------------------
 
-  The Jucer is part of the JUCE library - "Jules' Utility Class Extensions"
-  Copyright 2004-6 by Raw Material Software ltd.
+  The Projucer is part of the JUCE library.
+  Copyright (c) 2020 - Raw Material Software Limited.
 
   ==============================================================================
 */
 
-#ifndef __JUCER_HEADER_KLANGFALTEREDITOR_KLANGFALTEREDITOR_F5E4498E__
-#define __JUCER_HEADER_KLANGFALTEREDITOR_KLANGFALTEREDITOR_F5E4498E__
+#pragma once
 
 //[Headers]     -- You can add your own extra header files here --
 #include "JuceHeader.h"
@@ -30,7 +27,6 @@
 #include "IRBrowserComponent.h"
 #include "IRComponent.h"
 #include "LevelMeter.h"
-#include "SettingsDialogComponent.h"
 #include "../Processor.h"
 //[/Headers]
 
@@ -48,13 +44,13 @@ class KlangFalterEditor  : public AudioProcessorEditor,
                            public ChangeNotifier::Listener,
                            public ChangeListener,
                            public Timer,
-                           public Slider::Listener,
-	                       public Button::Listener
+                           public juce::Slider::Listener,
+                           public juce::Button::Listener
 {
 public:
     //==============================================================================
     KlangFalterEditor (Processor& processor);
-    ~KlangFalterEditor();
+    ~KlangFalterEditor() override;
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
@@ -64,15 +60,12 @@ public:
     virtual void timerCallback();
     //[/UserMethods]
 
-    void paint (Graphics& g);
-    void resized();
-    void sliderValueChanged (Slider* sliderThatWasMoved);
-    void buttonClicked (Button* buttonThatWasClicked);
+    void paint (juce::Graphics& g) override;
+    void resized() override;
+    void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
+    void buttonClicked (juce::Button* buttonThatWasClicked) override;
 
 
-
-    //==============================================================================
-    juce_UseDebuggingNewOperator
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
@@ -83,79 +76,77 @@ private:
     //[/UserVariables]
 
     //==============================================================================
-    DecibelScale* _decibelScaleDry;
-    TabbedComponent* _irTabComponent;
-    LevelMeter* _levelMeterDry;
-    Label* _dryLevelLabel;
-    Label* _wetLevelLabel;
-    Slider* _drySlider;
-    DecibelScale* _decibelScaleOut;
-    Slider* _wetSlider;
-    TextButton* _browseButton;
-    IRBrowserComponent* _irBrowserComponent;
-    TextButton* _settingsButton;
-    TextButton* _wetButton;
-    TextButton* _dryButton;
-    TextButton* _autogainButton;
-    TextButton* _reverseButton;
-    Label* _hiFreqLabel;
-    Label* _hiGainLabel;
-    Label* _hiGainHeaderLabel;
-    Label* _hiFreqHeaderLabel;
-    Slider* _hiGainSlider;
-    Slider* _hiFreqSlider;
-    Label* _loFreqLabel;
-    Label* _loGainLabel;
-    Label* _loGainHeaderLabel;
-    Label* _loFreqHeaderLabel;
-    Slider* _loGainSlider;
-    Slider* _loFreqSlider;
-    LevelMeter* _levelMeterOut;
-    TextButton* _levelMeterOutLabelButton;
-    Label* _levelMeterDryLabel;
-    TextButton* _lowEqButton;
-    Label* _lowCutFreqLabel;
-    Label* _lowCutFreqHeaderLabel;
-    Slider* _lowCutFreqSlider;
-    Label* _highCutFreqLabel;
-    Label* _highCutFreqHeaderLabel;
-    Slider* _highCutFreqSlider;
-    TextButton* _highEqButton;
-    Label* _attackShapeLabel;
-    Label* _endLabel;
-    Slider* _endSlider;
-    Slider* _attackShapeSlider;
-    Label* _decayShapeLabel;
-    Label* _decayShapeHeaderLabel;
-    Slider* _decayShapeSlider;
-    Label* _attackShapeHeaderLabel;
-    Label* _endHeaderLabel;
-    Label* _beginLabel;
-    Slider* _beginSlider;
-    Label* _beginHeaderLabel;
-    Label* _widthLabel;
-    Label* _widthHeaderLabel;
-    Slider* _widthSlider;
-    Label* _predelayLabel;
-    Label* _predelayHeaderLabel;
-    Slider* _predelaySlider;
-    Label* _stretchLabel;
-    Label* _stretchHeaderLabel;
-    Slider* _stretchSlider;
-    Label* _attackHeaderLabel;
-    Label* _attackLengthLabel;
-    Slider* _attackLengthSlider;
-    Label* _attackLengthHeaderLabel;
-    Label* _decayHeaderLabel;
-    Label* _impulseResponseHeaderLabel;
-    Label* _stereoHeaderLabel;
+    std::unique_ptr<DecibelScale> _decibelScaleDry;
+    std::unique_ptr<juce::TabbedComponent> _irTabComponent;
+    std::unique_ptr<LevelMeter> _levelMeterDry;
+    std::unique_ptr<juce::Label> _dryLevelLabel;
+    std::unique_ptr<juce::Label> _wetLevelLabel;
+    std::unique_ptr<juce::Slider> _drySlider;
+    std::unique_ptr<DecibelScale> _decibelScaleOut;
+    std::unique_ptr<juce::Slider> _wetSlider;
+    std::unique_ptr<juce::TextButton> _browseButton;
+    std::unique_ptr<IRBrowserComponent> _irBrowserComponent;
+    std::unique_ptr<juce::TextButton> _wetButton;
+    std::unique_ptr<juce::TextButton> _dryButton;
+    std::unique_ptr<juce::TextButton> _autogainButton;
+    std::unique_ptr<juce::TextButton> _reverseButton;
+    std::unique_ptr<juce::Label> _hiFreqLabel;
+    std::unique_ptr<juce::Label> _hiGainLabel;
+    std::unique_ptr<juce::Label> _hiGainHeaderLabel;
+    std::unique_ptr<juce::Label> _hiFreqHeaderLabel;
+    std::unique_ptr<juce::Slider> _hiGainSlider;
+    std::unique_ptr<juce::Slider> _hiFreqSlider;
+    std::unique_ptr<juce::Label> _loFreqLabel;
+    std::unique_ptr<juce::Label> _loGainLabel;
+    std::unique_ptr<juce::Label> _loGainHeaderLabel;
+    std::unique_ptr<juce::Label> _loFreqHeaderLabel;
+    std::unique_ptr<juce::Slider> _loGainSlider;
+    std::unique_ptr<juce::Slider> _loFreqSlider;
+    std::unique_ptr<LevelMeter> _levelMeterOut;
+    std::unique_ptr<juce::TextButton> _levelMeterOutLabelButton;
+    std::unique_ptr<juce::Label> _levelMeterDryLabel;
+    std::unique_ptr<juce::TextButton> _lowEqButton;
+    std::unique_ptr<juce::Label> _lowCutFreqLabel;
+    std::unique_ptr<juce::Label> _lowCutFreqHeaderLabel;
+    std::unique_ptr<juce::Slider> _lowCutFreqSlider;
+    std::unique_ptr<juce::Label> _highCutFreqLabel;
+    std::unique_ptr<juce::Label> _highCutFreqHeaderLabel;
+    std::unique_ptr<juce::Slider> _highCutFreqSlider;
+    std::unique_ptr<juce::TextButton> _highEqButton;
+    std::unique_ptr<juce::Label> _attackShapeLabel;
+    std::unique_ptr<juce::Label> _endLabel;
+    std::unique_ptr<juce::Slider> _endSlider;
+    std::unique_ptr<juce::Slider> _attackShapeSlider;
+    std::unique_ptr<juce::Label> _decayShapeLabel;
+    std::unique_ptr<juce::Label> _decayShapeHeaderLabel;
+    std::unique_ptr<juce::Slider> _decayShapeSlider;
+    std::unique_ptr<juce::Label> _attackShapeHeaderLabel;
+    std::unique_ptr<juce::Label> _endHeaderLabel;
+    std::unique_ptr<juce::Label> _beginLabel;
+    std::unique_ptr<juce::Slider> _beginSlider;
+    std::unique_ptr<juce::Label> _beginHeaderLabel;
+    std::unique_ptr<juce::Label> _widthLabel;
+    std::unique_ptr<juce::Label> _widthHeaderLabel;
+    std::unique_ptr<juce::Slider> _widthSlider;
+    std::unique_ptr<juce::Label> _predelayLabel;
+    std::unique_ptr<juce::Label> _predelayHeaderLabel;
+    std::unique_ptr<juce::Slider> _predelaySlider;
+    std::unique_ptr<juce::Label> _stretchLabel;
+    std::unique_ptr<juce::Label> _stretchHeaderLabel;
+    std::unique_ptr<juce::Slider> _stretchSlider;
+    std::unique_ptr<juce::Label> _attackHeaderLabel;
+    std::unique_ptr<juce::Label> _attackLengthLabel;
+    std::unique_ptr<juce::Slider> _attackLengthSlider;
+    std::unique_ptr<juce::Label> _attackLengthHeaderLabel;
+    std::unique_ptr<juce::Label> _decayHeaderLabel;
+    std::unique_ptr<juce::Label> _impulseResponseHeaderLabel;
+    std::unique_ptr<juce::Label> _stereoHeaderLabel;
 
 
     //==============================================================================
-    // (prevent copy constructor and operator= being generated..)
-    KlangFalterEditor (const KlangFalterEditor&);
-    const KlangFalterEditor& operator= (const KlangFalterEditor&);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KlangFalterEditor)
 };
 
+//[EndFile] You can add extra defines here...
+//[/EndFile]
 
-#endif   // __JUCER_HEADER_KLANGFALTEREDITOR_KLANGFALTEREDITOR_F5E4498E__
