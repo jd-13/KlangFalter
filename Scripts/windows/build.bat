@@ -20,4 +20,4 @@ cd %SCRIPT_DIR%..\..\
 mkdir -p Release
 cd Release
 
-copy %PROJECT_DIR%\Builds\VisualStudio2019\x64\Release\VST3\KlangFalter.vst3\Contents\x86_64-win\KlangFalter.vst3 || exit /b
+copy %PROJECT_DIR%\Builds\VisualStudio2019\x64\Release\VST3\KlangFalter.vst3 || exit /b
