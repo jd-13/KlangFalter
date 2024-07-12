@@ -75,7 +75,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
 
     _irTabComponent.reset (new juce::TabbedComponent (juce::TabbedButtonBar::TabsAtTop));
     addAndMakeVisible (_irTabComponent.get());
-    _irTabComponent->setTabBarDepth (30);
+    _irTabComponent->setTabBarDepth (0);
     _irTabComponent->addTab (TRANS ("Placeholder"), juce::Colour (0xffb0b0b6), new IRComponent(), true);
     _irTabComponent->setCurrentTabIndex (0);
 
@@ -198,7 +198,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _reverseButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xff202020));
     _reverseButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xff202020));
 
-    _reverseButton->setBounds (486, 8, 72, 24);
+    _reverseButton->setBounds (20, 187, 72, 24);
 
     _hiFreqLabel.reset (new juce::Label (juce::String(),
                                          TRANS ("15.2kHz")));
@@ -1357,7 +1357,7 @@ BEGIN_JUCER_METADATA
                     params=""/>
   <TABBEDCOMPONENT name="IRTabComponent" id="697fc3546f1ab7f1" memberName="_irTabComponent"
                    virtualName="" explicitFocusOrder="0" pos="16 12 542 204" orientation="top"
-                   tabBarDepth="30" initialTab="0">
+                   tabBarDepth="0" initialTab="0">
     <TAB name="Placeholder" colour="ffb0b0b6" useJucerComp="1" contentClassName=""
          constructorParams="" jucerComponentFile="IRComponent.cpp"/>
   </TABBEDCOMPONENT>
@@ -1406,7 +1406,7 @@ BEGIN_JUCER_METADATA
               buttonText="Autogain 0.0dB" connectedEdges="3" needsCallback="1"
               radioGroupId="0"/>
   <TEXTBUTTON name="" id="fcb6829f0d6fc21f" memberName="_reverseButton" virtualName=""
-              explicitFocusOrder="0" pos="486 8 72 24" tooltip="Reverse Impulse Response"
+              explicitFocusOrder="0" pos="20 187 72 24" tooltip="Reverse Impulse Response"
               bgColOff="80bcbcbc" bgColOn="ffbcbcff" textCol="ff202020" textColOn="ff202020"
               buttonText="Reverse" connectedEdges="3" needsCallback="1" radioGroupId="0"/>
   <LABEL name="" id="841738a894cf241a" memberName="_hiFreqLabel" virtualName=""

@@ -39,7 +39,7 @@ IRComponent::IRComponent ()
     addAndMakeVisible (_waveformComponent.get());
     _waveformComponent->setName ("WaveformComponent");
 
-    _waveformComponent->setBounds (4, 4, 532, 140);
+    _waveformComponent->setBounds (4, 4, 532, 168);
 
     _loadButton.reset (new juce::TextButton ("LoadButton"));
     addAndMakeVisible (_loadButton.get());
@@ -52,13 +52,13 @@ IRComponent::IRComponent ()
     _loadButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xff202020));
     _loadButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xff202020));
 
-    _loadButton->setBounds (4, 148, 532, 24);
+    _loadButton->setBounds (80, 174, 456, 24);
 
 
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (540, 172);
+    setSize (540, 202);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -191,13 +191,13 @@ BEGIN_JUCER_METADATA
                  parentClasses="public Component, public ChangeNotifier::Listener"
                  constructorParams="" variableInitialisers="" snapPixels="4" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="540"
-                 initialHeight="172">
+                 initialHeight="202">
   <BACKGROUND backgroundColour="ffb0b0b6"/>
   <GENERICCOMPONENT name="WaveformComponent" id="c9f33b0ee0917f49" memberName="_waveformComponent"
-                    virtualName="" explicitFocusOrder="0" pos="4 4 532 140" class="WaveformComponent"
+                    virtualName="" explicitFocusOrder="0" pos="4 4 532 168" class="WaveformComponent"
                     params=""/>
   <TEXTBUTTON name="LoadButton" id="5798b8525a699c54" memberName="_loadButton"
-              virtualName="" explicitFocusOrder="0" pos="4 148 532 24" tooltip="Current impulse response information"
+              virtualName="" explicitFocusOrder="0" pos="80 174 456 24" tooltip="Current impulse response information"
               bgColOff="bbbbff" bgColOn="4444ff" textCol="ff202020" textColOn="ff202020"
               buttonText="No Impulse Response" connectedEdges="3" needsCallback="1"
               radioGroupId="0"/>
