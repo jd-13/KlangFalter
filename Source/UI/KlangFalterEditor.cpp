@@ -823,6 +823,20 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _hiFreqSlider->setRange(Parameters::EqHighShelfFreq.getMinValue(), Parameters::EqHighShelfFreq.getMaxValue());
     _hiGainSlider->setRange(Parameters::EqHighShelfDecibels.getMinValue(), Parameters::EqHighShelfDecibels.getMaxValue());
 
+    // Double click to default
+    _predelaySlider->setDoubleClickReturnValue(true, 0);
+    _beginSlider->setDoubleClickReturnValue(true, 0);
+    _endSlider->setDoubleClickReturnValue(true, 1);
+    _stretchSlider->setDoubleClickReturnValue(true, 1);
+    _attackLengthSlider->setDoubleClickReturnValue(true, 0);
+    _attackShapeSlider->setDoubleClickReturnValue(true, 0);
+    _decayShapeSlider->setDoubleClickReturnValue(true, 0);
+    _widthSlider->setDoubleClickReturnValue(true, Parameters::StereoWidth.getDefaultValue());
+    _lowCutFreqSlider->setDoubleClickReturnValue(true, Parameters::EqLowCutFreq.getDefaultValue());
+    _highCutFreqSlider->setDoubleClickReturnValue(true, Parameters::EqHighCutFreq.getDefaultValue());
+    _drySlider->setDoubleClickReturnValue(true, DecibelScaling::Db2Scale(Parameters::DryDecibels.getDefaultValue()));
+    _wetSlider->setDoubleClickReturnValue(true, DecibelScaling::Db2Scale(Parameters::WetDecibels.getDefaultValue()));
+
     _processor.addNotificationListener(this);
     _processor.getSettings().addChangeListener(this);
     _irBrowserComponent->init(&_processor);
