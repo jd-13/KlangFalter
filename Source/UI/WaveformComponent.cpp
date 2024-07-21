@@ -20,7 +20,7 @@
 #include "../DecibelScaling.h"
 #include "../Processor.h"
 
- 
+
 WaveformComponent::WaveformComponent() :
   Component(),
   _irAgent(nullptr),
@@ -58,13 +58,13 @@ void WaveformComponent::updateArea()
   const int marginTop = 0;
   const int widthDbScale = scaleFont.getStringWidth("-XXdB") + 4;
   const int heightTimeLine = static_cast<int>(::ceil(scaleFont.getHeight())) + 5;
-  
+
   _area.setX(widthDbScale);
   _area.setY(marginTop);
   _area.setWidth(static_cast<int>(_maximaDecibels.size()));
   _area.setHeight(getHeight() - (heightTimeLine + marginTop + 1));
   _pxPerDecibel = ::fabs(static_cast<float>(_area.getHeight()) / DecibelScaling::MinScaleDb());
-  
+
   repaint();
 }
 
@@ -73,10 +73,10 @@ void WaveformComponent::paint(Graphics& g)
 {
   const int width = getWidth();
   const int height = getHeight();
-  
+
   const juce::Font scaleFont = customLookAndFeel->getScaleFont();
-  const juce::Colour scaleColour = customLookAndFeel->getScaleColour();
-  
+  const juce::Colour scaleColour = customLookAndFeel->getWaveformScaleColour();
+
   // Something to paint?
   if (!_irAgent || !_irAgent->getFile().existsAsFile())
   {
@@ -86,11 +86,11 @@ void WaveformComponent::paint(Graphics& g)
   }
 
   const float w = static_cast<float>(width);
-  
+
   // Background
   g.setColour(customLookAndFeel->getWaveformBackgroundColour());
   g.fillRect(_area);
-  
+
   // Timeline
   const double secondsPerPx = _samplesPerPx / _sampleRate;
   {
@@ -119,7 +119,7 @@ void WaveformComponent::paint(Graphics& g)
       const float tickBottom = tickTop + 4.0f;
       for (float xTick=0.0; xTick<static_cast<float>(width); xTick+=pxPerTick)
       {
-        g.drawVerticalLine(_area.getX() + static_cast<int>(xTick), tickTop, tickBottom);             
+        g.drawVerticalLine(_area.getX() + static_cast<int>(xTick), tickTop, tickBottom);
       }
       g.drawText(juce::String(_beatsPerMinute, 1) + juce::String(" BPM (1/") + juce::String(beatPerTick) + juce::String(" notes)"),
                  _area.getX(),
@@ -130,7 +130,7 @@ void WaveformComponent::paint(Graphics& g)
                  false);
     }
     else
-    { 
+    {
       // Seconds
       const int minTickWidth = 2 * scaleFont.getStringWidth("XX.XXs");
       double secondsPerTick = minTickWidth * secondsPerPx;
@@ -161,7 +161,7 @@ void WaveformComponent::paint(Graphics& g)
       for (double xTick=0.0; xTick<static_cast<double>(width); xTick+=tickWidth)
       {
         const int xTickPos = static_cast<int>(xTick);
-        g.drawVerticalLine(_area.getX() + xTickPos, tickTop, tickBottom);      
+        g.drawVerticalLine(_area.getX() + xTickPos, tickTop, tickBottom);
         g.drawText(String(secTick, 2) + String("s"),
                    _area.getX() + xTickPos + 1,
                    static_cast<int>(tickBottom)-1,
@@ -173,18 +173,18 @@ void WaveformComponent::paint(Graphics& g)
       }
     }
   }
-  
+
   // Decibel scale
   {
     g.setFont(scaleFont);
     g.setColour(scaleColour);
-    
+
     const int scaleTextWidth = scaleFont.getStringWidth("-XXdB");
     const int scaleTextHeight = static_cast<int>(::ceil(scaleFont.getHeight()));
 
     const juce::Justification justificationTopRight(juce::Justification::topRight);
 
-    g.drawVerticalLine(_area.getX(), static_cast<float>(_area.getY()), static_cast<float>(_area.getBottom()));    
+    g.drawVerticalLine(_area.getX(), static_cast<float>(_area.getY()), static_cast<float>(_area.getBottom()));
     const float tickLeft = static_cast<float>(_area.getX() - 4);
     const float tickRight = static_cast<float>(_area.getX());
     const int steps[] = { 0, -20, -40, -60, -80 };
@@ -199,11 +199,11 @@ void WaveformComponent::paint(Graphics& g)
                  scaleTextWidth,
                  scaleTextHeight,
                  justificationTopRight,
-                 false);      
+                 false);
     }
     g.drawHorizontalLine(_area.getBottom(), tickLeft, tickRight);
   }
-  
+
   // Waveform
   const size_t xLen = std::min(static_cast<size_t>(w), _maximaDecibels.size());
   const float bottom = static_cast<float>(_area.getBottom());
@@ -227,10 +227,10 @@ void WaveformComponent::paint(Graphics& g)
     }
     const float envelopeTop = static_cast<float>(_area.getY());
     const int envelopeX = static_cast<int>(predelayPx) + _area.getX() + 1;
-    g.setColour(customLookAndFeel->getEnvelopeRestrictionColour());    
+    g.setColour(customLookAndFeel->getEnvelopeRestrictionColour());
     g.fillRect(static_cast<float>(_area.getX()+1), envelopeTop, static_cast<float>(predelayPx), static_cast<float>(_area.getHeight()-1));
     for (size_t x=0; x<envelope.size(); ++x)
-    {    
+    {
       const float envelopeBottom = -1.0f * _pxPerDecibel * DecibelScaling::Gain2Db(envelope[x]);
       g.drawVerticalLine(envelopeX+static_cast<int>(x), envelopeTop, envelopeBottom);
     }
@@ -239,7 +239,7 @@ void WaveformComponent::paint(Graphics& g)
   }
   else
   {
-    g.setColour(customLookAndFeel->getEnvelopeRestrictionColour());    
+    g.setColour(customLookAndFeel->getEnvelopeRestrictionColour());
     g.fillRect(static_cast<float>(_area.getX()+1), static_cast<float>(_area.getY()), w, static_cast<float>(_area.getHeight()-1));
   }
 }
@@ -253,7 +253,7 @@ void WaveformComponent::init(IRAgent* irAgent, double sampleRate, size_t samples
   double attackLength = 0.0;
   double attackShape = 0.0;
   double decayShape = 0.0;
-  float beatsPerMinute = 0.0f;  
+  float beatsPerMinute = 0.0f;
   if (irAgent)
   {
     ir = irAgent->getImpulseResponse();
@@ -264,7 +264,7 @@ void WaveformComponent::init(IRAgent* irAgent, double sampleRate, size_t samples
     decayShape = processor->getDecayShape();
     beatsPerMinute = processor->getBeatsPerMinute();
   }
-  
+
   // Let's rely here on the immutability of the IR buffer (i.e. there's always
   // a new allocated buffer if the IR changes, so we can check for changes of the IR
   // just by comparing a kind of "fingerprint for the poor" consisting of the pointer
@@ -275,7 +275,7 @@ void WaveformComponent::init(IRAgent* irAgent, double sampleRate, size_t samples
   {
     irFingerprint = reinterpret_cast<size_t>(ir.get()) ^ ir->getSize();
   }
-                                                                            
+
   if (_irAgent != irAgent ||
       ::fabs(_sampleRate-sampleRate) < 0.00001 ||
       ::fabs(_predelayMs-predelayMs) < 0.00001 ||
@@ -285,7 +285,7 @@ void WaveformComponent::init(IRAgent* irAgent, double sampleRate, size_t samples
       ::fabs(_decayShape-decayShape) < 0.00001f ||
       _samplesPerPx != samplesPerPx ||
       _irFingerprint != irFingerprint)
-  { 
+  {
     _irAgent = irAgent;
     _sampleRate = sampleRate;
     _samplesPerPx = std::max(static_cast<size_t>(1), samplesPerPx);
@@ -294,7 +294,7 @@ void WaveformComponent::init(IRAgent* irAgent, double sampleRate, size_t samples
     _attackShape = attackShape;
     _decayShape = decayShape;
     _predelayOffsetX = static_cast<int>((sampleRate / 1000.0) * _predelayMs) / _samplesPerPx;
-    _beatsPerMinute = beatsPerMinute;    
+    _beatsPerMinute = beatsPerMinute;
     if (_irFingerprint != irFingerprint)
     {
       _irFingerprint = irFingerprint;

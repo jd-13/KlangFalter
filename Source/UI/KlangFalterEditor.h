@@ -28,6 +28,7 @@
 #include "IRComponent.h"
 #include "LevelMeter.h"
 #include "../Processor.h"
+#include "UIUtils.hpp"
 //[/Headers]
 
 
@@ -70,6 +71,8 @@ public:
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     SharedResourcePointer<CustomLookAndFeel> customLookAndFeel;
+    std::unique_ptr<UIUtils::ToggleButtonLookAndFeel> _toggleButtonLookAndFeel;
+    std::unique_ptr<UIUtils::RotarySliderLookAndFeel> _rotarySliderLookAndFeel;
     Processor& _processor;
     juce::Component::SafePointer<juce::DialogWindow> _settingsDialogWindow;
     std::map<std::pair<size_t, size_t>, IRComponent*> _irComponents;
@@ -141,6 +144,7 @@ private:
     std::unique_ptr<juce::Label> _decayHeaderLabel;
     std::unique_ptr<juce::Label> _impulseResponseHeaderLabel;
     std::unique_ptr<juce::Label> _stereoHeaderLabel;
+    std::unique_ptr<juce::Label> juce__label;
 
 
     //==============================================================================

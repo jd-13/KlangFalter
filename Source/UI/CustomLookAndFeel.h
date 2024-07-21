@@ -28,6 +28,7 @@ public:
   // Scales
   juce::Font getScaleFont() const;
   juce::Colour getScaleColour() const;
+  juce::Colour getWaveformScaleColour() const;
   juce::Colour getLevelColourMinusInfDb() const;
   juce::Colour getLevelColourMinus40Db() const;
   juce::Colour getLevelColourZeroDb() const;
@@ -36,7 +37,7 @@ public:
   // Waveform
   juce::Colour getWaveformColour() const;
   juce::Colour getWaveformBackgroundColour() const;
-  
+
   // Envelope
   juce::Colour getEnvelopeRestrictionColour() const;
   juce::Colour getEnvelopeNodeColour(bool highlighted) const;

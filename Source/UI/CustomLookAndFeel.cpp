@@ -18,6 +18,7 @@
 #include "CustomLookAndFeel.h"
 
 #include "../DecibelScaling.h"
+#include "UIUtils.hpp"
 
 
 CustomLookAndFeel::CustomLookAndFeel() :
@@ -31,7 +32,7 @@ CustomLookAndFeel::CustomLookAndFeel() :
 // ==============================================
 juce::Colour CustomLookAndFeel::getWaveformColour() const
 {
-  return juce::Colour(0x90, 0x90, 0xD0);
+  return UIUtils::backgroundColour;
 }
 
 
@@ -53,7 +54,7 @@ juce::Colour CustomLookAndFeel::getEnvelopeRestrictionColour() const
 
 juce::Colour CustomLookAndFeel::getEnvelopeNodeColour(bool highlighted) const
 {
-  return highlighted ? juce::Colour(0x40, 0x40, 0xFF) : juce::Colour(0x80, 0x80, 0xFF);
+  return highlighted ? juce::Colour(0x40, 0x40, 0xFF) : UIUtils::backgroundColour.withAlpha(0.5f);
 }
 
 
@@ -71,25 +72,31 @@ juce::Font CustomLookAndFeel::getScaleFont() const
 
 juce::Colour CustomLookAndFeel::getScaleColour() const
 {
-  return juce::Colour(0x20, 0x20, 0x20);
+  return UIUtils::neutralColour;
 }
+
+juce::Colour CustomLookAndFeel::getWaveformScaleColour() const
+{
+  return UIUtils::backgroundColour;
+}
+
 
 
 juce::Colour CustomLookAndFeel::getLevelColourMinusInfDb() const
 {
-  return juce::Colour(0x40, 0x40, 0xAA);
+  return UIUtils::highlightColour;
 }
 
 
 juce::Colour CustomLookAndFeel::getLevelColourMinus40Db() const
 {
-  return juce::Colour(0x80, 0x80, 0xCC);
+  return UIUtils::highlightColour.withSaturation(0.4f);
 }
 
 
 juce::Colour CustomLookAndFeel::getLevelColourZeroDb() const
 {
-  return juce::Colour(0xC0, 0xC0, 0xFF);
+  return UIUtils::highlightColour.withSaturation(0.1f);
 }
 
 

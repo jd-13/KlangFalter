@@ -63,7 +63,9 @@ static juce::String FormatSeconds(double seconds)
 //==============================================================================
 KlangFalterEditor::KlangFalterEditor (Processor& processor)
     : AudioProcessorEditor(&processor),
-      _processor(processor)
+      _processor(processor),
+      _toggleButtonLookAndFeel(new UIUtils::ToggleButtonLookAndFeel()),
+      _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel())
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
@@ -71,7 +73,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _decibelScaleDry.reset (new DecibelScale());
     addAndMakeVisible (_decibelScaleDry.get());
 
-    _decibelScaleDry->setBounds (584, 40, 32, 176);
+    _decibelScaleDry->setBounds (584, 51, 32, 176);
 
     _irTabComponent.reset (new juce::TabbedComponent (juce::TabbedButtonBar::TabsAtTop));
     addAndMakeVisible (_irTabComponent.get());
@@ -79,12 +81,12 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _irTabComponent->addTab (TRANS ("Placeholder"), juce::Colour (0xffb0b0b6), new IRComponent(), true);
     _irTabComponent->setCurrentTabIndex (0);
 
-    _irTabComponent->setBounds (16, 12, 542, 204);
+    _irTabComponent->setBounds (16, 51, 462, 176);
 
     _levelMeterDry.reset (new LevelMeter());
     addAndMakeVisible (_levelMeterDry.get());
 
-    _levelMeterDry->setBounds (632, 40, 12, 176);
+    _levelMeterDry->setBounds (632, 51, 12, 176);
 
     _dryLevelLabel.reset (new juce::Label ("DryLevelLabel",
                                            TRANS ("-inf")));
@@ -92,11 +94,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _dryLevelLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _dryLevelLabel->setJustificationType (juce::Justification::centredRight);
     _dryLevelLabel->setEditable (false, false, false);
-    _dryLevelLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
+    _dryLevelLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
     _dryLevelLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     _dryLevelLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _dryLevelLabel->setBounds (572, 220, 60, 24);
+    _dryLevelLabel->setBounds (572, 231, 60, 24);
 
     _wetLevelLabel.reset (new juce::Label ("WetLevelLabel",
                                            TRANS ("-inf")));
@@ -104,11 +106,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _wetLevelLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _wetLevelLabel->setJustificationType (juce::Justification::centredRight);
     _wetLevelLabel->setEditable (false, false, false);
-    _wetLevelLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
+    _wetLevelLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
     _wetLevelLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     _wetLevelLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _wetLevelLabel->setBounds (656, 220, 64, 24);
+    _wetLevelLabel->setBounds (656, 231, 64, 24);
 
     _drySlider.reset (new juce::Slider (juce::String()));
     addAndMakeVisible (_drySlider.get());
@@ -117,12 +119,12 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _drySlider->setTextBoxStyle (juce::Slider::NoTextBox, false, 80, 20);
     _drySlider->addListener (this);
 
-    _drySlider->setBounds (612, 32, 24, 192);
+    _drySlider->setBounds (612, 43, 24, 192);
 
     _decibelScaleOut.reset (new DecibelScale());
     addAndMakeVisible (_decibelScaleOut.get());
 
-    _decibelScaleOut->setBounds (672, 40, 32, 176);
+    _decibelScaleOut->setBounds (672, 51, 32, 176);
 
     _wetSlider.reset (new juce::Slider (juce::String()));
     addAndMakeVisible (_wetSlider.get());
@@ -131,7 +133,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _wetSlider->setTextBoxStyle (juce::Slider::NoTextBox, false, 80, 20);
     _wetSlider->addListener (this);
 
-    _wetSlider->setBounds (700, 32, 24, 192);
+    _wetSlider->setBounds (700, 43, 24, 192);
 
     _browseButton.reset (new juce::TextButton (juce::String()));
     addAndMakeVisible (_browseButton.get());
@@ -141,12 +143,12 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _browseButton->addListener (this);
     _browseButton->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0xffbcbcff));
 
-    _browseButton->setBounds (12, 308, 736, 24);
+    _browseButton->setBounds (12, 319, 736, 24);
 
     _irBrowserComponent.reset (new IRBrowserComponent());
     addAndMakeVisible (_irBrowserComponent.get());
 
-    _irBrowserComponent->setBounds (12, 332, 736, 288);
+    _irBrowserComponent->setBounds (12, 343, 736, 288);
 
     _wetButton.reset (new juce::TextButton (juce::String()));
     addAndMakeVisible (_wetButton.get());
@@ -159,7 +161,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _wetButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xff202020));
     _wetButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xff202020));
 
-    _wetButton->setBounds (684, 244, 44, 24);
+    _wetButton->setBounds (684, 255, 44, 24);
 
     _dryButton.reset (new juce::TextButton (juce::String()));
     addAndMakeVisible (_dryButton.get());
@@ -172,7 +174,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _dryButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xff202020));
     _dryButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xff202020));
 
-    _dryButton->setBounds (596, 244, 44, 24);
+    _dryButton->setBounds (596, 255, 44, 24);
 
     _autogainButton.reset (new juce::TextButton (juce::String()));
     addAndMakeVisible (_autogainButton.get());
@@ -185,7 +187,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _autogainButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xff202020));
     _autogainButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xff202020));
 
-    _autogainButton->setBounds (596, 276, 132, 24);
+    _autogainButton->setBounds (596, 287, 132, 24);
 
     _reverseButton.reset (new juce::TextButton (juce::String()));
     addAndMakeVisible (_reverseButton.get());
@@ -198,7 +200,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _reverseButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xff202020));
     _reverseButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xff202020));
 
-    _reverseButton->setBounds (20, 187, 72, 24);
+    _reverseButton->setBounds (20, 198, 72, 24);
 
     _hiFreqLabel.reset (new juce::Label (juce::String(),
                                          TRANS ("15.2kHz")));
@@ -206,11 +208,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _hiFreqLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _hiFreqLabel->setJustificationType (juce::Justification::centred);
     _hiFreqLabel->setEditable (false, false, false);
-    _hiFreqLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
+    _hiFreqLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
     _hiFreqLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     _hiFreqLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _hiFreqLabel->setBounds (480, 280, 52, 24);
+    _hiFreqLabel->setBounds (480, 291, 52, 24);
 
     _hiGainLabel.reset (new juce::Label (juce::String(),
                                          TRANS ("0.0dB")));
@@ -218,11 +220,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _hiGainLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _hiGainLabel->setJustificationType (juce::Justification::centred);
     _hiGainLabel->setEditable (false, false, false);
-    _hiGainLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
+    _hiGainLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
     _hiGainLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     _hiGainLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _hiGainLabel->setBounds (516, 280, 52, 24);
+    _hiGainLabel->setBounds (516, 291, 52, 24);
 
     _hiGainHeaderLabel.reset (new juce::Label (juce::String(),
                                                TRANS ("Gain")));
@@ -230,11 +232,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _hiGainHeaderLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _hiGainHeaderLabel->setJustificationType (juce::Justification::centred);
     _hiGainHeaderLabel->setEditable (false, false, false);
-    _hiGainHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
+    _hiGainHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
     _hiGainHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     _hiGainHeaderLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _hiGainHeaderLabel->setBounds (516, 236, 52, 24);
+    _hiGainHeaderLabel->setBounds (516, 247, 52, 24);
 
     _hiFreqHeaderLabel.reset (new juce::Label (juce::String(),
                                                TRANS ("Freq")));
@@ -242,11 +244,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _hiFreqHeaderLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _hiFreqHeaderLabel->setJustificationType (juce::Justification::centred);
     _hiFreqHeaderLabel->setEditable (false, false, false);
-    _hiFreqHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
+    _hiFreqHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
     _hiFreqHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     _hiFreqHeaderLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _hiFreqHeaderLabel->setBounds (480, 236, 52, 24);
+    _hiFreqHeaderLabel->setBounds (480, 247, 52, 24);
 
     _hiGainSlider.reset (new juce::Slider (juce::String()));
     addAndMakeVisible (_hiGainSlider.get());
@@ -257,7 +259,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _hiGainSlider->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xb1606060));
     _hiGainSlider->addListener (this);
 
-    _hiGainSlider->setBounds (524, 256, 36, 28);
+    _hiGainSlider->setBounds (524, 267, 36, 28);
 
     _hiFreqSlider.reset (new juce::Slider (juce::String()));
     addAndMakeVisible (_hiFreqSlider.get());
@@ -268,7 +270,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _hiFreqSlider->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xb1606060));
     _hiFreqSlider->addListener (this);
 
-    _hiFreqSlider->setBounds (488, 256, 36, 28);
+    _hiFreqSlider->setBounds (488, 267, 36, 28);
 
     _loFreqLabel.reset (new juce::Label (juce::String(),
                                          TRANS ("1234Hz")));
@@ -276,11 +278,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _loFreqLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _loFreqLabel->setJustificationType (juce::Justification::centred);
     _loFreqLabel->setEditable (false, false, false);
-    _loFreqLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
+    _loFreqLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
     _loFreqLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     _loFreqLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _loFreqLabel->setBounds (396, 280, 52, 24);
+    _loFreqLabel->setBounds (396, 291, 52, 24);
 
     _loGainLabel.reset (new juce::Label (juce::String(),
                                          TRANS ("0.0dB")));
@@ -288,11 +290,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _loGainLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _loGainLabel->setJustificationType (juce::Justification::centred);
     _loGainLabel->setEditable (false, false, false);
-    _loGainLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
+    _loGainLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
     _loGainLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     _loGainLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _loGainLabel->setBounds (432, 280, 52, 24);
+    _loGainLabel->setBounds (432, 291, 52, 24);
 
     _loGainHeaderLabel.reset (new juce::Label (juce::String(),
                                                TRANS ("Gain")));
@@ -300,11 +302,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _loGainHeaderLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _loGainHeaderLabel->setJustificationType (juce::Justification::centred);
     _loGainHeaderLabel->setEditable (false, false, false);
-    _loGainHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
+    _loGainHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
     _loGainHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     _loGainHeaderLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _loGainHeaderLabel->setBounds (432, 236, 52, 24);
+    _loGainHeaderLabel->setBounds (432, 247, 52, 24);
 
     _loFreqHeaderLabel.reset (new juce::Label (juce::String(),
                                                TRANS ("Freq")));
@@ -312,11 +314,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _loFreqHeaderLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _loFreqHeaderLabel->setJustificationType (juce::Justification::centred);
     _loFreqHeaderLabel->setEditable (false, false, false);
-    _loFreqHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
+    _loFreqHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
     _loFreqHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     _loFreqHeaderLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _loFreqHeaderLabel->setBounds (396, 236, 52, 24);
+    _loFreqHeaderLabel->setBounds (396, 247, 52, 24);
 
     _loGainSlider.reset (new juce::Slider (juce::String()));
     addAndMakeVisible (_loGainSlider.get());
@@ -327,7 +329,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _loGainSlider->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xb1606060));
     _loGainSlider->addListener (this);
 
-    _loGainSlider->setBounds (440, 256, 36, 28);
+    _loGainSlider->setBounds (440, 267, 36, 28);
 
     _loFreqSlider.reset (new juce::Slider (juce::String()));
     addAndMakeVisible (_loFreqSlider.get());
@@ -338,12 +340,12 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _loFreqSlider->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xb1606060));
     _loFreqSlider->addListener (this);
 
-    _loFreqSlider->setBounds (404, 256, 36, 28);
+    _loFreqSlider->setBounds (404, 267, 36, 28);
 
     _levelMeterOut.reset (new LevelMeter());
     addAndMakeVisible (_levelMeterOut.get());
 
-    _levelMeterOut->setBounds (720, 40, 12, 176);
+    _levelMeterOut->setBounds (720, 51, 12, 176);
 
     _levelMeterOutLabelButton.reset (new juce::TextButton (juce::String()));
     addAndMakeVisible (_levelMeterOutLabelButton.get());
@@ -353,10 +355,10 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _levelMeterOutLabelButton->addListener (this);
     _levelMeterOutLabelButton->setColour (juce::TextButton::buttonColourId, juce::Colour (0x00bbbbff));
     _levelMeterOutLabelButton->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0x00bcbcff));
-    _levelMeterOutLabelButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xff202020));
-    _levelMeterOutLabelButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xff202020));
+    _levelMeterOutLabelButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xffb0b0b6));
+    _levelMeterOutLabelButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xffb0b0b6));
 
-    _levelMeterOutLabelButton->setBounds (712, 20, 28, 18);
+    _levelMeterOutLabelButton->setBounds (712, 31, 28, 18);
 
     _levelMeterDryLabel.reset (new juce::Label (juce::String(),
                                                 TRANS ("Dry")));
@@ -364,11 +366,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _levelMeterDryLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _levelMeterDryLabel->setJustificationType (juce::Justification::centred);
     _levelMeterDryLabel->setEditable (false, false, false);
-    _levelMeterDryLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
-    _levelMeterDryLabel->setColour (juce::TextEditor::textColourId, juce::Colour (0xff202020));
+    _levelMeterDryLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
+    _levelMeterDryLabel->setColour (juce::TextEditor::textColourId, juce::Colour (0xffb0b0b6));
     _levelMeterDryLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _levelMeterDryLabel->setBounds (620, 16, 36, 24);
+    _levelMeterDryLabel->setBounds (620, 27, 36, 24);
 
     _lowEqButton.reset (new juce::TextButton (juce::String()));
     addAndMakeVisible (_lowEqButton.get());
@@ -377,10 +379,10 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _lowEqButton->addListener (this);
     _lowEqButton->setColour (juce::TextButton::buttonColourId, juce::Colour (0x00bbbbff));
     _lowEqButton->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0x002c2cff));
-    _lowEqButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xff202020));
-    _lowEqButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xff202020));
+    _lowEqButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xffb0b0b6));
+    _lowEqButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xffb0b0b6));
 
-    _lowEqButton->setBounds (404, 220, 72, 24);
+    _lowEqButton->setBounds (404, 231, 72, 24);
 
     _lowCutFreqLabel.reset (new juce::Label (juce::String(),
                                              TRANS ("1234Hz")));
@@ -388,11 +390,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _lowCutFreqLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _lowCutFreqLabel->setJustificationType (juce::Justification::centred);
     _lowCutFreqLabel->setEditable (false, false, false);
-    _lowCutFreqLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
+    _lowCutFreqLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
     _lowCutFreqLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     _lowCutFreqLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _lowCutFreqLabel->setBounds (414, 280, 52, 24);
+    _lowCutFreqLabel->setBounds (414, 291, 52, 24);
 
     _lowCutFreqHeaderLabel.reset (new juce::Label (juce::String(),
                                                    TRANS ("Freq")));
@@ -400,11 +402,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _lowCutFreqHeaderLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _lowCutFreqHeaderLabel->setJustificationType (juce::Justification::centred);
     _lowCutFreqHeaderLabel->setEditable (false, false, false);
-    _lowCutFreqHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
+    _lowCutFreqHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
     _lowCutFreqHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     _lowCutFreqHeaderLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _lowCutFreqHeaderLabel->setBounds (414, 236, 52, 24);
+    _lowCutFreqHeaderLabel->setBounds (414, 247, 52, 24);
 
     _lowCutFreqSlider.reset (new juce::Slider (juce::String()));
     addAndMakeVisible (_lowCutFreqSlider.get());
@@ -415,7 +417,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _lowCutFreqSlider->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xb1606060));
     _lowCutFreqSlider->addListener (this);
 
-    _lowCutFreqSlider->setBounds (422, 256, 36, 28);
+    _lowCutFreqSlider->setBounds (422, 267, 36, 28);
 
     _highCutFreqLabel.reset (new juce::Label (juce::String(),
                                               TRANS ("15.2kHz")));
@@ -423,11 +425,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _highCutFreqLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _highCutFreqLabel->setJustificationType (juce::Justification::centred);
     _highCutFreqLabel->setEditable (false, false, false);
-    _highCutFreqLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
+    _highCutFreqLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
     _highCutFreqLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     _highCutFreqLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _highCutFreqLabel->setBounds (498, 280, 52, 24);
+    _highCutFreqLabel->setBounds (498, 291, 52, 24);
 
     _highCutFreqHeaderLabel.reset (new juce::Label (juce::String(),
                                                     TRANS ("Freq")));
@@ -435,11 +437,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _highCutFreqHeaderLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _highCutFreqHeaderLabel->setJustificationType (juce::Justification::centred);
     _highCutFreqHeaderLabel->setEditable (false, false, false);
-    _highCutFreqHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
+    _highCutFreqHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
     _highCutFreqHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     _highCutFreqHeaderLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _highCutFreqHeaderLabel->setBounds (498, 236, 52, 24);
+    _highCutFreqHeaderLabel->setBounds (498, 247, 52, 24);
 
     _highCutFreqSlider.reset (new juce::Slider (juce::String()));
     addAndMakeVisible (_highCutFreqSlider.get());
@@ -450,7 +452,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _highCutFreqSlider->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xb1606060));
     _highCutFreqSlider->addListener (this);
 
-    _highCutFreqSlider->setBounds (506, 256, 36, 28);
+    _highCutFreqSlider->setBounds (506, 267, 36, 28);
 
     _highEqButton.reset (new juce::TextButton (juce::String()));
     addAndMakeVisible (_highEqButton.get());
@@ -459,10 +461,10 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _highEqButton->addListener (this);
     _highEqButton->setColour (juce::TextButton::buttonColourId, juce::Colour (0x00bbbbff));
     _highEqButton->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0x002c2cff));
-    _highEqButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xff202020));
-    _highEqButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xff202020));
+    _highEqButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xffb0b0b6));
+    _highEqButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xffb0b0b6));
 
-    _highEqButton->setBounds (488, 220, 72, 24);
+    _highEqButton->setBounds (488, 231, 72, 24);
 
     _attackShapeLabel.reset (new juce::Label (juce::String(),
                                               TRANS ("1.0")));
@@ -470,11 +472,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _attackShapeLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _attackShapeLabel->setJustificationType (juce::Justification::centred);
     _attackShapeLabel->setEditable (false, false, false);
-    _attackShapeLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
+    _attackShapeLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
     _attackShapeLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     _attackShapeLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _attackShapeLabel->setBounds (212, 280, 52, 24);
+    _attackShapeLabel->setBounds (212, 291, 52, 24);
 
     _endLabel.reset (new juce::Label (juce::String(),
                                       TRANS ("100%")));
@@ -482,11 +484,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _endLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _endLabel->setJustificationType (juce::Justification::centred);
     _endLabel->setEditable (false, false, false);
-    _endLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
+    _endLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
     _endLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     _endLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _endLabel->setBounds (76, 280, 52, 24);
+    _endLabel->setBounds (76, 291, 52, 24);
 
     _endSlider.reset (new juce::Slider (juce::String()));
     addAndMakeVisible (_endSlider.get());
@@ -497,7 +499,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _endSlider->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xb1606060));
     _endSlider->addListener (this);
 
-    _endSlider->setBounds (84, 256, 36, 28);
+    _endSlider->setBounds (84, 267, 36, 28);
 
     _attackShapeSlider.reset (new juce::Slider (juce::String()));
     addAndMakeVisible (_attackShapeSlider.get());
@@ -509,7 +511,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _attackShapeSlider->addListener (this);
     _attackShapeSlider->setSkewFactor (0.5);
 
-    _attackShapeSlider->setBounds (220, 256, 36, 28);
+    _attackShapeSlider->setBounds (220, 267, 36, 28);
 
     _decayShapeLabel.reset (new juce::Label (juce::String(),
                                              TRANS ("1.0")));
@@ -517,11 +519,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _decayShapeLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _decayShapeLabel->setJustificationType (juce::Justification::centred);
     _decayShapeLabel->setEditable (false, false, false);
-    _decayShapeLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
+    _decayShapeLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
     _decayShapeLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     _decayShapeLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _decayShapeLabel->setBounds (276, 280, 52, 24);
+    _decayShapeLabel->setBounds (276, 291, 52, 24);
 
     _decayShapeHeaderLabel.reset (new juce::Label (juce::String(),
                                                    TRANS ("Shape")));
@@ -529,11 +531,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _decayShapeHeaderLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _decayShapeHeaderLabel->setJustificationType (juce::Justification::centred);
     _decayShapeHeaderLabel->setEditable (false, false, false);
-    _decayShapeHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
+    _decayShapeHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
     _decayShapeHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     _decayShapeHeaderLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _decayShapeHeaderLabel->setBounds (276, 236, 52, 24);
+    _decayShapeHeaderLabel->setBounds (276, 247, 52, 24);
 
     _decayShapeSlider.reset (new juce::Slider (juce::String()));
     addAndMakeVisible (_decayShapeSlider.get());
@@ -545,7 +547,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _decayShapeSlider->addListener (this);
     _decayShapeSlider->setSkewFactor (0.5);
 
-    _decayShapeSlider->setBounds (284, 256, 36, 28);
+    _decayShapeSlider->setBounds (284, 267, 36, 28);
 
     _attackShapeHeaderLabel.reset (new juce::Label (juce::String(),
                                                     TRANS ("Shape")));
@@ -553,11 +555,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _attackShapeHeaderLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _attackShapeHeaderLabel->setJustificationType (juce::Justification::centred);
     _attackShapeHeaderLabel->setEditable (false, false, false);
-    _attackShapeHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
+    _attackShapeHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
     _attackShapeHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     _attackShapeHeaderLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _attackShapeHeaderLabel->setBounds (212, 236, 52, 24);
+    _attackShapeHeaderLabel->setBounds (212, 247, 52, 24);
 
     _endHeaderLabel.reset (new juce::Label (juce::String(),
                                             TRANS ("End")));
@@ -565,11 +567,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _endHeaderLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _endHeaderLabel->setJustificationType (juce::Justification::centred);
     _endHeaderLabel->setEditable (false, false, false);
-    _endHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
+    _endHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
     _endHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     _endHeaderLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _endHeaderLabel->setBounds (76, 236, 52, 24);
+    _endHeaderLabel->setBounds (76, 247, 52, 24);
 
     _beginLabel.reset (new juce::Label (juce::String(),
                                         TRANS ("100%")));
@@ -577,11 +579,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _beginLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _beginLabel->setJustificationType (juce::Justification::centred);
     _beginLabel->setEditable (false, false, false);
-    _beginLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
+    _beginLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
     _beginLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     _beginLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _beginLabel->setBounds (40, 280, 52, 24);
+    _beginLabel->setBounds (40, 291, 52, 24);
 
     _beginSlider.reset (new juce::Slider (juce::String()));
     addAndMakeVisible (_beginSlider.get());
@@ -592,7 +594,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _beginSlider->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xb1606060));
     _beginSlider->addListener (this);
 
-    _beginSlider->setBounds (48, 256, 36, 28);
+    _beginSlider->setBounds (48, 267, 36, 28);
 
     _beginHeaderLabel.reset (new juce::Label (juce::String(),
                                               TRANS ("Begin")));
@@ -600,11 +602,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _beginHeaderLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _beginHeaderLabel->setJustificationType (juce::Justification::centred);
     _beginHeaderLabel->setEditable (false, false, false);
-    _beginHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
+    _beginHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
     _beginHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     _beginHeaderLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _beginHeaderLabel->setBounds (40, 236, 52, 24);
+    _beginHeaderLabel->setBounds (40, 247, 52, 24);
 
     _widthLabel.reset (new juce::Label (juce::String(),
                                         TRANS ("1.0")));
@@ -612,11 +614,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _widthLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _widthLabel->setJustificationType (juce::Justification::centred);
     _widthLabel->setEditable (false, false, false);
-    _widthLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
+    _widthLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
     _widthLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     _widthLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _widthLabel->setBounds (340, 280, 52, 24);
+    _widthLabel->setBounds (340, 291, 52, 24);
 
     _widthHeaderLabel.reset (new juce::Label (juce::String(),
                                               TRANS ("Width")));
@@ -624,11 +626,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _widthHeaderLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _widthHeaderLabel->setJustificationType (juce::Justification::centred);
     _widthHeaderLabel->setEditable (false, false, false);
-    _widthHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
+    _widthHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
     _widthHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     _widthHeaderLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _widthHeaderLabel->setBounds (340, 236, 52, 24);
+    _widthHeaderLabel->setBounds (340, 247, 52, 24);
 
     _widthSlider.reset (new juce::Slider (juce::String()));
     addAndMakeVisible (_widthSlider.get());
@@ -640,7 +642,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _widthSlider->addListener (this);
     _widthSlider->setSkewFactor (0.30102);
 
-    _widthSlider->setBounds (348, 256, 36, 28);
+    _widthSlider->setBounds (348, 267, 36, 28);
 
     _predelayLabel.reset (new juce::Label (juce::String(),
                                            TRANS ("0ms")));
@@ -648,11 +650,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _predelayLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _predelayLabel->setJustificationType (juce::Justification::centred);
     _predelayLabel->setEditable (false, false, false);
-    _predelayLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
+    _predelayLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
     _predelayLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     _predelayLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _predelayLabel->setBounds (4, 280, 52, 24);
+    _predelayLabel->setBounds (4, 291, 52, 24);
 
     _predelayHeaderLabel.reset (new juce::Label (juce::String(),
                                                  TRANS ("Gap")));
@@ -660,11 +662,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _predelayHeaderLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _predelayHeaderLabel->setJustificationType (juce::Justification::centred);
     _predelayHeaderLabel->setEditable (false, false, false);
-    _predelayHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
+    _predelayHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
     _predelayHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     _predelayHeaderLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _predelayHeaderLabel->setBounds (4, 236, 52, 24);
+    _predelayHeaderLabel->setBounds (4, 247, 52, 24);
 
     _predelaySlider.reset (new juce::Slider (juce::String()));
     addAndMakeVisible (_predelaySlider.get());
@@ -675,7 +677,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _predelaySlider->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xb1606060));
     _predelaySlider->addListener (this);
 
-    _predelaySlider->setBounds (12, 256, 36, 28);
+    _predelaySlider->setBounds (12, 267, 36, 28);
 
     _stretchLabel.reset (new juce::Label (juce::String(),
                                           TRANS ("100%")));
@@ -683,11 +685,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _stretchLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _stretchLabel->setJustificationType (juce::Justification::centred);
     _stretchLabel->setEditable (false, false, false);
-    _stretchLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
+    _stretchLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
     _stretchLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     _stretchLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _stretchLabel->setBounds (112, 280, 52, 24);
+    _stretchLabel->setBounds (112, 291, 52, 24);
 
     _stretchHeaderLabel.reset (new juce::Label (juce::String(),
                                                 TRANS ("Stretch")));
@@ -695,11 +697,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _stretchHeaderLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _stretchHeaderLabel->setJustificationType (juce::Justification::centred);
     _stretchHeaderLabel->setEditable (false, false, false);
-    _stretchHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
+    _stretchHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
     _stretchHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     _stretchHeaderLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _stretchHeaderLabel->setBounds (112, 236, 52, 24);
+    _stretchHeaderLabel->setBounds (112, 247, 52, 24);
 
     _stretchSlider.reset (new juce::Slider (juce::String()));
     addAndMakeVisible (_stretchSlider.get());
@@ -710,7 +712,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _stretchSlider->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xb1606060));
     _stretchSlider->addListener (this);
 
-    _stretchSlider->setBounds (120, 256, 36, 28);
+    _stretchSlider->setBounds (120, 267, 36, 28);
 
     _attackHeaderLabel.reset (new juce::Label (juce::String(),
                                                TRANS ("Attack")));
@@ -718,11 +720,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _attackHeaderLabel->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _attackHeaderLabel->setJustificationType (juce::Justification::centred);
     _attackHeaderLabel->setEditable (false, false, false);
-    _attackHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
-    _attackHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colour (0xff202020));
+    _attackHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
+    _attackHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colour (0xffb0b0b6));
     _attackHeaderLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _attackHeaderLabel->setBounds (176, 220, 88, 24);
+    _attackHeaderLabel->setBounds (176, 231, 88, 24);
 
     _attackLengthLabel.reset (new juce::Label (juce::String(),
                                                TRANS ("0ms")));
@@ -730,11 +732,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _attackLengthLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _attackLengthLabel->setJustificationType (juce::Justification::centred);
     _attackLengthLabel->setEditable (false, false, false);
-    _attackLengthLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
+    _attackLengthLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
     _attackLengthLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     _attackLengthLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _attackLengthLabel->setBounds (176, 280, 52, 24);
+    _attackLengthLabel->setBounds (176, 291, 52, 24);
 
     _attackLengthSlider.reset (new juce::Slider (juce::String()));
     addAndMakeVisible (_attackLengthSlider.get());
@@ -746,7 +748,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _attackLengthSlider->addListener (this);
     _attackLengthSlider->setSkewFactor (0.5);
 
-    _attackLengthSlider->setBounds (184, 256, 36, 28);
+    _attackLengthSlider->setBounds (184, 267, 36, 28);
 
     _attackLengthHeaderLabel.reset (new juce::Label (juce::String(),
                                                      TRANS ("Length")));
@@ -754,11 +756,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _attackLengthHeaderLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _attackLengthHeaderLabel->setJustificationType (juce::Justification::centred);
     _attackLengthHeaderLabel->setEditable (false, false, false);
-    _attackLengthHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
+    _attackLengthHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
     _attackLengthHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     _attackLengthHeaderLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _attackLengthHeaderLabel->setBounds (176, 236, 52, 24);
+    _attackLengthHeaderLabel->setBounds (176, 247, 52, 24);
 
     _decayHeaderLabel.reset (new juce::Label (juce::String(),
                                               TRANS ("Decay")));
@@ -766,11 +768,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _decayHeaderLabel->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _decayHeaderLabel->setJustificationType (juce::Justification::centred);
     _decayHeaderLabel->setEditable (false, false, false);
-    _decayHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
-    _decayHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colour (0xff202020));
+    _decayHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
+    _decayHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colour (0xffb0b0b6));
     _decayHeaderLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _decayHeaderLabel->setBounds (256, 220, 88, 24);
+    _decayHeaderLabel->setBounds (256, 231, 88, 24);
 
     _impulseResponseHeaderLabel.reset (new juce::Label (juce::String(),
                                                         TRANS ("Impulse Response")));
@@ -778,11 +780,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _impulseResponseHeaderLabel->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _impulseResponseHeaderLabel->setJustificationType (juce::Justification::centred);
     _impulseResponseHeaderLabel->setEditable (false, false, false);
-    _impulseResponseHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
-    _impulseResponseHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colour (0xff202020));
+    _impulseResponseHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
+    _impulseResponseHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colour (0xffb0b0b6));
     _impulseResponseHeaderLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _impulseResponseHeaderLabel->setBounds (12, 220, 144, 24);
+    _impulseResponseHeaderLabel->setBounds (12, 231, 144, 24);
 
     _stereoHeaderLabel.reset (new juce::Label (juce::String(),
                                                TRANS ("Stereo")));
@@ -790,20 +792,52 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _stereoHeaderLabel->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _stereoHeaderLabel->setJustificationType (juce::Justification::centred);
     _stereoHeaderLabel->setEditable (false, false, false);
-    _stereoHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xff202020));
-    _stereoHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colour (0xff202020));
+    _stereoHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
+    _stereoHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colour (0xffb0b0b6));
     _stereoHeaderLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _stereoHeaderLabel->setBounds (340, 220, 52, 24);
+    _stereoHeaderLabel->setBounds (340, 231, 52, 24);
+
+    juce__label.reset (new juce::Label ("new label",
+                                        TRANS ("Body & Soul")));
+    addAndMakeVisible (juce__label.get());
+    juce__label->setFont (juce::Font (35.30f, juce::Font::plain).withTypefaceStyle ("Regular"));
+    juce__label->setJustificationType (juce::Justification::centredLeft);
+    juce__label->setEditable (false, false, false);
+    juce__label->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
+    juce__label->setColour (juce::TextEditor::textColourId, juce::Colour (0xffb0b0b6));
+    juce__label->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+
+    juce__label->setBounds (288, 4, 183, 40);
 
 
     //[UserPreSize]
-
     setLookAndFeel(customLookAndFeel);
+
+    juce__label->setColour(juce::Label::textColourId, UIUtils::neutralColour.withAlpha(0.5f));
+
+    _dryButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
+    _wetButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
+    _autogainButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
+
+    _predelaySlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
+    _beginSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
+    _endSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
+    _stretchSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
+    _attackLengthSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
+    _attackShapeSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
+    _decayShapeSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
+    _widthSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
+    _lowCutFreqSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
+    _highCutFreqSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
+    _loFreqSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
+    _loGainSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
+    _hiFreqSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
+    _hiGainSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
 
     //[/UserPreSize]
 
-    setSize (760, 330);
+    setSize (760, 340);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -918,6 +952,7 @@ KlangFalterEditor::~KlangFalterEditor()
     _decayHeaderLabel = nullptr;
     _impulseResponseHeaderLabel = nullptr;
     _stereoHeaderLabel = nullptr;
+    juce__label = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -930,13 +965,46 @@ void KlangFalterEditor::paint (juce::Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.fillAll (juce::Colour (0xffa6a6b1));
+    g.fillAll (juce::Colour (0xff313131));
 
     //[UserPaint] Add your own custom painting code here..
-    juce::Image backgroundImage(juce::ImageCache::getFromMemory(BinaryData::brushed_aluminium_png,
-                                                                BinaryData::brushed_aluminium_pngSize));
-    g.setFillType(juce::FillType(backgroundImage, juce::AffineTransform()));
-    g.fillAll();
+    // constexpr int logoHeight {36};
+    // const int xMid {getWidth() / 2};
+    // constexpr int xOffset {200};
+    // g.setColour(UIUtils::neutralColour.withAlpha(0.2f));
+    // {
+    //     juce::Image tomLogo(juce::ImageCache::getFromMemory(BinaryData::tom_png, BinaryData::tom_pngSize));
+    //     const float aspect {tomLogo.getWidth() / static_cast<float>(tomLogo.getHeight())};
+    //     const int width {static_cast<int>(logoHeight * aspect)};
+    //     g.drawImage(tomLogo, xMid - xOffset - width / 2, 8, width, logoHeight, 0, 0, tomLogo.getWidth(), tomLogo.getHeight(), true);
+    // }
+    // {
+    //     juce::Image weaLogo(juce::ImageCache::getFromMemory(BinaryData::wea_png, BinaryData::wea_pngSize));
+    //     const float aspect {weaLogo.getWidth() / static_cast<float>(weaLogo.getHeight())};
+    //     const int width {static_cast<int>(logoHeight * aspect)};
+    //     g.drawImage(weaLogo, xMid + xOffset - width / 2, 8, width, logoHeight, 0, 0, weaLogo.getWidth(), weaLogo.getHeight(), true);
+    // }
+
+    const int xMid {531};
+    {
+        constexpr int logoWidth {35};
+        juce::Image tomLogo(juce::ImageCache::getFromMemory(BinaryData::tom_png, BinaryData::tom_pngSize));
+        const float aspect {tomLogo.getWidth() / static_cast<float>(tomLogo.getHeight())};
+        const int logoHeight {static_cast<int>(logoWidth / aspect)};
+        g.drawImage(tomLogo,
+                    xMid - logoWidth / 2, 60, logoWidth, logoHeight,
+                    0, 0, tomLogo.getWidth(), tomLogo.getHeight());
+    }
+    {
+        constexpr int logoWidth {80};
+        juce::Image weaLogo(juce::ImageCache::getFromMemory(BinaryData::wea_png, BinaryData::wea_pngSize));
+        const float aspect {weaLogo.getWidth() / static_cast<float>(weaLogo.getHeight())};
+        const int logoHeight {static_cast<int>(logoWidth / aspect)};
+        g.drawImage(weaLogo,
+                    xMid - logoWidth / 2, 170, logoWidth, logoHeight,
+                    0, 0, weaLogo.getWidth(), weaLogo.getHeight());
+    }
+
     //[/UserPaint]
 }
 
@@ -1362,318 +1430,324 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="KlangFalterEditor" componentName=""
                  parentClasses="public AudioProcessorEditor, public ChangeNotifier::Listener, public ChangeListener, public Timer"
-                 constructorParams="Processor&amp; processor" variableInitialisers="AudioProcessorEditor(&amp;processor),&#10;_processor(processor)"
+                 constructorParams="Processor&amp; processor" variableInitialisers="AudioProcessorEditor(&amp;processor),&#10;_processor(processor),&#10;_toggleButtonLookAndFeel(new UIUtils::ToggleButtonLookAndFeel()),&#10;_rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel())"
                  snapPixels="4" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="760" initialHeight="330">
-  <BACKGROUND backgroundColour="ffa6a6b1"/>
+                 fixedSize="1" initialWidth="760" initialHeight="340">
+  <BACKGROUND backgroundColour="ff313131"/>
   <GENERICCOMPONENT name="" id="6dd7ac2ee661b784" memberName="_decibelScaleDry" virtualName=""
-                    explicitFocusOrder="0" pos="584 40 32 176" class="DecibelScale"
+                    explicitFocusOrder="0" pos="584 51 32 176" class="DecibelScale"
                     params=""/>
   <TABBEDCOMPONENT name="IRTabComponent" id="697fc3546f1ab7f1" memberName="_irTabComponent"
-                   virtualName="" explicitFocusOrder="0" pos="16 12 542 204" orientation="top"
+                   virtualName="" explicitFocusOrder="0" pos="16 51 462 176" orientation="top"
                    tabBarDepth="0" initialTab="0">
     <TAB name="Placeholder" colour="ffb0b0b6" useJucerComp="1" contentClassName=""
          constructorParams="" jucerComponentFile="IRComponent.cpp"/>
   </TABBEDCOMPONENT>
   <GENERICCOMPONENT name="" id="93270230a2db62e0" memberName="_levelMeterDry" virtualName=""
-                    explicitFocusOrder="0" pos="632 40 12 176" class="LevelMeter"
+                    explicitFocusOrder="0" pos="632 51 12 176" class="LevelMeter"
                     params=""/>
   <LABEL name="DryLevelLabel" id="892bd8ba7f961215" memberName="_dryLevelLabel"
-         virtualName="" explicitFocusOrder="0" pos="572 220 60 24" textCol="ff202020"
+         virtualName="" explicitFocusOrder="0" pos="572 231 60 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="-inf" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="34"/>
   <LABEL name="WetLevelLabel" id="3469fbc38286d2b6" memberName="_wetLevelLabel"
-         virtualName="" explicitFocusOrder="0" pos="656 220 64 24" textCol="ff202020"
+         virtualName="" explicitFocusOrder="0" pos="656 231 64 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="-inf" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="34"/>
   <SLIDER name="" id="3694f3553dea94b" memberName="_drySlider" virtualName=""
-          explicitFocusOrder="0" pos="612 32 24 192" min="0.0" max="10.0"
+          explicitFocusOrder="0" pos="612 43 24 192" min="0.0" max="10.0"
           int="0.0" style="LinearVertical" textBoxPos="NoTextBox" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <GENERICCOMPONENT name="" id="f3824f7df1d2ea95" memberName="_decibelScaleOut" virtualName=""
-                    explicitFocusOrder="0" pos="672 40 32 176" class="DecibelScale"
+                    explicitFocusOrder="0" pos="672 51 32 176" class="DecibelScale"
                     params=""/>
   <SLIDER name="" id="e50054d828347fbd" memberName="_wetSlider" virtualName=""
-          explicitFocusOrder="0" pos="700 32 24 192" min="0.0" max="10.0"
+          explicitFocusOrder="0" pos="700 43 24 192" min="0.0" max="10.0"
           int="0.0" style="LinearVertical" textBoxPos="NoTextBox" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <TEXTBUTTON name="" id="e5cc4d9d88fb6d29" memberName="_browseButton" virtualName=""
-              explicitFocusOrder="0" pos="12 308 736 24" tooltip="Show Browser For Impulse Response Selection"
+              explicitFocusOrder="0" pos="12 319 736 24" tooltip="Show Browser For Impulse Response Selection"
               bgColOn="ffbcbcff" buttonText="Show Browser" connectedEdges="8"
               needsCallback="1" radioGroupId="0"/>
   <GENERICCOMPONENT name="" id="5388ff2994f22af6" memberName="_irBrowserComponent"
-                    virtualName="" explicitFocusOrder="0" pos="12 332 736 288" class="IRBrowserComponent"
+                    virtualName="" explicitFocusOrder="0" pos="12 343 736 288" class="IRBrowserComponent"
                     params=""/>
   <TEXTBUTTON name="" id="c0b279e2bae7030e" memberName="_wetButton" virtualName=""
-              explicitFocusOrder="0" pos="684 244 44 24" tooltip="Wet Signal On/Off"
+              explicitFocusOrder="0" pos="684 255 44 24" tooltip="Wet Signal On/Off"
               bgColOff="80bcbcbc" bgColOn="ffbcbcff" textCol="ff202020" textColOn="ff202020"
               buttonText="Wet" connectedEdges="3" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="" id="499237d463b07642" memberName="_dryButton" virtualName=""
-              explicitFocusOrder="0" pos="596 244 44 24" tooltip="Dry Signal On/Off"
+              explicitFocusOrder="0" pos="596 255 44 24" tooltip="Dry Signal On/Off"
               bgColOff="80bcbcbc" bgColOn="ffbcbcff" textCol="ff202020" textColOn="ff202020"
               buttonText="Dry" connectedEdges="3" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="" id="f25a3c5b0535fcca" memberName="_autogainButton" virtualName=""
-              explicitFocusOrder="0" pos="596 276 132 24" tooltip="Autogain On/Off"
+              explicitFocusOrder="0" pos="596 287 132 24" tooltip="Autogain On/Off"
               bgColOff="80bcbcbc" bgColOn="ffbcbcff" textCol="ff202020" textColOn="ff202020"
               buttonText="Autogain 0.0dB" connectedEdges="3" needsCallback="1"
               radioGroupId="0"/>
   <TEXTBUTTON name="" id="fcb6829f0d6fc21f" memberName="_reverseButton" virtualName=""
-              explicitFocusOrder="0" pos="20 187 72 24" tooltip="Reverse Impulse Response"
+              explicitFocusOrder="0" pos="20 198 72 24" tooltip="Reverse Impulse Response"
               bgColOff="80bcbcbc" bgColOn="ffbcbcff" textCol="ff202020" textColOn="ff202020"
               buttonText="Reverse" connectedEdges="3" needsCallback="1" radioGroupId="0"/>
   <LABEL name="" id="841738a894cf241a" memberName="_hiFreqLabel" virtualName=""
-         explicitFocusOrder="0" pos="480 280 52 24" textCol="ff202020"
+         explicitFocusOrder="0" pos="480 291 52 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="15.2kHz" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <LABEL name="" id="fc2c2b94ce457ca1" memberName="_hiGainLabel" virtualName=""
-         explicitFocusOrder="0" pos="516 280 52 24" textCol="ff202020"
+         explicitFocusOrder="0" pos="516 291 52 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="0.0dB" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <LABEL name="" id="56744cc537b91ad6" memberName="_hiGainHeaderLabel"
-         virtualName="" explicitFocusOrder="0" pos="516 236 52 24" textCol="ff202020"
+         virtualName="" explicitFocusOrder="0" pos="516 247 52 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="Gain" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <LABEL name="" id="71caf1a3b5a498dd" memberName="_hiFreqHeaderLabel"
-         virtualName="" explicitFocusOrder="0" pos="480 236 52 24" textCol="ff202020"
+         virtualName="" explicitFocusOrder="0" pos="480 247 52 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="Freq" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <SLIDER name="" id="1c3776d0e6cbce1d" memberName="_hiGainSlider" virtualName=""
-          explicitFocusOrder="0" pos="524 256 36 28" thumbcol="ffafafff"
+          explicitFocusOrder="0" pos="524 267 36 28" thumbcol="ffafafff"
           rotarysliderfill="b1606060" min="-30.0" max="30.0" int="0.0"
           style="RotaryVerticalDrag" textBoxPos="NoTextBox" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <SLIDER name="" id="702db07b37c24f93" memberName="_hiFreqSlider" virtualName=""
-          explicitFocusOrder="0" pos="488 256 36 28" thumbcol="ffafafff"
+          explicitFocusOrder="0" pos="488 267 36 28" thumbcol="ffafafff"
           rotarysliderfill="b1606060" min="2000.0" max="20000.0" int="0.0"
           style="RotaryVerticalDrag" textBoxPos="NoTextBox" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <LABEL name="" id="8b28430d938b39ca" memberName="_loFreqLabel" virtualName=""
-         explicitFocusOrder="0" pos="396 280 52 24" textCol="ff202020"
+         explicitFocusOrder="0" pos="396 291 52 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="1234Hz" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <LABEL name="" id="390bab67dc140d90" memberName="_loGainLabel" virtualName=""
-         explicitFocusOrder="0" pos="432 280 52 24" textCol="ff202020"
+         explicitFocusOrder="0" pos="432 291 52 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="0.0dB" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <LABEL name="" id="8d9e4adc7538b7dc" memberName="_loGainHeaderLabel"
-         virtualName="" explicitFocusOrder="0" pos="432 236 52 24" textCol="ff202020"
+         virtualName="" explicitFocusOrder="0" pos="432 247 52 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="Gain" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <LABEL name="" id="f3b3523aee42340f" memberName="_loFreqHeaderLabel"
-         virtualName="" explicitFocusOrder="0" pos="396 236 52 24" textCol="ff202020"
+         virtualName="" explicitFocusOrder="0" pos="396 247 52 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="Freq" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <SLIDER name="" id="a3dc7342caaa661f" memberName="_loGainSlider" virtualName=""
-          explicitFocusOrder="0" pos="440 256 36 28" thumbcol="ffafafff"
+          explicitFocusOrder="0" pos="440 267 36 28" thumbcol="ffafafff"
           rotarysliderfill="b1606060" min="-30.0" max="30.0" int="0.0"
           style="RotaryVerticalDrag" textBoxPos="NoTextBox" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <SLIDER name="" id="313e885756edaea8" memberName="_loFreqSlider" virtualName=""
-          explicitFocusOrder="0" pos="404 256 36 28" thumbcol="ffafafff"
+          explicitFocusOrder="0" pos="404 267 36 28" thumbcol="ffafafff"
           rotarysliderfill="b1606060" min="20.0" max="2000.0" int="0.0"
           style="RotaryVerticalDrag" textBoxPos="NoTextBox" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <GENERICCOMPONENT name="" id="e4867bf99a47726a" memberName="_levelMeterOut" virtualName=""
-                    explicitFocusOrder="0" pos="720 40 12 176" class="LevelMeter"
+                    explicitFocusOrder="0" pos="720 51 12 176" class="LevelMeter"
                     params=""/>
   <TEXTBUTTON name="" id="f5ed3d758ad2c3f4" memberName="_levelMeterOutLabelButton"
-              virtualName="" explicitFocusOrder="0" pos="712 20 28 18" tooltip="Switches Between Out/Wet Level Measurement"
-              bgColOff="bbbbff" bgColOn="bcbcff" textCol="ff202020" textColOn="ff202020"
+              virtualName="" explicitFocusOrder="0" pos="712 31 28 18" tooltip="Switches Between Out/Wet Level Measurement"
+              bgColOff="bbbbff" bgColOn="bcbcff" textCol="ffb0b0b6" textColOn="ffb0b0b6"
               buttonText="Out" connectedEdges="3" needsCallback="1" radioGroupId="0"/>
   <LABEL name="" id="55e5b719a217b777" memberName="_levelMeterDryLabel"
-         virtualName="" explicitFocusOrder="0" pos="620 16 36 24" textCol="ff202020"
-         edTextCol="ff202020" edBkgCol="0" labelText="Dry" editableSingleClick="0"
+         virtualName="" explicitFocusOrder="0" pos="620 27 36 24" textCol="ffb0b0b6"
+         edTextCol="ffb0b0b6" edBkgCol="0" labelText="Dry" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <TEXTBUTTON name="" id="91aebb1e5cd3b857" memberName="_lowEqButton" virtualName=""
-              explicitFocusOrder="0" pos="404 220 72 24" bgColOff="bbbbff"
-              bgColOn="2c2cff" textCol="ff202020" textColOn="ff202020" buttonText="Low Cut"
+              explicitFocusOrder="0" pos="404 231 72 24" bgColOff="bbbbff"
+              bgColOn="2c2cff" textCol="ffb0b0b6" textColOn="ffb0b0b6" buttonText="Low Cut"
               connectedEdges="3" needsCallback="1" radioGroupId="0"/>
   <LABEL name="" id="3c3de25483a2083a" memberName="_lowCutFreqLabel" virtualName=""
-         explicitFocusOrder="0" pos="414 280 52 24" textCol="ff202020"
+         explicitFocusOrder="0" pos="414 291 52 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="1234Hz" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <LABEL name="" id="e7ff4fcd0be82eec" memberName="_lowCutFreqHeaderLabel"
-         virtualName="" explicitFocusOrder="0" pos="414 236 52 24" textCol="ff202020"
+         virtualName="" explicitFocusOrder="0" pos="414 247 52 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="Freq" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <SLIDER name="" id="939a6b5201207a68" memberName="_lowCutFreqSlider"
-          virtualName="" explicitFocusOrder="0" pos="422 256 36 28" thumbcol="ffafafff"
+          virtualName="" explicitFocusOrder="0" pos="422 267 36 28" thumbcol="ffafafff"
           rotarysliderfill="b1606060" min="20.0" max="2000.0" int="0.0"
           style="RotaryVerticalDrag" textBoxPos="NoTextBox" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <LABEL name="" id="54b3891e3f360022" memberName="_highCutFreqLabel"
-         virtualName="" explicitFocusOrder="0" pos="498 280 52 24" textCol="ff202020"
+         virtualName="" explicitFocusOrder="0" pos="498 291 52 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="15.2kHz" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <LABEL name="" id="e765fe8c17a454cf" memberName="_highCutFreqHeaderLabel"
-         virtualName="" explicitFocusOrder="0" pos="498 236 52 24" textCol="ff202020"
+         virtualName="" explicitFocusOrder="0" pos="498 247 52 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="Freq" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <SLIDER name="" id="b5ba6600a0fbff4e" memberName="_highCutFreqSlider"
-          virtualName="" explicitFocusOrder="0" pos="506 256 36 28" thumbcol="ffafafff"
+          virtualName="" explicitFocusOrder="0" pos="506 267 36 28" thumbcol="ffafafff"
           rotarysliderfill="b1606060" min="2000.0" max="20000.0" int="0.0"
           style="RotaryVerticalDrag" textBoxPos="NoTextBox" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <TEXTBUTTON name="" id="e0f66dc6348e3991" memberName="_highEqButton" virtualName=""
-              explicitFocusOrder="0" pos="488 220 72 24" bgColOff="bbbbff"
-              bgColOn="2c2cff" textCol="ff202020" textColOn="ff202020" buttonText="High Cut"
+              explicitFocusOrder="0" pos="488 231 72 24" bgColOff="bbbbff"
+              bgColOn="2c2cff" textCol="ffb0b0b6" textColOn="ffb0b0b6" buttonText="High Cut"
               connectedEdges="3" needsCallback="1" radioGroupId="0"/>
   <LABEL name="" id="bd223d64f25070f1" memberName="_attackShapeLabel"
-         virtualName="" explicitFocusOrder="0" pos="212 280 52 24" textCol="ff202020"
+         virtualName="" explicitFocusOrder="0" pos="212 291 52 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="1.0" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <LABEL name="" id="ee8d936af3b4da1e" memberName="_endLabel" virtualName=""
-         explicitFocusOrder="0" pos="76 280 52 24" textCol="ff202020"
+         explicitFocusOrder="0" pos="76 291 52 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="100%" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <SLIDER name="" id="69b1c81fb4f7c601" memberName="_endSlider" virtualName=""
-          explicitFocusOrder="0" pos="84 256 36 28" thumbcol="ffafafff"
+          explicitFocusOrder="0" pos="84 267 36 28" thumbcol="ffafafff"
           rotarysliderfill="b1606060" min="0.0" max="1.0" int="0.0" style="RotaryVerticalDrag"
           textBoxPos="NoTextBox" textBoxEditable="1" textBoxWidth="80"
           textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <SLIDER name="" id="4212ad3906b4822c" memberName="_attackShapeSlider"
-          virtualName="" explicitFocusOrder="0" pos="220 256 36 28" thumbcol="ffafafff"
+          virtualName="" explicitFocusOrder="0" pos="220 267 36 28" thumbcol="ffafafff"
           rotarysliderfill="b1606060" min="0.0" max="10.0" int="0.0" style="RotaryVerticalDrag"
           textBoxPos="NoTextBox" textBoxEditable="1" textBoxWidth="80"
           textBoxHeight="20" skewFactor="0.5" needsCallback="1"/>
   <LABEL name="" id="31ae76799c1691c8" memberName="_decayShapeLabel" virtualName=""
-         explicitFocusOrder="0" pos="276 280 52 24" textCol="ff202020"
+         explicitFocusOrder="0" pos="276 291 52 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="1.0" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <LABEL name="" id="23dd6aa127e1d22c" memberName="_decayShapeHeaderLabel"
-         virtualName="" explicitFocusOrder="0" pos="276 236 52 24" textCol="ff202020"
+         virtualName="" explicitFocusOrder="0" pos="276 247 52 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="Shape" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <SLIDER name="" id="ec6cfdb461a4ddf" memberName="_decayShapeSlider" virtualName=""
-          explicitFocusOrder="0" pos="284 256 36 28" thumbcol="ffafafff"
+          explicitFocusOrder="0" pos="284 267 36 28" thumbcol="ffafafff"
           rotarysliderfill="b1606060" min="0.0" max="10.0" int="0.0" style="RotaryVerticalDrag"
           textBoxPos="NoTextBox" textBoxEditable="1" textBoxWidth="80"
           textBoxHeight="20" skewFactor="0.5" needsCallback="1"/>
   <LABEL name="" id="77a4289ec7918eef" memberName="_attackShapeHeaderLabel"
-         virtualName="" explicitFocusOrder="0" pos="212 236 52 24" textCol="ff202020"
+         virtualName="" explicitFocusOrder="0" pos="212 247 52 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="Shape" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <LABEL name="" id="f09d4e48c9272494" memberName="_endHeaderLabel" virtualName=""
-         explicitFocusOrder="0" pos="76 236 52 24" textCol="ff202020"
+         explicitFocusOrder="0" pos="76 247 52 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="End" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <LABEL name="" id="83e84ce51a3ad2f0" memberName="_beginLabel" virtualName=""
-         explicitFocusOrder="0" pos="40 280 52 24" textCol="ff202020"
+         explicitFocusOrder="0" pos="40 291 52 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="100%" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <SLIDER name="" id="abd56bd3093af749" memberName="_beginSlider" virtualName=""
-          explicitFocusOrder="0" pos="48 256 36 28" thumbcol="ffafafff"
+          explicitFocusOrder="0" pos="48 267 36 28" thumbcol="ffafafff"
           rotarysliderfill="b1606060" min="0.0" max="1.0" int="0.0" style="RotaryVerticalDrag"
           textBoxPos="NoTextBox" textBoxEditable="1" textBoxWidth="80"
           textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <LABEL name="" id="8a8a2c2daac6a39b" memberName="_beginHeaderLabel"
-         virtualName="" explicitFocusOrder="0" pos="40 236 52 24" textCol="ff202020"
+         virtualName="" explicitFocusOrder="0" pos="40 247 52 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="Begin" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <LABEL name="" id="90fac88de886d96b" memberName="_widthLabel" virtualName=""
-         explicitFocusOrder="0" pos="340 280 52 24" textCol="ff202020"
+         explicitFocusOrder="0" pos="340 291 52 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="1.0" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <LABEL name="" id="3476a26a68685b9e" memberName="_widthHeaderLabel"
-         virtualName="" explicitFocusOrder="0" pos="340 236 52 24" textCol="ff202020"
+         virtualName="" explicitFocusOrder="0" pos="340 247 52 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="Width" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <SLIDER name="" id="31fdb25b044eaf7f" memberName="_widthSlider" virtualName=""
-          explicitFocusOrder="0" pos="348 256 36 28" thumbcol="ffafafff"
+          explicitFocusOrder="0" pos="348 267 36 28" thumbcol="ffafafff"
           rotarysliderfill="b1606060" min="0.0" max="10.0" int="0.0" style="RotaryVerticalDrag"
           textBoxPos="NoTextBox" textBoxEditable="1" textBoxWidth="80"
           textBoxHeight="20" skewFactor="0.30102" needsCallback="1"/>
   <LABEL name="" id="d8fd174283fc5f04" memberName="_predelayLabel" virtualName=""
-         explicitFocusOrder="0" pos="4 280 52 24" textCol="ff202020" edTextCol="ff000000"
+         explicitFocusOrder="0" pos="4 291 52 24" textCol="ffb0b0b6" edTextCol="ff000000"
          edBkgCol="0" labelText="0ms" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="11.0"
          kerning="0.0" bold="0" italic="0" justification="36"/>
   <LABEL name="" id="c0f7ab9477e45174" memberName="_predelayHeaderLabel"
-         virtualName="" explicitFocusOrder="0" pos="4 236 52 24" textCol="ff202020"
+         virtualName="" explicitFocusOrder="0" pos="4 247 52 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="Gap" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <SLIDER name="" id="b8aaa21b836b98e0" memberName="_predelaySlider" virtualName=""
-          explicitFocusOrder="0" pos="12 256 36 28" thumbcol="ffafafff"
+          explicitFocusOrder="0" pos="12 267 36 28" thumbcol="ffafafff"
           rotarysliderfill="b1606060" min="0.0" max="1000.0" int="0.0"
           style="RotaryVerticalDrag" textBoxPos="NoTextBox" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <LABEL name="" id="52624fc555056069" memberName="_stretchLabel" virtualName=""
-         explicitFocusOrder="0" pos="112 280 52 24" textCol="ff202020"
+         explicitFocusOrder="0" pos="112 291 52 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="100%" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <LABEL name="" id="5a11a2fc858b9666" memberName="_stretchHeaderLabel"
-         virtualName="" explicitFocusOrder="0" pos="112 236 52 24" textCol="ff202020"
+         virtualName="" explicitFocusOrder="0" pos="112 247 52 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="Stretch" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <SLIDER name="" id="6c84a40c942d5b18" memberName="_stretchSlider" virtualName=""
-          explicitFocusOrder="0" pos="120 256 36 28" thumbcol="ffafafff"
+          explicitFocusOrder="0" pos="120 267 36 28" thumbcol="ffafafff"
           rotarysliderfill="b1606060" min="0.0" max="2.0" int="0.0" style="RotaryVerticalDrag"
           textBoxPos="NoTextBox" textBoxEditable="1" textBoxWidth="80"
           textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <LABEL name="" id="4dd28ec5626fb754" memberName="_attackHeaderLabel"
-         virtualName="" explicitFocusOrder="0" pos="176 220 88 24" textCol="ff202020"
-         edTextCol="ff202020" edBkgCol="0" labelText="Attack" editableSingleClick="0"
+         virtualName="" explicitFocusOrder="0" pos="176 231 88 24" textCol="ffb0b0b6"
+         edTextCol="ffb0b0b6" edBkgCol="0" labelText="Attack" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <LABEL name="" id="a08f22558873cfa8" memberName="_attackLengthLabel"
-         virtualName="" explicitFocusOrder="0" pos="176 280 52 24" textCol="ff202020"
+         virtualName="" explicitFocusOrder="0" pos="176 291 52 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="0ms" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <SLIDER name="" id="cfcacb5123869692" memberName="_attackLengthSlider"
-          virtualName="" explicitFocusOrder="0" pos="184 256 36 28" thumbcol="ffafafff"
+          virtualName="" explicitFocusOrder="0" pos="184 267 36 28" thumbcol="ffafafff"
           rotarysliderfill="b1606060" min="0.0" max="1.0" int="0.0" style="RotaryVerticalDrag"
           textBoxPos="NoTextBox" textBoxEditable="1" textBoxWidth="80"
           textBoxHeight="20" skewFactor="0.5" needsCallback="1"/>
   <LABEL name="" id="c1b73cae5819a5a1" memberName="_attackLengthHeaderLabel"
-         virtualName="" explicitFocusOrder="0" pos="176 236 52 24" textCol="ff202020"
+         virtualName="" explicitFocusOrder="0" pos="176 247 52 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="Length" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <LABEL name="" id="9ac1cf0b8251e7f3" memberName="_decayHeaderLabel"
-         virtualName="" explicitFocusOrder="0" pos="256 220 88 24" textCol="ff202020"
-         edTextCol="ff202020" edBkgCol="0" labelText="Decay" editableSingleClick="0"
+         virtualName="" explicitFocusOrder="0" pos="256 231 88 24" textCol="ffb0b0b6"
+         edTextCol="ffb0b0b6" edBkgCol="0" labelText="Decay" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <LABEL name="" id="1932084a508f975f" memberName="_impulseResponseHeaderLabel"
-         virtualName="" explicitFocusOrder="0" pos="12 220 144 24" textCol="ff202020"
-         edTextCol="ff202020" edBkgCol="0" labelText="Impulse Response"
+         virtualName="" explicitFocusOrder="0" pos="12 231 144 24" textCol="ffb0b0b6"
+         edTextCol="ffb0b0b6" edBkgCol="0" labelText="Impulse Response"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
          italic="0" justification="36"/>
   <LABEL name="" id="3deee43dc79846d0" memberName="_stereoHeaderLabel"
-         virtualName="" explicitFocusOrder="0" pos="340 220 52 24" textCol="ff202020"
-         edTextCol="ff202020" edBkgCol="0" labelText="Stereo" editableSingleClick="0"
+         virtualName="" explicitFocusOrder="0" pos="340 231 52 24" textCol="ffb0b0b6"
+         edTextCol="ffb0b0b6" edBkgCol="0" labelText="Stereo" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="36"/>
+  <LABEL name="new label" id="f44017b03503c913" memberName="juce__label"
+         virtualName="" explicitFocusOrder="0" pos="288 4 183 40" textCol="ffb0b0b6"
+         edTextCol="ffb0b0b6" edBkgCol="0" labelText="Body &amp; Soul"
+         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
+         fontname="Default font" fontsize="35.3" kerning="0.0" bold="0"
+         italic="0" justification="33"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
