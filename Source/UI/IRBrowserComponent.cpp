@@ -19,6 +19,7 @@
 
 #include "../IRAgent.h"
 #include "../Settings.h"
+#include "UIUtils.hpp"
 
 IRBrowserComponent::IRBrowserComponent() :
   juce::Component(),
@@ -73,9 +74,15 @@ void IRBrowserComponent::init(Processor* processor)
 
   _fileTreeComponent.reset(new juce::FileTreeComponent(*_directoryContent));
   _fileTreeComponent->addListener(this);
+  _fileTreeComponent->setColour(juce::TreeView::backgroundColourId, UIUtils::neutralColour);
+  _fileTreeComponent->setColour(juce::TreeView::linesColourId, UIUtils::backgroundColour);
+  _fileTreeComponent->setColour(juce::DirectoryContentsDisplayComponent::highlightColourId, UIUtils::highlightColour.withAlpha(0.5f));
+  _fileTreeComponent->setColour(juce::DirectoryContentsDisplayComponent::textColourId, UIUtils::backgroundColour);
   addAndMakeVisible(_fileTreeComponent.get());
 
   _infoLabel.reset(new juce::Label());
+  _infoLabel->setColour(juce::Label::backgroundColourId, UIUtils::neutralColour);
+  _infoLabel->setColour(juce::Label::textColourId, UIUtils::backgroundColour);
   addAndMakeVisible(_infoLabel.get());
 
   updateLayout();
@@ -109,7 +116,7 @@ void IRBrowserComponent::paint(juce::Graphics& g)
     const int width = getWidth();
     const int height = getHeight();
 
-    g.setColour(juce::Colour(0xE5, 0xE5, 0xF0));
+    g.setColour(UIUtils::neutralColour);
     g.fillRect(0.0f, 0.0f, static_cast<float>(width), static_cast<float>(height));
 
     g.setColour(juce::Colours::grey);
