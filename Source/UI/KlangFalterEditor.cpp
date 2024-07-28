@@ -836,6 +836,8 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _browseButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, UIUtils::neutralColour);
     _browseButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, UIUtils::neutralColour);
 
+    _browseButton->setConnectedEdges(juce::Button::ConnectedOnBottom);
+
     _predelaySlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _beginSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _endSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());

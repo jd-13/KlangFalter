@@ -34,7 +34,12 @@ namespace UIUtils {
                               indent,
                               width - 2 * indent,
                               height - 2 * indent,
-                              static_cast<float>(cornerSize));
+                              static_cast<float>(cornerSize),
+                              static_cast<float>(cornerSize),
+                              true,
+                              true,
+                              !button.isConnectedOnBottom(),
+                              !button.isConnectedOnBottom());
 
         g.strokePath(p, pStroke);
     }
