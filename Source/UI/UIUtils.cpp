@@ -25,9 +25,9 @@ namespace UIUtils {
         juce::PathStrokeType pStroke(1);
 
         if (button.getToggleState()) {
-            g.setColour(highlightColour);
+            g.setColour(button.findColour(onColour));
         } else {
-            g.setColour(neutralColour);
+            g.setColour(button.findColour(offColour));
         }
 
         p.addRoundedRectangle(indent,
@@ -44,9 +44,9 @@ namespace UIUtils {
                                                  bool isMouseOverButton,
                                                  bool isButtonDown) {
         if (textButton.getToggleState()) {
-            g.setColour(highlightColour);
+            g.setColour(textButton.findColour(onColour));
         } else {
-            g.setColour(neutralColour);
+            g.setColour(textButton.findColour(offColour));
         }
 
         constexpr int MARGIN {0};

@@ -144,7 +144,7 @@ private:
     std::unique_ptr<juce::Label> _decayHeaderLabel;
     std::unique_ptr<juce::Label> _impulseResponseHeaderLabel;
     std::unique_ptr<juce::Label> _stereoHeaderLabel;
-    std::unique_ptr<juce::Label> juce__label;
+    std::unique_ptr<juce::Label> _titleLabel;
 
 
     //==============================================================================

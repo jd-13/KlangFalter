@@ -9,6 +9,11 @@ namespace UIUtils {
 
     class ToggleButtonLookAndFeel : public juce::LookAndFeel_V2 {
     public:
+        enum ColourIds {
+            onColour,
+            offColour
+        };
+
         void drawButtonBackground(juce::Graphics& g,
                                   juce::Button& button,
                                   const juce::Colour& backgroundColour,

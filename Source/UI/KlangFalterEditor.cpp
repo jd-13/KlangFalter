@@ -798,27 +798,43 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
 
     _stereoHeaderLabel->setBounds (340, 231, 52, 24);
 
-    juce__label.reset (new juce::Label ("new label",
+    _titleLabel.reset (new juce::Label ("Title Label",
                                         TRANS ("Body & Soul")));
-    addAndMakeVisible (juce__label.get());
-    juce__label->setFont (juce::Font (35.30f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    juce__label->setJustificationType (juce::Justification::centredLeft);
-    juce__label->setEditable (false, false, false);
-    juce__label->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
-    juce__label->setColour (juce::TextEditor::textColourId, juce::Colour (0xffb0b0b6));
-    juce__label->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+    addAndMakeVisible (_titleLabel.get());
+    _titleLabel->setFont (juce::Font (35.30f, juce::Font::plain).withTypefaceStyle ("Regular"));
+    _titleLabel->setJustificationType (juce::Justification::centredLeft);
+    _titleLabel->setEditable (false, false, false);
+    _titleLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
+    _titleLabel->setColour (juce::TextEditor::textColourId, juce::Colour (0xffb0b0b6));
+    _titleLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    juce__label->setBounds (288, 4, 183, 40);
+    _titleLabel->setBounds (288, 4, 183, 40);
 
 
     //[UserPreSize]
     setLookAndFeel(customLookAndFeel);
 
-    juce__label->setColour(juce::Label::textColourId, UIUtils::neutralColour.withAlpha(0.5f));
+    _titleLabel->setColour(juce::Label::textColourId, UIUtils::neutralColour.withAlpha(0.5f));
+
+    auto setButtonColours = [](juce::TextButton* button) {
+        button->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, UIUtils::neutralColour);
+        button->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, UIUtils::highlightColour);
+    };
 
     _dryButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
     _wetButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
     _autogainButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
+    _reverseButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
+    _browseButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
+
+    setButtonColours(_dryButton.get());
+    setButtonColours(_wetButton.get());
+    setButtonColours(_autogainButton.get());
+    setButtonColours(_reverseButton.get());
+
+    _reverseButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, UIUtils::backgroundColour);
+    _browseButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, UIUtils::neutralColour);
+    _browseButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, UIUtils::neutralColour);
 
     _predelaySlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _beginSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
@@ -952,7 +968,7 @@ KlangFalterEditor::~KlangFalterEditor()
     _decayHeaderLabel = nullptr;
     _impulseResponseHeaderLabel = nullptr;
     _stereoHeaderLabel = nullptr;
-    juce__label = nullptr;
+    _titleLabel = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -1742,7 +1758,7 @@ BEGIN_JUCER_METADATA
          edTextCol="ffb0b0b6" edBkgCol="0" labelText="Stereo" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="36"/>
-  <LABEL name="new label" id="f44017b03503c913" memberName="juce__label"
+  <LABEL name="Title Label" id="f44017b03503c913" memberName="_titleLabel"
          virtualName="" explicitFocusOrder="0" pos="288 4 183 40" textCol="ffb0b0b6"
          edTextCol="ffb0b0b6" edBkgCol="0" labelText="Body &amp; Soul"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
