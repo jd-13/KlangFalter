@@ -115,4 +115,70 @@ namespace UIUtils {
                         true);
         g.strokePath(p, juce::PathStrokeType(3.0f));
     }
+
+    void LinearSliderLookAndFeel::drawLinearSlider(juce::Graphics& g,
+                                                   int x,
+                                                   int y,
+                                                   int width,
+                                                   int height,
+                                                   float sliderPos,
+                                                   float minSliderPos,
+                                                   float maxSliderPos,
+                                                   const juce::Slider::SliderStyle style,
+                                                   juce::Slider& slider) {
+        drawLinearSliderBackground(g, x, y, width, height, sliderPos, minSliderPos, maxSliderPos, style, slider);
+        drawLinearSliderThumb(g, x, y, width, height, sliderPos, minSliderPos, maxSliderPos, style, slider);
+    }
+
+    void LinearSliderLookAndFeel::drawLinearSliderThumb(juce::Graphics& g,
+                                                        int x,
+                                                        int y,
+                                                        int width,
+                                                        int height,
+                                                        float sliderPos,
+                                                        float minSliderPos,
+                                                        float maxSliderPos,
+                                                        const juce::Slider::SliderStyle style,
+                                                        juce::Slider& slider) {
+        constexpr int THUMB_RADIUS {4};
+
+        g.setColour(slider.findColour(juce::Slider::thumbColourId));
+
+        if (style == juce::Slider::LinearHorizontal) {
+            // Horizontal thumb
+            g.fillEllipse(sliderPos - THUMB_RADIUS,
+                          y + height / 2 - THUMB_RADIUS,
+                          2 * THUMB_RADIUS,
+                          2 * THUMB_RADIUS);
+        } else {
+            // Vertical thumb
+            g.fillEllipse(x + width / 2 - THUMB_RADIUS,
+                          sliderPos - THUMB_RADIUS,
+                          2 * THUMB_RADIUS,
+                          2 * THUMB_RADIUS);
+        }
+    }
+
+    void LinearSliderLookAndFeel::drawLinearSliderBackground(juce::Graphics& g,
+                                                             int x,
+                                                             int y,
+                                                             int width,
+                                                             int height,
+                                                             float sliderPos,
+                                                             float minSliderPos,
+                                                             float maxSliderPos,
+                                                             const juce::Slider::SliderStyle style,
+                                                             juce::Slider& slider) {
+        constexpr int WIDTH {2};
+
+        g.setColour(slider.findColour(juce::Slider::trackColourId));
+
+        if (style == juce::Slider::LinearHorizontal) {
+            // Horizontal slider
+            g.fillRect(x, y + height / 2 - WIDTH / 2, width, WIDTH);
+        } else {
+            // Vertical slider
+            g.fillRect(x + width / 2 - WIDTH / 2, y, WIDTH, height);
+        }
+    }
 }

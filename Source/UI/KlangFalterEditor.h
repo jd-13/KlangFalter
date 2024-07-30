@@ -73,6 +73,7 @@ private:
     SharedResourcePointer<CustomLookAndFeel> customLookAndFeel;
     std::unique_ptr<UIUtils::ToggleButtonLookAndFeel> _toggleButtonLookAndFeel;
     std::unique_ptr<UIUtils::RotarySliderLookAndFeel> _rotarySliderLookAndFeel;
+    std::unique_ptr<UIUtils::LinearSliderLookAndFeel> _linearSliderLookAndFeel;
     Processor& _processor;
     juce::Component::SafePointer<juce::DialogWindow> _settingsDialogWindow;
     std::map<std::pair<size_t, size_t>, IRComponent*> _irComponents;

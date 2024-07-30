@@ -65,7 +65,8 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     : AudioProcessorEditor(&processor),
       _processor(processor),
       _toggleButtonLookAndFeel(new UIUtils::ToggleButtonLookAndFeel()),
-      _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel())
+      _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()),
+      _linearSliderLookAndFeel(new UIUtils::LinearSliderLookAndFeel())
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
@@ -852,6 +853,16 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _loGainSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _hiFreqSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _hiGainSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
+    _drySlider->setLookAndFeel(_linearSliderLookAndFeel.get());
+    _wetSlider->setLookAndFeel(_linearSliderLookAndFeel.get());
+
+    auto setLinearSliderColours = [](juce::Slider* slider) {
+        slider->setColour(juce::Slider::thumbColourId, UIUtils::highlightColour);
+        slider->setColour(juce::Slider::trackColourId, UIUtils::neutralColour);
+    };
+
+    setLinearSliderColours(_drySlider.get());
+    setLinearSliderColours(_wetSlider.get());
 
     //[/UserPreSize]
 
@@ -1448,7 +1459,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="KlangFalterEditor" componentName=""
                  parentClasses="public AudioProcessorEditor, public ChangeNotifier::Listener, public ChangeListener, public Timer"
-                 constructorParams="Processor&amp; processor" variableInitialisers="AudioProcessorEditor(&amp;processor),&#10;_processor(processor),&#10;_toggleButtonLookAndFeel(new UIUtils::ToggleButtonLookAndFeel()),&#10;_rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel())"
+                 constructorParams="Processor&amp; processor" variableInitialisers="AudioProcessorEditor(&amp;processor),&#10;_processor(processor),&#10;_toggleButtonLookAndFeel(new UIUtils::ToggleButtonLookAndFeel()),&#10;_rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()),&#10;_linearSliderLookAndFeel(new UIUtils::LinearSliderLookAndFeel())"
                  snapPixels="4" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="760" initialHeight="340">
   <BACKGROUND backgroundColour="ff313131"/>
