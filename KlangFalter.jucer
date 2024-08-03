@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="IRcjcT" name="Body and Soul Intro" projectType="audioplug"
               bundleIdentifier="com.thesoundofmerlin.BodyAndSoulIntro" buildVST="0"
-              buildRTAS="0" buildAU="1" pluginName="BodyAndSoulIntro" pluginDesc="BodyAndSoulIntro"
+              buildRTAS="0" buildAU="1" pluginName="Body and Soul Intro" pluginDesc="BodyAndSoulIntro"
               pluginManufacturer="The Sound of Merlin" pluginManufacturerCode="Tsom"
               pluginCode="Tbsi" pluginChannelConfigs="{1, 1}, {2, 2}, {1, 2}"
               pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
