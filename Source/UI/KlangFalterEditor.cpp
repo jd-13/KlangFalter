@@ -800,7 +800,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _stereoHeaderLabel->setBounds (340, 231, 52, 24);
 
     _titleLabel.reset (new juce::Label ("Title Label",
-                                        TRANS ("Body & Soul")));
+                                        TRANS ("Body & Soul:")));
     addAndMakeVisible (_titleLabel.get());
     _titleLabel->setFont (juce::Font (35.30f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _titleLabel->setJustificationType (juce::Justification::centredLeft);
@@ -809,13 +809,26 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _titleLabel->setColour (juce::TextEditor::textColourId, juce::Colour (0xffb0b0b6));
     _titleLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _titleLabel->setBounds (288, 4, 183, 40);
+    _titleLabel->setBounds (248, 4, 195, 40);
+
+    _subtitleLabel.reset (new juce::Label ("Subtitle Label",
+                                           TRANS ("Intro")));
+    addAndMakeVisible (_subtitleLabel.get());
+    _subtitleLabel->setFont (juce::Font (35.30f, juce::Font::plain).withTypefaceStyle ("Regular"));
+    _subtitleLabel->setJustificationType (juce::Justification::centredLeft);
+    _subtitleLabel->setEditable (false, false, false);
+    _subtitleLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
+    _subtitleLabel->setColour (juce::TextEditor::textColourId, juce::Colour (0xffb0b0b6));
+    _subtitleLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+
+    _subtitleLabel->setBounds (432, 4, 79, 40);
 
 
     //[UserPreSize]
     setLookAndFeel(customLookAndFeel);
 
     _titleLabel->setColour(juce::Label::textColourId, UIUtils::neutralColour.withAlpha(0.5f));
+    _subtitleLabel->setColour(juce::Label::textColourId, UIUtils::highlightColour);
 
     auto setButtonColours = [](juce::TextButton* button) {
         button->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, UIUtils::neutralColour);
@@ -982,6 +995,7 @@ KlangFalterEditor::~KlangFalterEditor()
     _impulseResponseHeaderLabel = nullptr;
     _stereoHeaderLabel = nullptr;
     _titleLabel = nullptr;
+    _subtitleLabel = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -1772,11 +1786,16 @@ BEGIN_JUCER_METADATA
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <LABEL name="Title Label" id="f44017b03503c913" memberName="_titleLabel"
-         virtualName="" explicitFocusOrder="0" pos="288 4 183 40" textCol="ffb0b0b6"
-         edTextCol="ffb0b0b6" edBkgCol="0" labelText="Body &amp; Soul"
+         virtualName="" explicitFocusOrder="0" pos="248 4 195 40" textCol="ffb0b0b6"
+         edTextCol="ffb0b0b6" edBkgCol="0" labelText="Body &amp; Soul:"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default font" fontsize="35.3" kerning="0.0" bold="0"
          italic="0" justification="33"/>
+  <LABEL name="Subtitle Label" id="4df8702c7583ab78" memberName="_subtitleLabel"
+         virtualName="" explicitFocusOrder="0" pos="432 4 79 40" textCol="ffb0b0b6"
+         edTextCol="ffb0b0b6" edBkgCol="0" labelText="Intro" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="35.3" kerning="0.0" bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

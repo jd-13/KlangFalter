@@ -146,6 +146,7 @@ private:
     std::unique_ptr<juce::Label> _impulseResponseHeaderLabel;
     std::unique_ptr<juce::Label> _stereoHeaderLabel;
     std::unique_ptr<juce::Label> _titleLabel;
+    std::unique_ptr<juce::Label> _subtitleLabel;
 
 
     //==============================================================================
