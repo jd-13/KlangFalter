@@ -6,6 +6,7 @@ namespace UIUtils {
     const juce::Colour highlightColour(0xfffcf64e);
     const juce::Colour neutralColour(0xffb0b0b6);
     const juce::Colour backgroundColour(0xff313131);
+    const juce::Colour complementaryColour(0xff645e9d);
 
     class ToggleButtonLookAndFeel : public juce::LookAndFeel_V2 {
     public:

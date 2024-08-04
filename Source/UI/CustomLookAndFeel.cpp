@@ -32,7 +32,7 @@ CustomLookAndFeel::CustomLookAndFeel() :
 // ==============================================
 juce::Colour CustomLookAndFeel::getWaveformColour() const
 {
-  return UIUtils::backgroundColour;
+  return UIUtils::complementaryColour;
 }
 
 
@@ -84,19 +84,19 @@ juce::Colour CustomLookAndFeel::getWaveformScaleColour() const
 
 juce::Colour CustomLookAndFeel::getLevelColourMinusInfDb() const
 {
-  return UIUtils::highlightColour;
+  return UIUtils::complementaryColour;
 }
 
 
 juce::Colour CustomLookAndFeel::getLevelColourMinus40Db() const
 {
-  return UIUtils::highlightColour.withSaturation(0.4f);
+  return UIUtils::complementaryColour.withSaturation(0.4f);
 }
 
 
 juce::Colour CustomLookAndFeel::getLevelColourZeroDb() const
 {
-  return UIUtils::highlightColour.withSaturation(0.1f);
+  return UIUtils::complementaryColour.withSaturation(0.1f);
 }
 
 
