@@ -90,13 +90,13 @@ juce::Colour CustomLookAndFeel::getLevelColourMinusInfDb() const
 
 juce::Colour CustomLookAndFeel::getLevelColourMinus40Db() const
 {
-  return UIUtils::complementaryColour.withSaturation(0.4f);
+  return UIUtils::complementaryColour;
 }
 
 
 juce::Colour CustomLookAndFeel::getLevelColourZeroDb() const
 {
-  return UIUtils::complementaryColour.withSaturation(0.1f);
+  return UIUtils::complementaryColour;
 }
 
 
