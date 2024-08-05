@@ -21,7 +21,7 @@ $JUCE_HOME/Projucer.app/Contents/MacOS/Projucer --resave $PROJECT_DIR/KlangFalte
 echo "=== Starting KlangFalter build ==="
 cd $PROJECT_DIR/Builds/MacOSX
 xcodebuild -version
-xcodebuild -project "Body and Soul Intro.xcodeproj" -scheme "KlangFalter - All" -configuration Release
+xcodebuild -project "Body and Soul Intro.xcodeproj" -scheme "Body and Soul Intro - All" -configuration Release
 
 echo "=== Collecting artefacts ==="
 mkdir -p $SCRIPT_DIR/dist
