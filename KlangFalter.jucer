@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="IRcjcT" name="Body and Soul Intro" projectType="audioplug"
               bundleIdentifier="com.thesoundofmerlin.BodyAndSoulIntro" buildVST="0"
-              buildRTAS="0" buildAU="1" pluginName="Body and Soul Intro" pluginDesc="BodyAndSoulIntro"
+              buildRTAS="0" buildAU="1" pluginName="Body and Soul Intro" pluginDesc="Body and Soul Intro"
               pluginManufacturer="The Sound of Merlin" pluginManufacturerCode="Tsom"
               pluginCode="Tbsi" pluginChannelConfigs="{1, 1}, {2, 2}, {1, 2}"
               pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
@@ -19,10 +19,10 @@
     <XCODE_MAC targetFolder="Builds/MacOSX" objCExtraSuffix="C54DO8" extraCompilerFlags=""
                extraFrameworks="Accelerate" extraDefs="AUDIOFFT_APPLE_ACCELERATE=1">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="KlangFalter"
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="TSoM-BodyandSoulIntro"
                        defines="JUCE_MODAL_LOOPS_PERMITTED=1" macOSDeploymentTarget="10.14"
                        osxCompatibility="10.14 SDK" osxArchitecture="64BitIntel"/>
-        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="KlangFalter"
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="TSoM-BodyandSoulIntro"
                        defines="JUCE_MODAL_LOOPS_PERMITTED=1" macOSDeploymentTarget="10.14"
                        osxCompatibility="10.14 SDK"/>
       </CONFIGURATIONS>
@@ -43,8 +43,10 @@
     </XCODE_MAC>
     <VS2019 targetFolder="Builds/VisualStudio2019">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" defines="JUCE_MODAL_LOOPS_PERMITTED=1"/>
-        <CONFIGURATION isDebug="0" name="Release" useRuntimeLibDLL="0" defines="JUCE_MODAL_LOOPS_PERMITTED=1"/>
+        <CONFIGURATION isDebug="1" name="Debug" defines="JUCE_MODAL_LOOPS_PERMITTED=1"
+                       targetName="TSoM-BodyandSoulIntro"/>
+        <CONFIGURATION isDebug="0" name="Release" useRuntimeLibDLL="0" defines="JUCE_MODAL_LOOPS_PERMITTED=1"
+                       targetName="TSoM-BodyandSoulIntro"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_gui_extra" path=".\JUCE\modules"/>

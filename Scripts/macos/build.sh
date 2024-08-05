@@ -25,5 +25,5 @@ xcodebuild -project "Body and Soul Intro.xcodeproj" -scheme "Body and Soul Intro
 
 echo "=== Collecting artefacts ==="
 mkdir -p $SCRIPT_DIR/dist
-cp -r ~/Library/Audio/Plug-Ins/VST3/KlangFalter.vst3 $SCRIPT_DIR/dist
-cp -r ~/Library/Audio/Plug-Ins/Components/KlangFalter.component $SCRIPT_DIR/dist
+cp -r ~/Library/Audio/Plug-Ins/VST3/TSoM-BodyandSoulIntro.vst3 $SCRIPT_DIR/dist
+cp -r ~/Library/Audio/Plug-Ins/Components/TSoM-BodyandSoulIntro.component $SCRIPT_DIR/dist
