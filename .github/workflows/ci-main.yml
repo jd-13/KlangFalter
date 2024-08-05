@@ -13,7 +13,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: ${{ success() }}
         with:
-          name: klangfalter-macOS
+          name: BodyandSoulIntro-macOS
           path: Scripts/macos/dist
 
   BuildWindows:
@@ -29,5 +29,5 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: ${{ success() }}
         with:
-          name: klangfalter-windows
+          name: BodyandSoulIntro-windows
           path: Release

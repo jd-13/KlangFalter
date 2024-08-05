@@ -17,8 +17,8 @@ msbuild "Body and Soul Intro.sln" /p:Configuration=Release /p:Platform=x64 || ex
 
 ECHO "=== Make Release folder ==="
 cd %SCRIPT_DIR%..\..\
-mkdir -p Release\BodyAndSoul.vst3\Contents
-cd Release\BodyAndSoul.vst3\Contents
+mkdir -p Release\TSoM-BodyandSoulIntro.vst3\Contents
+cd Release\TSoM-BodyandSoulIntro.vst3\Contents
 
 mkdir x86_64-win
 cd x86_64-win
