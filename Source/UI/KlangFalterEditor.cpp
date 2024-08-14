@@ -493,7 +493,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
 
     _endSlider.reset (new juce::Slider (juce::String()));
     addAndMakeVisible (_endSlider.get());
-    _endSlider->setRange (0, 1, 0);
+    _endSlider->setRange (0, 1, 0.001);
     _endSlider->setSliderStyle (juce::Slider::RotaryVerticalDrag);
     _endSlider->setTextBoxStyle (juce::Slider::NoTextBox, false, 80, 20);
     _endSlider->setColour (juce::Slider::thumbColourId, juce::Colour (0xffafafff));
@@ -588,12 +588,13 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
 
     _beginSlider.reset (new juce::Slider (juce::String()));
     addAndMakeVisible (_beginSlider.get());
-    _beginSlider->setRange (0, 1, 0);
+    _beginSlider->setRange (0, 1, 0.001);
     _beginSlider->setSliderStyle (juce::Slider::RotaryVerticalDrag);
     _beginSlider->setTextBoxStyle (juce::Slider::NoTextBox, false, 80, 20);
     _beginSlider->setColour (juce::Slider::thumbColourId, juce::Colour (0xffafafff));
     _beginSlider->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xb1606060));
     _beginSlider->addListener (this);
+    _beginSlider->setSkewFactor (0.5);
 
     _beginSlider->setBounds (48, 267, 36, 28);
 
@@ -1295,13 +1296,13 @@ void KlangFalterEditor::updateUI()
     const double irBegin = _processor.getIRBegin();
     _beginSlider->setEnabled(irAvailable);
     _beginSlider->setValue(irBegin, juce::dontSendNotification);
-    _beginLabel->setText(juce::String(static_cast<int>(100.0 * irBegin)) + juce::String("%"), juce::sendNotification);
+    _beginLabel->setText(juce::String(100.0 * irBegin, 1) + juce::String("%"), juce::sendNotification);
   }
   {
     const double irEnd = _processor.getIREnd();
     _endSlider->setEnabled(irAvailable);
     _endSlider->setValue(irEnd, juce::dontSendNotification);
-    _endLabel->setText(juce::String(static_cast<int>(100.0 * irEnd)) + juce::String("%"), juce::sendNotification);
+    _endLabel->setText(juce::String(100.0 * irEnd, 1) + juce::String("%"), juce::sendNotification);
   }
   {
     const double predelayMs = _processor.getPredelayMs();
@@ -1656,7 +1657,7 @@ BEGIN_JUCER_METADATA
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <SLIDER name="" id="69b1c81fb4f7c601" memberName="_endSlider" virtualName=""
           explicitFocusOrder="0" pos="84 267 36 28" thumbcol="ffafafff"
-          rotarysliderfill="b1606060" min="0.0" max="1.0" int="0.0" style="RotaryVerticalDrag"
+          rotarysliderfill="b1606060" min="0.0" max="1.0" int="0.001" style="RotaryVerticalDrag"
           textBoxPos="NoTextBox" textBoxEditable="1" textBoxWidth="80"
           textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <SLIDER name="" id="4212ad3906b4822c" memberName="_attackShapeSlider"
@@ -1696,9 +1697,9 @@ BEGIN_JUCER_METADATA
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <SLIDER name="" id="abd56bd3093af749" memberName="_beginSlider" virtualName=""
           explicitFocusOrder="0" pos="48 267 36 28" thumbcol="ffafafff"
-          rotarysliderfill="b1606060" min="0.0" max="1.0" int="0.0" style="RotaryVerticalDrag"
+          rotarysliderfill="b1606060" min="0.0" max="1.0" int="0.001" style="RotaryVerticalDrag"
           textBoxPos="NoTextBox" textBoxEditable="1" textBoxWidth="80"
-          textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
+          textBoxHeight="20" skewFactor="0.5" needsCallback="1"/>
   <LABEL name="" id="8a8a2c2daac6a39b" memberName="_beginHeaderLabel"
          virtualName="" explicitFocusOrder="0" pos="40 247 52 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="Begin" editableSingleClick="0"
