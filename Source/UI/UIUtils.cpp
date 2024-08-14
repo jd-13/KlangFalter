@@ -86,7 +86,11 @@ namespace UIUtils {
         area.reduce(margin, margin);
         const int diameter {std::min(area.getWidth(), area.getHeight())};
 
-        g.setColour(highlightColour);
+        if (slider.isEnabled()) {
+            g.setColour(highlightColour);
+        } else {
+            g.setColour(neutralColour.withAlpha(0.2f));
+        }
 
         juce::Path p;
 
