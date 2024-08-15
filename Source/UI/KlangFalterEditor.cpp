@@ -270,6 +270,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _hiFreqSlider->setColour (juce::Slider::thumbColourId, juce::Colour (0xffafafff));
     _hiFreqSlider->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xb1606060));
     _hiFreqSlider->addListener (this);
+    _hiFreqSlider->setSkewFactor (0.7);
 
     _hiFreqSlider->setBounds (488, 267, 36, 28);
 
@@ -340,6 +341,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _loFreqSlider->setColour (juce::Slider::thumbColourId, juce::Colour (0xffafafff));
     _loFreqSlider->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xb1606060));
     _loFreqSlider->addListener (this);
+    _loFreqSlider->setSkewFactor (0.5);
 
     _loFreqSlider->setBounds (404, 267, 36, 28);
 
@@ -417,6 +419,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _lowCutFreqSlider->setColour (juce::Slider::thumbColourId, juce::Colour (0xffafafff));
     _lowCutFreqSlider->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xb1606060));
     _lowCutFreqSlider->addListener (this);
+    _lowCutFreqSlider->setSkewFactor (0.5);
 
     _lowCutFreqSlider->setBounds (422, 267, 36, 28);
 
@@ -452,6 +455,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _highCutFreqSlider->setColour (juce::Slider::thumbColourId, juce::Colour (0xffafafff));
     _highCutFreqSlider->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xb1606060));
     _highCutFreqSlider->addListener (this);
+    _highCutFreqSlider->setSkewFactor (0.7);
 
     _highCutFreqSlider->setBounds (506, 267, 36, 28);
 
@@ -1564,7 +1568,7 @@ BEGIN_JUCER_METADATA
           explicitFocusOrder="0" pos="488 267 36 28" thumbcol="ffafafff"
           rotarysliderfill="b1606060" min="2000.0" max="20000.0" int="0.0"
           style="RotaryVerticalDrag" textBoxPos="NoTextBox" textBoxEditable="1"
-          textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
+          textBoxWidth="80" textBoxHeight="20" skewFactor="0.7" needsCallback="1"/>
   <LABEL name="" id="8b28430d938b39ca" memberName="_loFreqLabel" virtualName=""
          explicitFocusOrder="0" pos="396 291 52 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="1234Hz" editableSingleClick="0"
@@ -1594,7 +1598,7 @@ BEGIN_JUCER_METADATA
           explicitFocusOrder="0" pos="404 267 36 28" thumbcol="ffafafff"
           rotarysliderfill="b1606060" min="20.0" max="2000.0" int="0.0"
           style="RotaryVerticalDrag" textBoxPos="NoTextBox" textBoxEditable="1"
-          textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
+          textBoxWidth="80" textBoxHeight="20" skewFactor="0.5" needsCallback="1"/>
   <GENERICCOMPONENT name="" id="e4867bf99a47726a" memberName="_levelMeterOut" virtualName=""
                     explicitFocusOrder="0" pos="720 51 12 176" class="LevelMeter"
                     params=""/>
@@ -1625,7 +1629,7 @@ BEGIN_JUCER_METADATA
           virtualName="" explicitFocusOrder="0" pos="422 267 36 28" thumbcol="ffafafff"
           rotarysliderfill="b1606060" min="20.0" max="2000.0" int="0.0"
           style="RotaryVerticalDrag" textBoxPos="NoTextBox" textBoxEditable="1"
-          textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
+          textBoxWidth="80" textBoxHeight="20" skewFactor="0.5" needsCallback="1"/>
   <LABEL name="" id="54b3891e3f360022" memberName="_highCutFreqLabel"
          virtualName="" explicitFocusOrder="0" pos="498 291 52 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="15.2kHz" editableSingleClick="0"
@@ -1640,7 +1644,7 @@ BEGIN_JUCER_METADATA
           virtualName="" explicitFocusOrder="0" pos="506 267 36 28" thumbcol="ffafafff"
           rotarysliderfill="b1606060" min="2000.0" max="20000.0" int="0.0"
           style="RotaryVerticalDrag" textBoxPos="NoTextBox" textBoxEditable="1"
-          textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
+          textBoxWidth="80" textBoxHeight="20" skewFactor="0.7" needsCallback="1"/>
   <TEXTBUTTON name="" id="e0f66dc6348e3991" memberName="_highEqButton" virtualName=""
               explicitFocusOrder="0" pos="488 231 72 24" bgColOff="bbbbff"
               bgColOn="2c2cff" textCol="ffb0b0b6" textColOn="ffb0b0b6" buttonText="High Cut"
