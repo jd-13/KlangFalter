@@ -58,7 +58,7 @@ Processor::Processor() :
   _beatsPerMinute(0.0f),
   _irCalculationMutex(),
   _irCalculation()
-{ 
+{
   _parameterSet.registerParameter(Parameters::WetOn);
   _parameterSet.registerParameter(Parameters::WetDecibels);
   _parameterSet.registerParameter(Parameters::DryOn);
@@ -257,7 +257,7 @@ void Processor::releaseResources()
 
 
 void Processor::processBlock(AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
-{ 
+{
   const int numInputChannels = getTotalNumInputChannels();
   const int numOutputChannels = getTotalNumOutputChannels();
   const size_t samplesToProcess = buffer.getNumSamples();
@@ -266,7 +266,7 @@ void Processor::processBlock(AudioSampleBuffer& buffer, MidiBuffer& /*midiMessag
   const float* channelData0 = nullptr;
   const float* channelData1 = nullptr;
   if (numInputChannels == 1)
-  {    
+  {
     channelData0 = buffer.getReadPointer(0);
     channelData1 = buffer.getReadPointer(0);
   }
@@ -303,7 +303,7 @@ void Processor::processBlock(AudioSampleBuffer& buffer, MidiBuffer& /*midiMessag
 
     IRAgent* irAgent10 = getAgent(1, 0);
     if (irAgent10 && irAgent10->getConvolver() && numInputChannels >= 2 && numOutputChannels >= 1)
-    {      
+    {
       irAgent10->process(channelData1, &_convolutionBuffer[0], samplesToProcess);
       _wetBuffer.addFrom(0, 0, &_convolutionBuffer[0], samplesToProcess, autoGain);
     }
@@ -339,7 +339,7 @@ void Processor::processBlock(AudioSampleBuffer& buffer, MidiBuffer& /*midiMessag
 
   // Level measurement (dry)
   if (numInputChannels == 1)
-  {    
+  {
     _levelMeasurementsDry[0].process(samplesToProcess, buffer.getReadPointer(0));
     _levelMeasurementsDry[1].reset();
   }
@@ -507,25 +507,25 @@ IRAgentContainer Processor::getAgents() const
 
 void Processor::clearConvolvers()
 {
-  {
-    juce::ScopedLock convolverLock(_convolverMutex);
-    _reverse = false;
-    _predelayMs = 0.0;
-    _stretch = 1.0;
-    _irBegin = 0.0;
-    _irEnd = 1.0;
-    _attackLength = 0.0;
-    _attackShape = 0.0;
-    _decayShape = 0.0;
-  }
+  // {
+  //   juce::ScopedLock convolverLock(_convolverMutex);
+  //   _reverse = false;
+  //   _predelayMs = 0.0;
+  //   _stretch = 1.0;
+  //   _irBegin = 0.0;
+  //   _irEnd = 1.0;
+  //   _attackLength = 0.0;
+  //   _attackShape = 0.0;
+  //   _decayShape = 0.0;
+  // }
 
-  setParameterNotifyingHost(Parameters::EqLowCutFreq, Parameters::EqLowCutFreq.getDefaultValue());
-  setParameterNotifyingHost(Parameters::EqLowShelfFreq, Parameters::EqLowShelfFreq.getDefaultValue());
-  setParameterNotifyingHost(Parameters::EqLowShelfDecibels, Parameters::EqLowShelfDecibels.getDefaultValue());
-  setParameterNotifyingHost(Parameters::EqHighCutFreq, Parameters::EqHighCutFreq.getDefaultValue());
-  setParameterNotifyingHost(Parameters::EqHighShelfFreq, Parameters::EqHighShelfFreq.getDefaultValue());
-  setParameterNotifyingHost(Parameters::EqHighShelfDecibels, Parameters::EqHighShelfDecibels.getDefaultValue());
-  setParameterNotifyingHost(Parameters::StereoWidth, Parameters::StereoWidth.getDefaultValue());
+  // setParameterNotifyingHost(Parameters::EqLowCutFreq, Parameters::EqLowCutFreq.getDefaultValue());
+  // setParameterNotifyingHost(Parameters::EqLowShelfFreq, Parameters::EqLowShelfFreq.getDefaultValue());
+  // setParameterNotifyingHost(Parameters::EqLowShelfDecibels, Parameters::EqLowShelfDecibels.getDefaultValue());
+  // setParameterNotifyingHost(Parameters::EqHighCutFreq, Parameters::EqHighCutFreq.getDefaultValue());
+  // setParameterNotifyingHost(Parameters::EqHighShelfFreq, Parameters::EqHighShelfFreq.getDefaultValue());
+  // setParameterNotifyingHost(Parameters::EqHighShelfDecibels, Parameters::EqHighShelfDecibels.getDefaultValue());
+  // setParameterNotifyingHost(Parameters::StereoWidth, Parameters::StereoWidth.getDefaultValue());
 
   for (size_t i=0; i<_agents.size(); ++i)
   {
@@ -696,7 +696,7 @@ double Processor::getDecayShape() const
 
 void Processor::setIRBegin(double irBegin)
 {
-  bool changed = false;  
+  bool changed = false;
   bool irChanged = false;
   {
     juce::ScopedLock convolverLock(_convolverMutex);
@@ -746,11 +746,11 @@ void Processor::setIREnd(double irEnd)
       _irEnd = irEndClamped;
       changed = true;
       irChanged = true;
-    }    
+    }
   }
   if (changed)
   {
-    notifyAboutChange();    
+    notifyAboutChange();
   }
   if (irChanged)
   {
