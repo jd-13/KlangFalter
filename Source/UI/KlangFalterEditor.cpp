@@ -698,7 +698,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _stretchLabel->setBounds (112, 291, 52, 24);
 
     _stretchHeaderLabel.reset (new juce::Label (juce::String(),
-                                                TRANS ("Stretch")));
+                                                TRANS ("Tune")));
     addAndMakeVisible (_stretchHeaderLabel.get());
     _stretchHeaderLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _stretchHeaderLabel->setJustificationType (juce::Justification::centred);
@@ -1746,7 +1746,7 @@ BEGIN_JUCER_METADATA
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <LABEL name="" id="5a11a2fc858b9666" memberName="_stretchHeaderLabel"
          virtualName="" explicitFocusOrder="0" pos="112 247 52 24" textCol="ffb0b0b6"
-         edTextCol="ff000000" edBkgCol="0" labelText="Stretch" editableSingleClick="0"
+         edTextCol="ff000000" edBkgCol="0" labelText="Tune" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <SLIDER name="" id="6c84a40c942d5b18" memberName="_stretchSlider" virtualName=""
