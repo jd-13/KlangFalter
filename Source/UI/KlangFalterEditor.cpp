@@ -1425,10 +1425,7 @@ void KlangFalterEditor::updateUI()
     _hiGainSlider->setValue(shelfGainDb, juce::dontSendNotification);
   }
   {
-    _widthHeaderLabel->setVisible(numOutputChannels >= 2);
-    _widthSlider->setEnabled(irAvailable);
-    _widthSlider->setVisible(numOutputChannels >= 2);
-    _widthLabel->setVisible(numOutputChannels >= 2);
+    _widthSlider->setEnabled(irAvailable && numOutputChannels >= 2);
     const float stereoWidth = _processor.getParameter(Parameters::StereoWidth);
     _widthSlider->setValue(stereoWidth, juce::dontSendNotification);
     _widthLabel->setText((::fabs(1.0f-stereoWidth) < 0.001) ? juce::String("Neutral") : juce::String(stereoWidth, 2), juce::sendNotification);
