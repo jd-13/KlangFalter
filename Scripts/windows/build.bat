@@ -26,5 +26,8 @@ mkdir x86_64-win
 cd x86_64-win
 copy %PROJECT_DIR%\Builds\VisualStudio2019\x64\Release\VST3\TSoM-BodyandSoulIntro.vst3\Contents\x86_64-win\TSoM-BodyandSoulIntro.vst3 || exit /b
 
+ECHO "=== Copying IRs ==="
 cd ..
-mkdir Resources
+mkdir -p Resources/IRs
+cd Resources/IRs
+copy %PROJECT_DIR%\Resources\IRs\*.wav || exit /b
