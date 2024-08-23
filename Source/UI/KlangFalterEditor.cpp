@@ -853,7 +853,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
             "Programming: White Elephant Audio\n"
             "Support: info@thesoundofmerlin.com\n"
             "\n"
-            "Body & Soul: Intro is open source software (GPLv3) and is based on Klangfalter from HiFi-LoFi\n"
+            "Body & Soul: Intro is open source software (GPLv3) and is based on Klangfalter from HiFi-LoFi.\n"
             "\n"
             "This convolution reverb was conceived to be used as a module in White Elephant Audio's plugin host Syndicate but can also be used separately from it.\n"
             "\n"
