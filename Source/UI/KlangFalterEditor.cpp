@@ -828,9 +828,41 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
 
     _subtitleLabel->setBounds (432, 4, 79, 40);
 
+    _creditsButton.reset (new juce::TextButton (juce::String()));
+    addAndMakeVisible (_creditsButton.get());
+    _creditsButton->setColour (juce::TextButton::buttonColourId, juce::Colour (0x00bbbbff));
+    _creditsButton->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0x002c2cff));
+    _creditsButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xffb0b0b6));
+    _creditsButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xffb0b0b6));
+
+    _creditsButton->setBounds (244, 4, 268, 40);
+
 
     //[UserPreSize]
     setLookAndFeel(customLookAndFeel);
+
+    _creditsWindowOptions.reset(new juce::DialogWindow::LaunchOptions());
+    _creditsWindowOptions->dialogTitle = "Credits";
+    _creditsWindowOptions->dialogBackgroundColour = UIUtils::backgroundColour;
+    _creditsWindowOptions->componentToCentreAround = this;
+    _creditsWindowOptions->useNativeTitleBar = false;
+
+    _creditsButton->onClick = [&]() {
+       const juce::String credits(
+              "Concept and IR design: The Sound of Merlin\n"
+              "Programming: White Elephant Audio\n"
+              "Support: info@thesoundofmerlin.com\n"
+              "\n"
+              "Body & Soul: Intro is open source software (GPLv3) and is based on Klangfalter from HiFi-LoFi\n"
+              "\n"
+              "This convolution reverb was conceived to be used as a module in White Elephant Audio's plugin host Syndicate but can also be used separately from it.\n"
+              "\n"
+              "A special thank you goes to Eirik Grønner from Demningen Studios in Norway for his wonderful suggestions and support.\n");
+
+        _creditsWindowOptions->content.set(new juce::Label("Credits", credits), true);
+        juce::DialogWindow* window = _creditsWindowOptions->launchAsync();
+        window->centreWithSize(500, 300);
+    };
 
     _titleLabel->setColour(juce::Label::textColourId, UIUtils::neutralColour.withAlpha(0.5f));
     _subtitleLabel->setColour(juce::Label::textColourId, UIUtils::highlightColour);
@@ -1001,6 +1033,7 @@ KlangFalterEditor::~KlangFalterEditor()
     _stereoHeaderLabel = nullptr;
     _titleLabel = nullptr;
     _subtitleLabel = nullptr;
+    _creditsButton = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -1801,6 +1834,10 @@ BEGIN_JUCER_METADATA
          edTextCol="ffb0b0b6" edBkgCol="0" labelText="Intro" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="35.3" kerning="0.0" bold="0" italic="0" justification="33"/>
+  <TEXTBUTTON name="" id="4a427657c2a2a228" memberName="_creditsButton" virtualName=""
+              explicitFocusOrder="0" pos="244 4 268 40" bgColOff="bbbbff" bgColOn="2c2cff"
+              textCol="ffb0b0b6" textColOn="ffb0b0b6" buttonText="" connectedEdges="0"
+              needsCallback="0" radioGroupId="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
