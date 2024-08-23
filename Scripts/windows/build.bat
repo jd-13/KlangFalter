@@ -30,4 +30,4 @@ ECHO "=== Copying IRs ==="
 cd ..
 mkdir -p Resources\IRs
 cd Resources\IRs
-copy %PROJECT_DIR%\Resources\IRs\*.wav || exit /b
+copy %PROJECT_DIR%\IRs\*.wav || exit /b
