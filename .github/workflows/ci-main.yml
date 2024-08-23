@@ -7,6 +7,12 @@ jobs:
     runs-on: macos-12
 
     steps:
+      - name: Checkout IRs
+        uses: actions/checkout@v4
+        with:
+          repository: jd-13/body-and-soul-irs
+          token: ${{ secrets.INTRO_IRS_SECRET }}
+          path: IRs
       - uses: actions/checkout@v2
       - name: RunBuild
         run: Scripts/macos/build.sh

@@ -4,6 +4,8 @@ set -e
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null 2>&1 && pwd )"
 
+ls -R
+
 echo "=== Downloading JUCE ==="
 JUCE_VERSION=7.0.9
 wget https://github.com/juce-framework/JUCE/releases/download/$JUCE_VERSION/juce-$JUCE_VERSION-osx.zip \
@@ -25,5 +27,12 @@ xcodebuild -project "Body and Soul Intro.xcodeproj" -scheme "Body and Soul Intro
 
 echo "=== Collecting artefacts ==="
 mkdir -p $SCRIPT_DIR/dist
+
 cp -r ~/Library/Audio/Plug-Ins/VST3/TSoM-BodyandSoulIntro.vst3 $SCRIPT_DIR/dist
 cp -r ~/Library/Audio/Plug-Ins/Components/TSoM-BodyandSoulIntro.component $SCRIPT_DIR/dist
+
+echo "=== Copying IRs ==="
+mkdir -p $SCRIPT_DIR/dist/TSoM-BodyandSoulIntro.vst3/Contents/Resources/IRs
+cp $PROJECT_DIR/IRs/* $SCRIPT_DIR/dist/TSoM-BodyandSoulIntro.vst3/Contents/Resources/IRs
+mkdir -p $SCRIPT_DIR/dist/TSoM-BodyandSoulIntro.component/Contents/Resources/IRs
+cp $PROJECT_DIR/IRs/* $SCRIPT_DIR/dist/TSoM-BodyandSoulIntro.component/Contents/Resources/IRs
