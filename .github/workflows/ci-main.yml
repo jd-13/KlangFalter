@@ -10,7 +10,7 @@ jobs:
       - name: Checkout IRs
         uses: actions/checkout@v4
         with:
-          repository: jd-13/body-and-soul-irs
+          repository: jd-13/body-and-soul-intro-irs
           token: ${{ secrets.INTRO_IRS_SECRET }}
           path: IRs
       - uses: actions/checkout@v2
