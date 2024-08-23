@@ -26,6 +26,12 @@ jobs:
     runs-on: windows-2019
 
     steps:
+      - name: Checkout IRs
+        uses: actions/checkout@v4
+        with:
+          repository: jd-13/body-and-soul-intro-irs
+          token: ${{ secrets.INTRO_IRS_SECRET }}
+          path: IRs
       - uses: actions/checkout@v2
       - name: SetupMSBuild
         uses: microsoft/setup-msbuild@v1.0.2
