@@ -848,16 +848,16 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _creditsWindowOptions->useNativeTitleBar = false;
 
     _creditsButton->onClick = [&]() {
-       const juce::String credits(
-              "Concept and IR design: The Sound of Merlin\n"
-              "Programming: White Elephant Audio\n"
-              "Support: info@thesoundofmerlin.com\n"
-              "\n"
-              "Body & Soul: Intro is open source software (GPLv3) and is based on Klangfalter from HiFi-LoFi\n"
-              "\n"
-              "This convolution reverb was conceived to be used as a module in White Elephant Audio's plugin host Syndicate but can also be used separately from it.\n"
-              "\n"
-              "A special thank you goes to Eirik Grønner from Demningen Studios in Norway for his wonderful suggestions and support.\n");
+        const juce::CharPointer_UTF8 credits(
+            "Concept and IR design: The Sound of Merlin\n"
+            "Programming: White Elephant Audio\n"
+            "Support: info@thesoundofmerlin.com\n"
+            "\n"
+            "Body & Soul: Intro is open source software (GPLv3) and is based on Klangfalter from HiFi-LoFi\n"
+            "\n"
+            "This convolution reverb was conceived to be used as a module in White Elephant Audio's plugin host Syndicate but can also be used separately from it.\n"
+            "\n"
+            "A special thank you goes to Eirik Gr\xc3\xb8nner from Demningen Studios in Norway for his wonderful suggestions and support.");
 
         _creditsWindowOptions->content.set(new juce::Label("Credits", credits), true);
         juce::DialogWindow* window = _creditsWindowOptions->launchAsync();
