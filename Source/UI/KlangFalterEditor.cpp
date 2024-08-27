@@ -837,6 +837,17 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
 
     _creditsButton->setBounds (244, 4, 268, 40);
 
+    _resetButton.reset (new juce::TextButton (juce::String()));
+    addAndMakeVisible (_resetButton.get());
+    _resetButton->setTooltip (TRANS ("Reset all parameters"));
+    _resetButton->setButtonText (TRANS ("Reset"));
+    _resetButton->setColour (juce::TextButton::buttonColourId, juce::Colour (0x80bcbcbc));
+    _resetButton->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0xffbcbcff));
+    _resetButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xff202020));
+    _resetButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xff202020));
+
+    _resetButton->setBounds (16, 14, 52, 24);
+
 
     //[UserPreSize]
     setLookAndFeel(customLookAndFeel);
@@ -877,6 +888,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _autogainButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
     _reverseButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
     _browseButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
+    _resetButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
 
     setButtonColours(_dryButton.get());
     setButtonColours(_wetButton.get());
@@ -888,6 +900,9 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _browseButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, UIUtils::neutralColour);
 
     _browseButton->setConnectedEdges(juce::Button::ConnectedOnBottom);
+
+    _resetButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, UIUtils::neutralColour);
+    _resetButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, UIUtils::neutralColour);
 
     _predelaySlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _beginSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
@@ -913,7 +928,6 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
 
     setLinearSliderColours(_drySlider.get());
     setLinearSliderColours(_wetSlider.get());
-
     //[/UserPreSize]
 
     setSize (760, 340);
@@ -949,6 +963,27 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _highCutFreqSlider->setDoubleClickReturnValue(true, Parameters::EqHighCutFreq.getDefaultValue());
     _drySlider->setDoubleClickReturnValue(true, DecibelScaling::Db2Scale(Parameters::DryDecibels.getDefaultValue()));
     _wetSlider->setDoubleClickReturnValue(true, DecibelScaling::Db2Scale(Parameters::WetDecibels.getDefaultValue()));
+
+    _resetButton->onClick = [&]() {
+        _processor.setPredelayMs(0.0);
+        _processor.setIRBegin(0.0);
+        _processor.setIREnd(1.0);
+        _processor.setStretch(1.0);
+        _processor.setAttackLength(0.0);
+        _processor.setAttackShape(0.0);
+        _processor.setDecayShape(0.0);
+        _processor.setParameterNotifyingHost(Parameters::StereoWidth, Parameters::StereoWidth.getDefaultValue());
+
+        _processor.setParameterNotifyingHost(Parameters::EqLowType, Parameters::EqLowType.getDefaultValue());
+        _processor.setParameterNotifyingHost(Parameters::EqLowCutFreq, Parameters::EqLowCutFreq.getDefaultValue());
+        _processor.setParameterNotifyingHost(Parameters::EqLowShelfFreq, Parameters::EqLowShelfFreq.getDefaultValue());
+        _processor.setParameterNotifyingHost(Parameters::EqLowShelfDecibels, Parameters::EqLowShelfDecibels.getDefaultValue());
+
+        _processor.setParameterNotifyingHost(Parameters::EqHighType, Parameters::EqHighType.getDefaultValue());
+        _processor.setParameterNotifyingHost(Parameters::EqHighCutFreq, Parameters::EqHighCutFreq.getDefaultValue());
+        _processor.setParameterNotifyingHost(Parameters::EqHighShelfFreq, Parameters::EqHighShelfFreq.getDefaultValue());
+        _processor.setParameterNotifyingHost(Parameters::EqHighShelfDecibels, Parameters::EqHighShelfDecibels.getDefaultValue());
+    };
 
     _processor.addNotificationListener(this);
     _processor.getSettings().addChangeListener(this);
@@ -1034,6 +1069,7 @@ KlangFalterEditor::~KlangFalterEditor()
     _titleLabel = nullptr;
     _subtitleLabel = nullptr;
     _creditsButton = nullptr;
+    _resetButton = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -1835,6 +1871,10 @@ BEGIN_JUCER_METADATA
               explicitFocusOrder="0" pos="244 4 268 40" bgColOff="bbbbff" bgColOn="2c2cff"
               textCol="ffb0b0b6" textColOn="ffb0b0b6" buttonText="" connectedEdges="0"
               needsCallback="0" radioGroupId="0"/>
+  <TEXTBUTTON name="" id="44f8c20ca7250560" memberName="_resetButton" virtualName=""
+              explicitFocusOrder="0" pos="16 14 52 24" tooltip="Reset all parameters"
+              bgColOff="80bcbcbc" bgColOn="ffbcbcff" textCol="ff202020" textColOn="ff202020"
+              buttonText="Reset" connectedEdges="0" needsCallback="0" radioGroupId="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
