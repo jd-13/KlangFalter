@@ -974,6 +974,8 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
         _processor.setDecayShape(0.0);
         _processor.setParameterNotifyingHost(Parameters::StereoWidth, Parameters::StereoWidth.getDefaultValue());
 
+        _processor.setReverse(false);
+
         _processor.setParameterNotifyingHost(Parameters::EqLowType, Parameters::EqLowType.getDefaultValue());
         _processor.setParameterNotifyingHost(Parameters::EqLowCutFreq, Parameters::EqLowCutFreq.getDefaultValue());
         _processor.setParameterNotifyingHost(Parameters::EqLowShelfFreq, Parameters::EqLowShelfFreq.getDefaultValue());
