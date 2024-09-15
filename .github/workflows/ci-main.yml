@@ -16,7 +16,7 @@ jobs:
           path: IRs
       - name: RunBuild
         run: Scripts/macos/build.sh
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         if: ${{ success() }}
         with:
           name: BodyandSoulIntro-macOS
@@ -38,7 +38,7 @@ jobs:
       - name: RunBuild
         shell: cmd
         run: Scripts\windows\build.bat
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         if: ${{ success() }}
         with:
           name: BodyandSoulIntro-windows
