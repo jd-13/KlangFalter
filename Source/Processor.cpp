@@ -84,6 +84,11 @@ Processor::Processor() :
 
 Processor::~Processor()
 {
+  if (_irCalculation != nullptr)
+  {
+    _irCalculation->stopThread(1000);
+  }
+
   Processor::releaseResources();
 
   for (size_t i=0; i<_agents.size(); ++i)
