@@ -1236,7 +1236,8 @@ void KlangFalterEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
     else if (sliderThatWasMoved == _stretchSlider.get())
     {
         //[UserSliderCode__stretchSlider] -- add your slider handling code here..
-        double sliderVal = _stretchSlider->getValue();
+        // Invert as we're treating stretch as tune
+        double sliderVal = 2 - _stretchSlider->getValue();
         if (::fabs(sliderVal-1.0) < 0.025)
         {
           sliderVal = 1.0;
@@ -1344,10 +1345,11 @@ void KlangFalterEditor::updateUI()
   const size_t numOutputChannels = static_cast<size_t>(std::min(_processor.getTotalNumOutputChannels(), 2));
   {
     const double stretch = _processor.getStretch();
+    const double tune = 2 - stretch;
     _stretchSlider->setEnabled(irAvailable);
     _stretchSlider->setRange(0.5, 1.5);
-    _stretchSlider->setValue(stretch, juce::dontSendNotification);
-    _stretchLabel->setText(String(static_cast<int>(100.0*stretch)) + String("%"), juce::sendNotification);
+    _stretchSlider->setValue(tune, juce::dontSendNotification);
+    _stretchLabel->setText(String(static_cast<int>(100.0*tune)) + String("%"), juce::sendNotification);
   }
   {
     const float db = _processor.getParameter(Parameters::DryDecibels);
