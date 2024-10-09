@@ -74,15 +74,15 @@ void IRBrowserComponent::init(Processor* processor)
 
   _fileTreeComponent.reset(new juce::FileTreeComponent(*_directoryContent));
   _fileTreeComponent->addListener(this);
-  _fileTreeComponent->setColour(juce::TreeView::backgroundColourId, UIUtils::neutralColour);
-  _fileTreeComponent->setColour(juce::TreeView::linesColourId, UIUtils::backgroundColour);
+  _fileTreeComponent->setColour(juce::TreeView::backgroundColourId, UIUtils::Colours::neutral);
+  _fileTreeComponent->setColour(juce::TreeView::linesColourId, UIUtils::Colours::background);
   _fileTreeComponent->setColour(juce::DirectoryContentsDisplayComponent::highlightColourId, UIUtils::highlightColour.withAlpha(0.5f));
-  _fileTreeComponent->setColour(juce::DirectoryContentsDisplayComponent::textColourId, UIUtils::backgroundColour);
+  _fileTreeComponent->setColour(juce::DirectoryContentsDisplayComponent::textColourId, UIUtils::Colours::background);
   addAndMakeVisible(_fileTreeComponent.get());
 
   _infoLabel.reset(new juce::Label());
-  _infoLabel->setColour(juce::Label::backgroundColourId, UIUtils::neutralColour);
-  _infoLabel->setColour(juce::Label::textColourId, UIUtils::backgroundColour);
+  _infoLabel->setColour(juce::Label::backgroundColourId, UIUtils::Colours::neutral);
+  _infoLabel->setColour(juce::Label::textColourId, UIUtils::Colours::background);
   addAndMakeVisible(_infoLabel.get());
 
   updateLayout();
@@ -116,7 +116,7 @@ void IRBrowserComponent::paint(juce::Graphics& g)
     const int width = getWidth();
     const int height = getHeight();
 
-    g.setColour(UIUtils::neutralColour);
+    g.setColour(UIUtils::Colours::neutral);
     g.fillRect(0.0f, 0.0f, static_cast<float>(width), static_cast<float>(height));
 
     g.setColour(juce::Colours::grey);

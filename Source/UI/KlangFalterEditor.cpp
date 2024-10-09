@@ -854,7 +854,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
 
     _creditsWindowOptions.reset(new juce::DialogWindow::LaunchOptions());
     _creditsWindowOptions->dialogTitle = "Credits";
-    _creditsWindowOptions->dialogBackgroundColour = UIUtils::backgroundColour;
+    _creditsWindowOptions->dialogBackgroundColour = UIUtils::Colours::background;
     _creditsWindowOptions->componentToCentreAround = this;
     _creditsWindowOptions->useNativeTitleBar = false;
 
@@ -875,11 +875,11 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
         window->centreWithSize(500, 300);
     };
 
-    _titleLabel->setColour(juce::Label::textColourId, UIUtils::neutralColour.withAlpha(0.5f));
+    _titleLabel->setColour(juce::Label::textColourId, UIUtils::Colours::neutral.withAlpha(0.5f));
     _subtitleLabel->setColour(juce::Label::textColourId, UIUtils::highlightColour);
 
     auto setButtonColours = [](juce::TextButton* button) {
-        button->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, UIUtils::neutralColour);
+        button->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, UIUtils::Colours::neutral);
         button->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, UIUtils::highlightColour);
     };
 
@@ -895,14 +895,19 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     setButtonColours(_autogainButton.get());
     setButtonColours(_reverseButton.get());
 
-    _reverseButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, UIUtils::backgroundColour);
-    _browseButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, UIUtils::neutralColour);
-    _browseButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, UIUtils::neutralColour);
+    _browseButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, UIUtils::Colours::neutral);
+    _browseButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, UIUtils::Colours::neutral);
 
     _browseButton->setConnectedEdges(juce::Button::ConnectedOnBottom);
 
-    _resetButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, UIUtils::neutralColour);
-    _resetButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, UIUtils::neutralColour);
+    _resetButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, UIUtils::Colours::neutral);
+    _resetButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, UIUtils::Colours::neutral);
+    _lowEqButton->setColour(juce::TextButton::textColourOffId, UIUtils::Colours::neutral);
+    _lowEqButton->setColour(juce::TextButton::textColourOnId, UIUtils::Colours::neutral);
+    _highEqButton->setColour(juce::TextButton::textColourOffId, UIUtils::Colours::neutral);
+    _highEqButton->setColour(juce::TextButton::textColourOnId, UIUtils::Colours::neutral);
+    _levelMeterOutLabelButton->setColour(juce::TextButton::textColourOffId, UIUtils::Colours::neutral);
+    _levelMeterOutLabelButton->setColour(juce::TextButton::textColourOnId, UIUtils::Colours::neutral);
 
     _predelaySlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _beginSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
@@ -923,11 +928,52 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
 
     auto setLinearSliderColours = [](juce::Slider* slider) {
         slider->setColour(juce::Slider::thumbColourId, UIUtils::highlightColour);
-        slider->setColour(juce::Slider::trackColourId, UIUtils::neutralColour);
+        slider->setColour(juce::Slider::trackColourId, UIUtils::Colours::neutral);
     };
 
     setLinearSliderColours(_drySlider.get());
     setLinearSliderColours(_wetSlider.get());
+
+    auto setLabelColours = [](juce::Label* label) {
+        label->setColour(juce::Label::textColourId, UIUtils::Colours::neutral);
+    };
+
+    setLabelColours(_dryLevelLabel.get());
+    setLabelColours(_wetLevelLabel.get());
+    setLabelColours(_hiFreqLabel.get());
+    setLabelColours(_hiGainLabel.get());
+    setLabelColours(_hiGainHeaderLabel.get());
+    setLabelColours(_hiFreqHeaderLabel.get());
+    setLabelColours(_loFreqLabel.get());
+    setLabelColours(_loGainLabel.get());
+    setLabelColours(_loGainHeaderLabel.get());
+    setLabelColours(_loFreqHeaderLabel.get());
+    setLabelColours(_levelMeterDryLabel.get());
+    setLabelColours(_lowCutFreqLabel.get());
+    setLabelColours(_lowCutFreqHeaderLabel.get());
+    setLabelColours(_highCutFreqLabel.get());
+    setLabelColours(_highCutFreqHeaderLabel.get());
+    setLabelColours(_attackShapeLabel.get());
+    setLabelColours(_endLabel.get());
+    setLabelColours(_decayShapeLabel.get());
+    setLabelColours(_decayShapeHeaderLabel.get());
+    setLabelColours(_attackShapeHeaderLabel.get());
+    setLabelColours(_endHeaderLabel.get());
+    setLabelColours(_beginLabel.get());
+    setLabelColours(_beginHeaderLabel.get());
+    setLabelColours(_widthLabel.get());
+    setLabelColours(_widthHeaderLabel.get());
+    setLabelColours(_predelayLabel.get());
+    setLabelColours(_predelayHeaderLabel.get());
+    setLabelColours(_stretchLabel.get());
+    setLabelColours(_stretchHeaderLabel.get());
+    setLabelColours(_attackHeaderLabel.get());
+    setLabelColours(_attackLengthLabel.get());
+    setLabelColours(_attackLengthHeaderLabel.get());
+    setLabelColours(_decayHeaderLabel.get());
+    setLabelColours(_impulseResponseHeaderLabel.get());
+    setLabelColours(_stereoHeaderLabel.get());
+    setLabelColours(_titleLabel.get());
     //[/UserPreSize]
 
     setSize (760, 340);
@@ -1094,7 +1140,7 @@ void KlangFalterEditor::paint (juce::Graphics& g)
     // constexpr int logoHeight {36};
     // const int xMid {getWidth() / 2};
     // constexpr int xOffset {200};
-    // g.setColour(UIUtils::neutralColour.withAlpha(0.2f));
+    // g.setColour(UIUtils::Colours::neutral.withAlpha(0.2f));
     // {
     //     juce::Image tomLogo(juce::ImageCache::getFromMemory(BinaryData::tom_png, BinaryData::tom_pngSize));
     //     const float aspect {tomLogo.getWidth() / static_cast<float>(tomLogo.getHeight())};
@@ -1107,6 +1153,8 @@ void KlangFalterEditor::paint (juce::Graphics& g)
     //     const int width {static_cast<int>(logoHeight * aspect)};
     //     g.drawImage(weaLogo, xMid + xOffset - width / 2, 8, width, logoHeight, 0, 0, weaLogo.getWidth(), weaLogo.getHeight(), true);
     // }
+
+    g.fillAll(juce::Colour(UIUtils::Colours::background));
 
     const int xMid {531};
     {

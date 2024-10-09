@@ -54,7 +54,7 @@ juce::Colour CustomLookAndFeel::getEnvelopeRestrictionColour() const
 
 juce::Colour CustomLookAndFeel::getEnvelopeNodeColour(bool highlighted) const
 {
-  return highlighted ? juce::Colour(0x40, 0x40, 0xFF) : UIUtils::backgroundColour.withAlpha(0.5f);
+  return highlighted ? juce::Colour(0x40, 0x40, 0xFF) : UIUtils::Colours::background.withAlpha(0.5f);
 }
 
 
@@ -72,12 +72,12 @@ juce::Font CustomLookAndFeel::getScaleFont() const
 
 juce::Colour CustomLookAndFeel::getScaleColour() const
 {
-  return UIUtils::neutralColour;
+  return UIUtils::Colours::neutral;
 }
 
 juce::Colour CustomLookAndFeel::getWaveformScaleColour() const
 {
-  return UIUtils::backgroundColour;
+  return UIUtils::Colours::background;
 }
 
 
