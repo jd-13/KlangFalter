@@ -26,20 +26,20 @@
 class LevelMeter : public juce::Component
 {
 public:
-  LevelMeter();
+  explicit LevelMeter(UIUtils::Theme theme);
   virtual ~LevelMeter();
-  
+
   virtual void paint(juce::Graphics& g);
   virtual void resized();
-  
+
   void setChannelCount(size_t channelCount);
   void setLevel(size_t channel, float level);
-  
+
 private:
   SharedResourcePointer<CustomLookAndFeel> customLookAndFeel;
   std::vector<float> _levels;
   juce::ColourGradient _colourGradient;
-  
+
   LevelMeter(const LevelMeter&);
   LevelMeter& operator=(const LevelMeter&);
 };

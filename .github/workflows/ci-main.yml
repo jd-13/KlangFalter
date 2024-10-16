@@ -2,6 +2,9 @@ name: CI Main
 
 on: [push, pull_request]
 
+env:
+  THEME_FILE: "original.json"
+
 jobs:
   BuildMacOS:
     runs-on: macos-12

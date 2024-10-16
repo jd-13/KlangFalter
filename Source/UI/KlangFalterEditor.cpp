@@ -69,6 +69,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
       _linearSliderLookAndFeel(new UIUtils::LinearSliderLookAndFeel())
 {
     //[Constructor_pre] You can add your own custom stuff here..
+    _theme = UIUtils::LoadTheme();
     //[/Constructor_pre]
 
     _decibelScaleDry.reset (new DecibelScale());
@@ -79,12 +80,12 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _irTabComponent.reset (new juce::TabbedComponent (juce::TabbedButtonBar::TabsAtTop));
     addAndMakeVisible (_irTabComponent.get());
     _irTabComponent->setTabBarDepth (0);
-    _irTabComponent->addTab (TRANS ("Placeholder"), juce::Colour (0xffb0b0b6), new IRComponent(), true);
+    _irTabComponent->addTab (TRANS ("Placeholder"), juce::Colour (0xffb0b0b6), new IRComponent (_theme), true);
     _irTabComponent->setCurrentTabIndex (0);
 
     _irTabComponent->setBounds (16, 51, 462, 176);
 
-    _levelMeterDry.reset (new LevelMeter());
+    _levelMeterDry.reset (new LevelMeter (_theme));
     addAndMakeVisible (_levelMeterDry.get());
 
     _levelMeterDry->setBounds (632, 51, 12, 176);
@@ -345,7 +346,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
 
     _loFreqSlider->setBounds (404, 267, 36, 28);
 
-    _levelMeterOut.reset (new LevelMeter());
+    _levelMeterOut.reset (new LevelMeter (_theme));
     addAndMakeVisible (_levelMeterOut.get());
 
     _levelMeterOut->setBounds (720, 51, 12, 176);
@@ -850,11 +851,16 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
 
 
     //[UserPreSize]
+    _rotarySliderLookAndFeel->theme = _theme;
+
+    customLookAndFeel->theme = _theme;
     setLookAndFeel(customLookAndFeel);
+
+    _irTabComponent->setColour(juce::TabbedComponent::backgroundColourId, _theme.waveformContainerBackground);
 
     _creditsWindowOptions.reset(new juce::DialogWindow::LaunchOptions());
     _creditsWindowOptions->dialogTitle = "Credits";
-    _creditsWindowOptions->dialogBackgroundColour = UIUtils::Colours::background;
+    _creditsWindowOptions->dialogBackgroundColour = _theme.background;
     _creditsWindowOptions->componentToCentreAround = this;
     _creditsWindowOptions->useNativeTitleBar = false;
 
@@ -875,12 +881,13 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
         window->centreWithSize(500, 300);
     };
 
-    _titleLabel->setColour(juce::Label::textColourId, UIUtils::Colours::neutral.withAlpha(0.5f));
-    _subtitleLabel->setColour(juce::Label::textColourId, UIUtils::highlightColour);
+    _titleLabel->setColour(juce::Label::textColourId, _theme.neutral.withAlpha(0.5f));
+    _subtitleLabel->setColour(juce::Label::textColourId, _theme.highlight);
+    _subtitleLabel->setText(_theme.productName, juce::dontSendNotification);
 
-    auto setButtonColours = [](juce::TextButton* button) {
-        button->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, UIUtils::Colours::neutral);
-        button->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, UIUtils::highlightColour);
+    auto setButtonColours = [&](juce::TextButton* button) {
+        button->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, _theme.neutral);
+        button->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, _theme.highlight);
     };
 
     _dryButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
@@ -895,19 +902,21 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     setButtonColours(_autogainButton.get());
     setButtonColours(_reverseButton.get());
 
-    _browseButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, UIUtils::Colours::neutral);
-    _browseButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, UIUtils::Colours::neutral);
+    _reverseButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, _theme.waveformContainerNeutral);
+
+    _browseButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, _theme.neutral);
+    _browseButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, _theme.neutral);
 
     _browseButton->setConnectedEdges(juce::Button::ConnectedOnBottom);
 
-    _resetButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, UIUtils::Colours::neutral);
-    _resetButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, UIUtils::Colours::neutral);
-    _lowEqButton->setColour(juce::TextButton::textColourOffId, UIUtils::Colours::neutral);
-    _lowEqButton->setColour(juce::TextButton::textColourOnId, UIUtils::Colours::neutral);
-    _highEqButton->setColour(juce::TextButton::textColourOffId, UIUtils::Colours::neutral);
-    _highEqButton->setColour(juce::TextButton::textColourOnId, UIUtils::Colours::neutral);
-    _levelMeterOutLabelButton->setColour(juce::TextButton::textColourOffId, UIUtils::Colours::neutral);
-    _levelMeterOutLabelButton->setColour(juce::TextButton::textColourOnId, UIUtils::Colours::neutral);
+    _resetButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, _theme.neutral);
+    _resetButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, _theme.neutral);
+    _lowEqButton->setColour(juce::TextButton::textColourOffId, _theme.neutral);
+    _lowEqButton->setColour(juce::TextButton::textColourOnId, _theme.neutral);
+    _highEqButton->setColour(juce::TextButton::textColourOffId, _theme.neutral);
+    _highEqButton->setColour(juce::TextButton::textColourOnId, _theme.neutral);
+    _levelMeterOutLabelButton->setColour(juce::TextButton::textColourOffId, _theme.neutral);
+    _levelMeterOutLabelButton->setColour(juce::TextButton::textColourOnId, _theme.neutral);
 
     _predelaySlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _beginSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
@@ -926,16 +935,16 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _drySlider->setLookAndFeel(_linearSliderLookAndFeel.get());
     _wetSlider->setLookAndFeel(_linearSliderLookAndFeel.get());
 
-    auto setLinearSliderColours = [](juce::Slider* slider) {
-        slider->setColour(juce::Slider::thumbColourId, UIUtils::highlightColour);
-        slider->setColour(juce::Slider::trackColourId, UIUtils::Colours::neutral);
+    auto setLinearSliderColours = [&](juce::Slider* slider) {
+        slider->setColour(juce::Slider::thumbColourId, _theme.highlight);
+        slider->setColour(juce::Slider::trackColourId, _theme.neutral);
     };
 
     setLinearSliderColours(_drySlider.get());
     setLinearSliderColours(_wetSlider.get());
 
-    auto setLabelColours = [](juce::Label* label) {
-        label->setColour(juce::Label::textColourId, UIUtils::Colours::neutral);
+    auto setLabelColours = [&](juce::Label* label) {
+        label->setColour(juce::Label::textColourId, _theme.neutral);
     };
 
     setLabelColours(_dryLevelLabel.get());
@@ -1039,7 +1048,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
 
     _processor.addNotificationListener(this);
     _processor.getSettings().addChangeListener(this);
-    _irBrowserComponent->init(&_processor);
+    _irBrowserComponent->init(&_processor, _theme);
     updateUI();
     startTimer(100);
     //[/Constructor]
@@ -1140,7 +1149,7 @@ void KlangFalterEditor::paint (juce::Graphics& g)
     // constexpr int logoHeight {36};
     // const int xMid {getWidth() / 2};
     // constexpr int xOffset {200};
-    // g.setColour(UIUtils::Colours::neutral.withAlpha(0.2f));
+    // g.setColour(_theme.neutral.withAlpha(0.2f));
     // {
     //     juce::Image tomLogo(juce::ImageCache::getFromMemory(BinaryData::tom_png, BinaryData::tom_pngSize));
     //     const float aspect {tomLogo.getWidth() / static_cast<float>(tomLogo.getHeight())};
@@ -1154,7 +1163,7 @@ void KlangFalterEditor::paint (juce::Graphics& g)
     //     g.drawImage(weaLogo, xMid + xOffset - width / 2, 8, width, logoHeight, 0, 0, weaLogo.getWidth(), weaLogo.getHeight(), true);
     // }
 
-    g.fillAll(juce::Colour(UIUtils::Colours::background));
+    g.fillAll(juce::Colour(_theme.background));
 
     const int xMid {531};
     {
@@ -1546,7 +1555,7 @@ void KlangFalterEditor::updateUI()
           jassert(agent);
           if (agent)
           {
-            IRComponent* irComponent = new IRComponent();
+            IRComponent* irComponent = new IRComponent(_theme);
             irComponent->init(_processor.getAgent(input, output));
             _irTabComponent->addTab(juce::String(static_cast<int>(input+1)) + juce::String("-") + juce::String(static_cast<int>(output+1)),
                                     juce::Colour(0xffb0b0b6),
@@ -1611,11 +1620,11 @@ BEGIN_JUCER_METADATA
                    virtualName="" explicitFocusOrder="0" pos="16 51 462 176" orientation="top"
                    tabBarDepth="0" initialTab="0">
     <TAB name="Placeholder" colour="ffb0b0b6" useJucerComp="1" contentClassName=""
-         constructorParams="" jucerComponentFile="IRComponent.cpp"/>
+         constructorParams="_theme" jucerComponentFile="IRComponent.cpp"/>
   </TABBEDCOMPONENT>
   <GENERICCOMPONENT name="" id="93270230a2db62e0" memberName="_levelMeterDry" virtualName=""
                     explicitFocusOrder="0" pos="632 51 12 176" class="LevelMeter"
-                    params=""/>
+                    params="_theme"/>
   <LABEL name="DryLevelLabel" id="892bd8ba7f961215" memberName="_dryLevelLabel"
          virtualName="" explicitFocusOrder="0" pos="572 231 60 24" textCol="ffb0b0b6"
          edTextCol="ff000000" edBkgCol="0" labelText="-inf" editableSingleClick="0"
@@ -1723,7 +1732,7 @@ BEGIN_JUCER_METADATA
           textBoxWidth="80" textBoxHeight="20" skewFactor="0.5" needsCallback="1"/>
   <GENERICCOMPONENT name="" id="e4867bf99a47726a" memberName="_levelMeterOut" virtualName=""
                     explicitFocusOrder="0" pos="720 51 12 176" class="LevelMeter"
-                    params=""/>
+                    params="_theme"/>
   <TEXTBUTTON name="" id="f5ed3d758ad2c3f4" memberName="_levelMeterOutLabelButton"
               virtualName="" explicitFocusOrder="0" pos="712 31 28 18" tooltip="Switches Between Out/Wet Level Measurement"
               bgColOff="bbbbff" bgColOn="bcbcff" textCol="ffb0b0b6" textColOn="ffb0b0b6"

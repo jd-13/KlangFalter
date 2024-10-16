@@ -31,28 +31,28 @@
 class WaveformComponent : public juce::Component
 {
 public:
-  explicit WaveformComponent();
+  explicit WaveformComponent(UIUtils::Theme theme);
   virtual ~WaveformComponent();
-  
+
   virtual void paint(juce::Graphics& g);
   virtual void resized();
-  
+
   void init(IRAgent* irAgent, double sampleRate, size_t samplesPerPx);
   void clear();
-  
+
   virtual void mouseUp(const juce::MouseEvent& mouseEvent);
-  
+
   void envelopeChanged();
-  
-protected:  
+
+protected:
   void updateArea();
-  
+
 private:
   SharedResourcePointer<CustomLookAndFeel> customLookAndFeel;
   IRAgent* _irAgent;
   std::vector<float> _maximaDecibels;
   size_t _irFingerprint;
-  
+
   double _sampleRate;
   size_t _samplesPerPx;
   float _pxPerDecibel;
@@ -62,9 +62,9 @@ private:
   double _decayShape;
   int _predelayOffsetX;
   Rectangle<int> _area;
-    
+
   float _beatsPerMinute;
-  
+
   WaveformComponent(const WaveformComponent&);
   WaveformComponent& operator=(const WaveformComponent&);
 };

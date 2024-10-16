@@ -3,18 +3,18 @@
 #include <JuceHeader.h>
 
 namespace UIUtils {
-    namespace Colours {
-#ifdef PRODUCT_VARIANT_INTRO
-        const juce::Colour background = juce::Colour(0xffcecece);
-        const juce::Colour neutral = juce::Colour(0xff4a4a4c);
-#else
-        const juce::Colour background = juce::Colour(0xff313131);
-        const juce::Colour neutral = juce::Colour(0xffb0b0b6);
-#endif
-    }
 
-    const juce::Colour highlightColour(0xfffcf64e);
-    const juce::Colour complementaryColour(0xff645e9d);
+    struct Theme {
+        juce::String productName;
+        juce::Colour background;
+        juce::Colour neutral;
+        juce::Colour highlight;
+        juce::Colour complementary;
+        juce::Colour waveformContainerBackground;
+        juce::Colour waveformContainerNeutral;
+    };
+
+    Theme LoadTheme();
 
     class ToggleButtonLookAndFeel : public juce::LookAndFeel_V2 {
     public:
@@ -37,6 +37,8 @@ namespace UIUtils {
 
     class RotarySliderLookAndFeel : public juce::LookAndFeel_V2 {
     public:
+        Theme theme;
+
         void drawRotarySlider(juce::Graphics& g,
                               int x,
                               int y,

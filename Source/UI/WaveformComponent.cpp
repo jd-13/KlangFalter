@@ -21,7 +21,7 @@
 #include "../Processor.h"
 
 
-WaveformComponent::WaveformComponent() :
+WaveformComponent::WaveformComponent(UIUtils::Theme theme) :
   Component(),
   _irAgent(nullptr),
   _maximaDecibels(),
@@ -37,6 +37,7 @@ WaveformComponent::WaveformComponent() :
   _area(),
   _beatsPerMinute(0.0f)
 {
+  customLookAndFeel->theme = theme;
 }
 
 

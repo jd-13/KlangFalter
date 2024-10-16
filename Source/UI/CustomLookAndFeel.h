@@ -20,9 +20,13 @@
 
 #include "JuceHeader.h"
 
+#include "UIUtils.hpp"
+
 class CustomLookAndFeel : public juce::LookAndFeel_V3
 {
 public:
+  UIUtils::Theme theme;
+
   CustomLookAndFeel();
 
   // Scales

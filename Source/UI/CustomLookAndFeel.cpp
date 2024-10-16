@@ -18,7 +18,6 @@
 #include "CustomLookAndFeel.h"
 
 #include "../DecibelScaling.h"
-#include "UIUtils.hpp"
 
 
 CustomLookAndFeel::CustomLookAndFeel() :
@@ -32,7 +31,7 @@ CustomLookAndFeel::CustomLookAndFeel() :
 // ==============================================
 juce::Colour CustomLookAndFeel::getWaveformColour() const
 {
-  return UIUtils::complementaryColour;
+  return theme.complementary;
 }
 
 
@@ -54,7 +53,7 @@ juce::Colour CustomLookAndFeel::getEnvelopeRestrictionColour() const
 
 juce::Colour CustomLookAndFeel::getEnvelopeNodeColour(bool highlighted) const
 {
-  return highlighted ? juce::Colour(0x40, 0x40, 0xFF) : UIUtils::Colours::background.withAlpha(0.5f);
+  return highlighted ? juce::Colour(0x40, 0x40, 0xFF) : theme.background.withAlpha(0.5f);
 }
 
 
@@ -72,31 +71,31 @@ juce::Font CustomLookAndFeel::getScaleFont() const
 
 juce::Colour CustomLookAndFeel::getScaleColour() const
 {
-  return UIUtils::Colours::neutral;
+  return theme.neutral;
 }
 
 juce::Colour CustomLookAndFeel::getWaveformScaleColour() const
 {
-  return UIUtils::Colours::background;
+  return theme.waveformContainerNeutral;
 }
 
 
 
 juce::Colour CustomLookAndFeel::getLevelColourMinusInfDb() const
 {
-  return UIUtils::complementaryColour;
+  return theme.complementary;
 }
 
 
 juce::Colour CustomLookAndFeel::getLevelColourMinus40Db() const
 {
-  return UIUtils::complementaryColour;
+  return theme.complementary;
 }
 
 
 juce::Colour CustomLookAndFeel::getLevelColourZeroDb() const
 {
-  return UIUtils::complementaryColour;
+  return theme.complementary;
 }
 
 

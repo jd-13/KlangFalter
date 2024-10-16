@@ -29,3 +29,7 @@ cd ..
 mkdir -p Resources\IRs
 cd Resources\IRs
 copy %PROJECT_DIR%\IRs\*.wav || exit /b
+
+ECHO "=== Copying theme ==="
+cd ..
+copy %PROJECT_DIR%\Themes\%THEME_FILE% || exit /b

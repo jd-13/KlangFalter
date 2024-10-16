@@ -34,3 +34,7 @@ mkdir -p $SCRIPT_DIR/dist/TSoM-BodyandSoulIntro.vst3/Contents/Resources/IRs
 cp $PROJECT_DIR/IRs/* $SCRIPT_DIR/dist/TSoM-BodyandSoulIntro.vst3/Contents/Resources/IRs
 mkdir -p $SCRIPT_DIR/dist/TSoM-BodyandSoulIntro.component/Contents/Resources/IRs
 cp $PROJECT_DIR/IRs/* $SCRIPT_DIR/dist/TSoM-BodyandSoulIntro.component/Contents/Resources/IRs
+
+echo "=== Copying theme ==="
+cp $PROJECT_DIR/Themes/$THEME_FILE $SCRIPT_DIR/dist/TSoM-BodyandSoulIntro.vst3/Contents/Resources/theme.json
+cp $PROJECT_DIR/Themes/$THEME_FILE $SCRIPT_DIR/dist/TSoM-BodyandSoulIntro.component/Contents/Resources/theme.json

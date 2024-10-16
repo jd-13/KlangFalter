@@ -29,13 +29,13 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-IRComponent::IRComponent ()
+IRComponent::IRComponent (UIUtils::Theme theme)
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
     setName ("IRComponent");
-    _waveformComponent.reset (new WaveformComponent());
+    _waveformComponent.reset (new WaveformComponent (theme));
     addAndMakeVisible (_waveformComponent.get());
     _waveformComponent->setName ("WaveformComponent");
 
@@ -189,13 +189,13 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="IRComponent" componentName="IRComponent"
                  parentClasses="public Component, public ChangeNotifier::Listener"
-                 constructorParams="" variableInitialisers="" snapPixels="4" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="462"
-                 initialHeight="176">
+                 constructorParams="UIUtils::Theme colours" variableInitialisers=""
+                 snapPixels="4" snapActive="1" snapShown="1" overlayOpacity="0.330"
+                 fixedSize="1" initialWidth="462" initialHeight="176">
   <BACKGROUND backgroundColour="ffb0b0b6"/>
   <GENERICCOMPONENT name="WaveformComponent" id="c9f33b0ee0917f49" memberName="_waveformComponent"
                     virtualName="" explicitFocusOrder="0" pos="4 4 454 140" class="WaveformComponent"
-                    params=""/>
+                    params="colours"/>
   <TEXTBUTTON name="LoadButton" id="5798b8525a699c54" memberName="_loadButton"
               virtualName="" explicitFocusOrder="0" pos="80 148 378 24" tooltip="Current impulse response information"
               bgColOff="bbbbff" bgColOn="4444ff" textCol="ff202020" textColOn="ff202020"
