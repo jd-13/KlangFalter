@@ -33,3 +33,4 @@ copy %PROJECT_DIR%\IRs\*.wav || exit /b
 ECHO "=== Copying theme ==="
 cd ..
 copy %PROJECT_DIR%\Themes\%THEME_FILE% || exit /b
+ren %THEME_FILE% theme.json
