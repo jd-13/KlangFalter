@@ -934,6 +934,8 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
 
 
     //[Constructor] You can add your own custom stuff here..
+    setResizable(true, true);
+
     _irTabComponent->clearTabs(); // Remove placeholder only used as dummy in the Jucer
     _browseButton->setClickingTogglesState(true);
     _dryButton->setClickingTogglesState(true);
