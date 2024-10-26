@@ -1115,7 +1115,8 @@ void KlangFalterEditor::paint (juce::Graphics& g)
     //     g.drawImage(weaLogo, xMid + xOffset - width / 2, 8, width, logoHeight, 0, 0, weaLogo.getWidth(), weaLogo.getHeight(), true);
     // }
 
-    const int xMid {531};
+    const int logoAreaWidth {_decibelScaleDry->getX() - _irTabComponent->getRight()};
+    const int xMid {_irTabComponent->getRight() + logoAreaWidth / 2};
     {
         constexpr int logoWidth {35};
         juce::Image tomLogo(juce::ImageCache::getFromMemory(BinaryData::tom_png, BinaryData::tom_pngSize));
@@ -1161,6 +1162,43 @@ void KlangFalterEditor::resized()
     _subtitleLabel->setBounds(titleRowYCentre - titleTextTotalWidth / 2 + titleTextWidth, 4, titleTextTotalWidth - titleTextWidth, TITLE_TEXT_HEIGHT);
     _creditsButton->setBounds(_titleLabel->getX(), _titleLabel->getY(), titleTextTotalWidth, TITLE_TEXT_HEIGHT);
 
+    // Imager row
+    constexpr int IMAGER_ROW_HEIGHT {176};
+    constexpr int IMAGER_ROW_MARGIN {16};
+    juce::Rectangle<int> imagerRow = availableArea.removeFromTop(IMAGER_ROW_HEIGHT);
+    imagerRow.reduce(IMAGER_ROW_MARGIN, 0);
+
+    const int METERS_TOTAL_WIDTH {160};
+    juce::Rectangle<int> metersArea = imagerRow.removeFromRight(METERS_TOTAL_WIDTH);
+
+    auto getMeterSliderBounds = [](juce::Rectangle<int> bounds, const juce::Rectangle<int>& metersArea) {
+        return bounds.withBottomY(metersArea.getBottom() - 8).withHeight(metersArea.getHeight() + 16);
+    };
+
+    juce::Rectangle<int> meterButtonsArea = metersArea.removeFromTop(18);
+
+    const int METER_WIDTH {12};
+    const int METER_SLIDER_WIDTH {24};
+    const int METER_SCALE_WIDTH {32};
+    _levelMeterOut->setBounds(metersArea.removeFromRight(METER_WIDTH));
+    _wetSlider->setBounds(getMeterSliderBounds(metersArea.removeFromRight(METER_SLIDER_WIDTH), metersArea));
+    _decibelScaleOut->setBounds(metersArea.removeFromRight(METER_SCALE_WIDTH));
+
+    _decibelScaleDry->setBounds(metersArea.removeFromLeft(METER_SCALE_WIDTH));
+    _drySlider->setBounds(getMeterSliderBounds(metersArea.removeFromLeft(METER_SLIDER_WIDTH), metersArea));
+    _levelMeterDry->setBounds(metersArea.removeFromLeft(METER_WIDTH));
+
+    auto positionMeterButton = [&meterButtonsArea](juce::Component* button, const std::unique_ptr<LevelMeter>& meter) {
+        constexpr int BUTTON_WIDTH {28};
+        const int xPos {meter->getX() + meter->getWidth() / 2 - BUTTON_WIDTH / 2};
+        button->setBounds(xPos, meterButtonsArea.getY(), BUTTON_WIDTH, meterButtonsArea.getHeight());
+    };
+    positionMeterButton(_levelMeterDryLabel.get(), _levelMeterDry);
+    positionMeterButton(_levelMeterOutLabelButton.get(), _levelMeterOut);
+
+    imagerRow.removeFromRight(106);
+    _irTabComponent->setBounds(imagerRow);
+
     // IR Browser
     constexpr int IR_BROWSER_MARGIN {12};
 
@@ -1182,6 +1220,28 @@ void KlangFalterEditor::resized()
         .withTrimmedLeft(IR_BROWSER_MARGIN)
         .withTrimmedRight(IR_BROWSER_MARGIN);
     _browseButton->setBounds(browseButtonArea);
+
+    // Sliders row
+    juce::Rectangle<int> gainButtonsArea = availableArea.removeFromRight(METERS_TOTAL_WIDTH);
+    juce::Rectangle<int> gainButtonLabelsRow = gainButtonsArea.removeFromTop(24);
+
+    constexpr int LEVEL_LABEL_WIDTH {60};
+    _dryLevelLabel->setBounds(_drySlider->getRight() - LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getY(), LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getHeight());
+    _wetLevelLabel->setBounds(_wetSlider->getRight() - LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getY(), LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getHeight());
+
+    juce::FlexBox flexBox;
+    flexBox.flexDirection = juce::FlexBox::Direction::row;
+    flexBox.flexWrap = juce::FlexBox::Wrap::wrap;
+    flexBox.justifyContent = juce::FlexBox::JustifyContent::spaceAround;
+    flexBox.alignContent = juce::FlexBox::AlignContent::flexStart;
+
+    const juce::FlexItem::Margin marginRight(0, 16, 0, 0);
+    const juce::FlexItem::Margin marginTop(8, 0, 0, 0);
+    flexBox.items.add(juce::FlexItem(*_dryButton.get()).withMinWidth(44).withMinHeight(24).withMargin(marginRight));
+    flexBox.items.add(juce::FlexItem(*_wetButton.get()).withMinWidth(44).withMinHeight(24));
+    flexBox.items.add(juce::FlexItem(*_autogainButton.get()).withMinWidth(132).withMinHeight(24).withMargin(marginTop));
+    flexBox.performLayout(gainButtonsArea.toFloat());
+
     //[/UserResized]
 }
 
