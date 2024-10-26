@@ -57,7 +57,8 @@ Processor::Processor() :
   _wetGain(DecibelScaling::Db2Gain(Parameters::WetDecibels.getDefaultValue())),
   _beatsPerMinute(0.0f),
   _irCalculationMutex(),
-  _irCalculation()
+  _irCalculation(),
+  _irBrowserOpen(false)
 {
   _parameterSet.registerParameter(Parameters::WetOn);
   _parameterSet.registerParameter(Parameters::WetDecibels);
@@ -853,4 +854,12 @@ void Processor::updateConvolvers()
 float Processor::getBeatsPerMinute() const
 {
   return _beatsPerMinute.load();
+}
+
+void Processor::setIrBrowserOpen(bool val) {
+  _irBrowserOpen = val;
+}
+
+bool Processor::getIrBrowserOpen() const {
+  return _irBrowserOpen;
 }

@@ -78,6 +78,8 @@ private:
     juce::Component::SafePointer<juce::DialogWindow> _settingsDialogWindow;
     std::map<std::pair<size_t, size_t>, IRComponent*> _irComponents;
     std::unique_ptr<juce::DialogWindow::LaunchOptions> _creditsWindowOptions;
+
+    void _updateIRBrowserOpen(bool isOpen);
     //[/UserVariables]
 
     //==============================================================================

@@ -998,6 +998,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _irBrowserComponent->init(&_processor);
     updateUI();
     startTimer(100);
+    _updateIRBrowserOpen(_processor.getIrBrowserOpen());
     //[/Constructor]
 }
 
@@ -1270,21 +1271,7 @@ void KlangFalterEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     if (buttonThatWasClicked == _browseButton.get())
     {
         //[UserButtonCode__browseButton] -- add your button handler code here..
-        int browserHeight = 0;
-        juce::String browseButtonText;
-        if (_browseButton->getToggleState())
-        {
-          browserHeight = 300;
-          browseButtonText = juce::String("Hide Browser");
-        }
-        else
-        {
-          browserHeight = 0;
-          browseButtonText = juce::String("Show Browser");
-        }
-        setBounds(getBounds().withHeight(_browseButton->getY() + _browseButton->getHeight() + browserHeight));
-        _irBrowserComponent->setBounds(_irBrowserComponent->getBounds().withHeight(browserHeight - 10));
-        _browseButton->setButtonText(browseButtonText);
+        _updateIRBrowserOpen(_browseButton->getToggleState());
         //[/UserButtonCode__browseButton]
     }
     else if (buttonThatWasClicked == _wetButton.get())
@@ -1537,6 +1524,28 @@ void KlangFalterEditor::timerCallback()
   _levelMeterDry->setLevel(1, _processor.getLevelDry(1));
   _levelMeterOut->setLevel(0, (resultDisplay == Settings::Out) ? _processor.getLevelOut(0) : _processor.getLevelWet(0));
   _levelMeterOut->setLevel(1, (resultDisplay == Settings::Out) ? _processor.getLevelOut(1) : _processor.getLevelWet(1));
+}
+
+void KlangFalterEditor::_updateIRBrowserOpen(bool isOpen) {
+    int browserHeight = 0;
+    juce::String browseButtonText;
+    if (isOpen)
+    {
+        browserHeight = 300;
+        browseButtonText = juce::String("Hide Browser");
+    }
+    else
+    {
+        browserHeight = 0;
+        browseButtonText = juce::String("Show Browser");
+    }
+    setBounds(getBounds().withHeight(_browseButton->getY() + _browseButton->getHeight() + browserHeight));
+    _irBrowserComponent->setBounds(_irBrowserComponent->getBounds().withHeight(browserHeight - 10));
+    _browseButton->setButtonText(browseButtonText);
+
+    // Make sure state is always consistent
+    _processor.setIrBrowserOpen(isOpen);
+    _browseButton->setToggleState(isOpen, juce::dontSendNotification);
 }
 
 

@@ -27,7 +27,7 @@
 
 namespace Internal
 {
-  
+
   struct IRAgentConfiguration
   {
     IRAgent* _irAgent;
@@ -62,13 +62,13 @@ namespace Internal
     }
     return Parameters::Cut;
   }
-  
+
 } // End of namespace internal
 
 
 
 XmlElement* SaveState(const File& irDirectory, Processor& processor)
-{ 
+{
   ScopedPointer<XmlElement> convolutionElement(new XmlElement("Convolution"));
   convolutionElement->setAttribute("pluginVersion", juce::String(ProjectInfo::versionString));
   convolutionElement->setAttribute("wetOn", processor.getParameter(Parameters::WetOn));
@@ -93,7 +93,8 @@ XmlElement* SaveState(const File& irDirectory, Processor& processor)
   convolutionElement->setAttribute("decayShape", processor.getDecayShape());
   convolutionElement->setAttribute("stereoWidth", processor.getParameter(Parameters::StereoWidth));
   convolutionElement->setAttribute("reverse", processor.getReverse());
-             
+  convolutionElement->setAttribute("irBrowserOpen", processor.getIrBrowserOpen());
+
   // IRs
   auto irAgents = processor.getAgents();
   for (auto it=irAgents.begin(); it!=irAgents.end(); ++it)
@@ -103,13 +104,13 @@ XmlElement* SaveState(const File& irDirectory, Processor& processor)
     {
       continue;
     }
-      
+
     const File irFile = irAgent->getFile();
     if (!irFile.existsAsFile())
     {
       continue;
     }
-      
+
     XmlElement* irElement = new XmlElement("ImpulseResponse");
     irElement->setAttribute("input", static_cast<int>(irAgent->getInputChannel()));
     irElement->setAttribute("output", static_cast<int>(irAgent->getOutputChannel()));
@@ -125,7 +126,7 @@ XmlElement* SaveState(const File& irDirectory, Processor& processor)
 
 
 bool LoadState(const File& irDirectory, XmlElement& element, Processor& processor)
-{  
+{
   if (element.getTagName() != "Convolution")
   {
     return false;
@@ -146,7 +147,8 @@ bool LoadState(const File& irDirectory, XmlElement& element, Processor& processo
   double decayShape = element.getDoubleAttribute("decayShape", 0.0);
   double stereoWidth = element.getDoubleAttribute("stereoWidth", Parameters::StereoWidth.getDefaultValue());
   bool reverse = element.getBoolAttribute("reverse", false);
-  
+  const bool irBrowserOpen = element.getBoolAttribute("irBrowserOpen", false);
+
   Parameters::EqType eqLoType = Internal::String2EqType(element.getStringAttribute("eqLowType", juce::String()));
   double eqLoCutFreq = element.getDoubleAttribute("eqLowCutFreq", Parameters::EqLowCutFreq.getDefaultValue());
   double eqLoShelfFreq = element.getDoubleAttribute("eqLowShelfFreq", Parameters::EqLowShelfFreq.getDefaultValue());
@@ -156,7 +158,7 @@ bool LoadState(const File& irDirectory, XmlElement& element, Processor& processo
   double eqHiCutFreq = element.getDoubleAttribute("eqHighCutFreq", Parameters::EqHighCutFreq.getDefaultValue());
   double eqHiShelfFreq = element.getDoubleAttribute("eqHighShelfFreq", Parameters::EqHighShelfFreq.getDefaultValue());
   double eqHiShelfDecibels = element.getDoubleAttribute("eqHighShelfDecibels", Parameters::EqHighShelfDecibels.getDefaultValue());
-  
+
   // IRs
   std::vector<Internal::IRAgentConfiguration> irConfigurations;
   forEachXmlChildElementWithTagName (element, irElement, "ImpulseResponse")
@@ -167,7 +169,7 @@ bool LoadState(const File& irDirectory, XmlElement& element, Processor& processo
     {
       return false;
     }
-    
+
     IRAgent* irAgent = processor.getAgent(inputChannel, outputChannel);
     if (!irAgent)
     {
@@ -179,14 +181,14 @@ bool LoadState(const File& irDirectory, XmlElement& element, Processor& processo
     configuration._fileChannel = irElement->getIntAttribute("fileChannel", -1);
     irConfigurations.push_back(configuration);
   }
-  
+
   // Phase 2: Restore the state
-  processor.clearConvolvers();  
+  processor.clearConvolvers();
   processor.setParameterNotifyingHost(Parameters::WetOn, wetOn);
   processor.setParameterNotifyingHost(Parameters::WetDecibels, static_cast<float>(wetDecibels));
   processor.setParameterNotifyingHost(Parameters::DryOn, dryOn);
   processor.setParameterNotifyingHost(Parameters::DryDecibels, static_cast<float>(dryDecibels));
-  processor.setParameterNotifyingHost(Parameters::AutoGainOn, autoGainOn);  
+  processor.setParameterNotifyingHost(Parameters::AutoGainOn, autoGainOn);
   processor.setParameterNotifyingHost(Parameters::EqLowType, static_cast<int>(eqLoType));
   processor.setParameterNotifyingHost(Parameters::EqLowCutFreq, static_cast<float>(eqLoCutFreq));
   processor.setParameterNotifyingHost(Parameters::EqLowShelfFreq, static_cast<float>(eqLoShelfFreq));
@@ -194,21 +196,22 @@ bool LoadState(const File& irDirectory, XmlElement& element, Processor& processo
   processor.setParameterNotifyingHost(Parameters::EqHighType, static_cast<int>(eqHiType));
   processor.setParameterNotifyingHost(Parameters::EqHighCutFreq, static_cast<float>(eqHiCutFreq));
   processor.setParameterNotifyingHost(Parameters::EqHighShelfFreq, static_cast<float>(eqHiShelfFreq));
-  processor.setParameterNotifyingHost(Parameters::EqHighShelfDecibels, static_cast<float>(eqHiShelfDecibels));  
+  processor.setParameterNotifyingHost(Parameters::EqHighShelfDecibels, static_cast<float>(eqHiShelfDecibels));
   processor.setParameterNotifyingHost(Parameters::StereoWidth, static_cast<float>(stereoWidth));
   processor.setIRBegin(irBegin);
   processor.setIREnd(irEnd);
-  processor.setPredelayMs(predelayMs);  
+  processor.setPredelayMs(predelayMs);
   processor.setAttackLength(attackLength);
   processor.setAttackShape(attackShape);
   processor.setDecayShape(decayShape);
   processor.setStretch(stretch);
   processor.setReverse(reverse);
+  processor.setIrBrowserOpen(irBrowserOpen);
   for (auto it=irConfigurations.begin(); it!=irConfigurations.end(); ++it)
   {
     IRAgent* irAgent = it->_irAgent;
     const File irFile = irDirectory.getChildFile(it->_file);
     irAgent->setFile(irFile, it->_fileChannel);
-  }  
+  }
   return true;
 }

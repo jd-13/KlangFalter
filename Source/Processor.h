@@ -94,7 +94,7 @@ public:
   bool producesMidi() const;
 
   virtual bool silenceInProducesSilenceOut() const;
-  
+
   virtual double getTailLengthSeconds() const;
 
   void numChannelsChanged();
@@ -149,16 +149,19 @@ public:
 
   void setDecayShape(double shape);
   double getDecayShape() const;
-  
+
   void clearConvolvers();
   void updateConvolvers();
 
   float getBeatsPerMinute() const;
 
+  void setIrBrowserOpen(bool val);
+  bool getIrBrowserOpen() const;
+
 private:
   juce::AudioSampleBuffer _wetBuffer;
   std::vector<float> _convolutionBuffer;
-  ParameterSet _parameterSet;  
+  ParameterSet _parameterSet;
   std::vector<LevelMeasurement> _levelMeasurementsDry;
   std::vector<LevelMeasurement> _levelMeasurementsWet;
   std::vector<LevelMeasurement> _levelMeasurementsOut;
@@ -185,6 +188,8 @@ private:
 
   mutable juce::CriticalSection _irCalculationMutex;
   std::unique_ptr<juce::Thread> _irCalculation;
+
+  bool _irBrowserOpen;
 
   //==============================================================================
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Processor);
