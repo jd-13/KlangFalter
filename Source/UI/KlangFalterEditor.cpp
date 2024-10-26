@@ -1146,6 +1146,22 @@ void KlangFalterEditor::resized()
     //[UserResized] Add your own custom resize handling here..
     juce::Rectangle<int> availableArea = getLocalBounds();
 
+    // Title row
+    constexpr int TITLE_ROW_HEIGHT {51};
+    constexpr int TITLE_TEXT_HEIGHT {40};
+    juce::Rectangle<int> titleRow = availableArea.removeFromTop(TITLE_ROW_HEIGHT).withTrimmedTop(4);
+
+    const int titleRowYCentre {availableArea.getWidth() / 2};
+    const int titleTextWidth {_titleLabel->getFont().getStringWidth(_titleLabel->getText())};
+    const int titleTextTotalWidth {
+        titleTextWidth + _subtitleLabel->getFont().getStringWidth(_subtitleLabel->getText())
+    };
+
+    _titleLabel->setBounds(titleRowYCentre - titleTextTotalWidth / 2, 4, titleTextWidth, TITLE_TEXT_HEIGHT);
+    _subtitleLabel->setBounds(titleRowYCentre - titleTextTotalWidth / 2 + titleTextWidth, 4, titleTextTotalWidth - titleTextWidth, TITLE_TEXT_HEIGHT);
+    _creditsButton->setBounds(_titleLabel->getX(), _titleLabel->getY(), titleTextTotalWidth, TITLE_TEXT_HEIGHT);
+
+    // IR Browser
     constexpr int IR_BROWSER_MARGIN {12};
 
     if (_processor.getIrBrowserOpen()) {
