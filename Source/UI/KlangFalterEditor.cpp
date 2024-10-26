@@ -57,6 +57,10 @@ static juce::String FormatSeconds(double seconds)
   return juce::String(seconds, 2) + juce::String("s");
 }
 
+namespace {
+    constexpr int IR_BROWSER_AREA_HEIGHT {300};
+}
+
 
 //[/MiscUserDefs]
 
@@ -1140,6 +1144,28 @@ void KlangFalterEditor::resized()
     //[/UserPreResize]
 
     //[UserResized] Add your own custom resize handling here..
+    juce::Rectangle<int> availableArea = getLocalBounds();
+
+    constexpr int IR_BROWSER_MARGIN {12};
+
+    if (_processor.getIrBrowserOpen()) {
+        const juce::Rectangle<int> irBrowserArea = availableArea.removeFromBottom(IR_BROWSER_AREA_HEIGHT)
+            .withTrimmedBottom(IR_BROWSER_MARGIN)
+            .withTrimmedLeft(IR_BROWSER_MARGIN)
+            .withTrimmedRight(IR_BROWSER_MARGIN);
+
+        _irBrowserComponent->setBounds(irBrowserArea);
+    } else {
+        _irBrowserComponent->setBounds(availableArea.removeFromBottom(0));
+    }
+
+    constexpr int IR_BROWSER_BUTTON_HEIGHT {24};
+    availableArea.removeFromBottom(1);
+
+    const juce::Rectangle<int> browseButtonArea = availableArea.removeFromBottom(IR_BROWSER_BUTTON_HEIGHT)
+        .withTrimmedLeft(IR_BROWSER_MARGIN)
+        .withTrimmedRight(IR_BROWSER_MARGIN);
+    _browseButton->setBounds(browseButtonArea);
     //[/UserResized]
 }
 
@@ -1531,7 +1557,7 @@ void KlangFalterEditor::_updateIRBrowserOpen(bool isOpen) {
     juce::String browseButtonText;
     if (isOpen)
     {
-        browserHeight = 300;
+        browserHeight = IR_BROWSER_AREA_HEIGHT;
         browseButtonText = juce::String("Hide Browser");
     }
     else
@@ -1539,13 +1565,12 @@ void KlangFalterEditor::_updateIRBrowserOpen(bool isOpen) {
         browserHeight = 0;
         browseButtonText = juce::String("Show Browser");
     }
-    setBounds(getBounds().withHeight(_browseButton->getY() + _browseButton->getHeight() + browserHeight));
-    _irBrowserComponent->setBounds(_irBrowserComponent->getBounds().withHeight(browserHeight - 10));
-    _browseButton->setButtonText(browseButtonText);
-
     // Make sure state is always consistent
     _processor.setIrBrowserOpen(isOpen);
     _browseButton->setToggleState(isOpen, juce::dontSendNotification);
+
+    setBounds(getBounds().withHeight(_browseButton->getY() + _browseButton->getHeight() + browserHeight + 1));
+    _browseButton->setButtonText(browseButtonText);
 }
 
 
