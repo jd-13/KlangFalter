@@ -1148,99 +1148,107 @@ void KlangFalterEditor::resized()
     juce::Rectangle<int> availableArea = getLocalBounds();
 
     // Title row
-    constexpr int TITLE_ROW_HEIGHT {51};
-    constexpr int TITLE_TEXT_HEIGHT {40};
-    juce::Rectangle<int> titleRow = availableArea.removeFromTop(TITLE_ROW_HEIGHT).withTrimmedTop(4);
+    {
+        constexpr int TITLE_ROW_HEIGHT {51};
+        constexpr int TITLE_TEXT_HEIGHT {40};
+        juce::Rectangle<int> titleRow = availableArea.removeFromTop(TITLE_ROW_HEIGHT).withTrimmedTop(4);
 
-    const int titleRowYCentre {availableArea.getWidth() / 2};
-    const int titleTextWidth {_titleLabel->getFont().getStringWidth(_titleLabel->getText())};
-    const int titleTextTotalWidth {
-        titleTextWidth + _subtitleLabel->getFont().getStringWidth(_subtitleLabel->getText())
-    };
+        const int titleRowYCentre {availableArea.getWidth() / 2};
+        const int titleTextWidth {_titleLabel->getFont().getStringWidth(_titleLabel->getText())};
+        const int titleTextTotalWidth {
+            titleTextWidth + _subtitleLabel->getFont().getStringWidth(_subtitleLabel->getText())
+        };
 
-    _titleLabel->setBounds(titleRowYCentre - titleTextTotalWidth / 2, 4, titleTextWidth, TITLE_TEXT_HEIGHT);
-    _subtitleLabel->setBounds(titleRowYCentre - titleTextTotalWidth / 2 + titleTextWidth, 4, titleTextTotalWidth - titleTextWidth, TITLE_TEXT_HEIGHT);
-    _creditsButton->setBounds(_titleLabel->getX(), _titleLabel->getY(), titleTextTotalWidth, TITLE_TEXT_HEIGHT);
-
-    // Imager row
-    constexpr int IMAGER_ROW_HEIGHT {176};
-    constexpr int IMAGER_ROW_MARGIN {16};
-    juce::Rectangle<int> imagerRow = availableArea.removeFromTop(IMAGER_ROW_HEIGHT);
-    imagerRow.reduce(IMAGER_ROW_MARGIN, 0);
-
-    const int METERS_TOTAL_WIDTH {160};
-    juce::Rectangle<int> metersArea = imagerRow.removeFromRight(METERS_TOTAL_WIDTH);
-
-    auto getMeterSliderBounds = [](juce::Rectangle<int> bounds, const juce::Rectangle<int>& metersArea) {
-        return bounds.withBottomY(metersArea.getBottom() - 8).withHeight(metersArea.getHeight() + 16);
-    };
-
-    juce::Rectangle<int> meterButtonsArea = metersArea.removeFromTop(18);
-
-    const int METER_WIDTH {12};
-    const int METER_SLIDER_WIDTH {24};
-    const int METER_SCALE_WIDTH {32};
-    _levelMeterOut->setBounds(metersArea.removeFromRight(METER_WIDTH));
-    _wetSlider->setBounds(getMeterSliderBounds(metersArea.removeFromRight(METER_SLIDER_WIDTH), metersArea));
-    _decibelScaleOut->setBounds(metersArea.removeFromRight(METER_SCALE_WIDTH));
-
-    _decibelScaleDry->setBounds(metersArea.removeFromLeft(METER_SCALE_WIDTH));
-    _drySlider->setBounds(getMeterSliderBounds(metersArea.removeFromLeft(METER_SLIDER_WIDTH), metersArea));
-    _levelMeterDry->setBounds(metersArea.removeFromLeft(METER_WIDTH));
-
-    auto positionMeterButton = [&meterButtonsArea](juce::Component* button, const std::unique_ptr<LevelMeter>& meter) {
-        constexpr int BUTTON_WIDTH {28};
-        const int xPos {meter->getX() + meter->getWidth() / 2 - BUTTON_WIDTH / 2};
-        button->setBounds(xPos, meterButtonsArea.getY(), BUTTON_WIDTH, meterButtonsArea.getHeight());
-    };
-    positionMeterButton(_levelMeterDryLabel.get(), _levelMeterDry);
-    positionMeterButton(_levelMeterOutLabelButton.get(), _levelMeterOut);
-
-    imagerRow.removeFromRight(106);
-    _irTabComponent->setBounds(imagerRow);
-
-    // IR Browser
-    constexpr int IR_BROWSER_MARGIN {12};
-
-    if (_processor.getIrBrowserOpen()) {
-        const juce::Rectangle<int> irBrowserArea = availableArea.removeFromBottom(IR_BROWSER_AREA_HEIGHT)
-            .withTrimmedBottom(IR_BROWSER_MARGIN)
-            .withTrimmedLeft(IR_BROWSER_MARGIN)
-            .withTrimmedRight(IR_BROWSER_MARGIN);
-
-        _irBrowserComponent->setBounds(irBrowserArea);
-    } else {
-        _irBrowserComponent->setBounds(availableArea.removeFromBottom(0));
+        _titleLabel->setBounds(titleRowYCentre - titleTextTotalWidth / 2, 4, titleTextWidth, TITLE_TEXT_HEIGHT);
+        _subtitleLabel->setBounds(titleRowYCentre - titleTextTotalWidth / 2 + titleTextWidth, 4, titleTextTotalWidth - titleTextWidth, TITLE_TEXT_HEIGHT);
+        _creditsButton->setBounds(_titleLabel->getX(), _titleLabel->getY(), titleTextTotalWidth, TITLE_TEXT_HEIGHT);
     }
 
-    constexpr int IR_BROWSER_BUTTON_HEIGHT {24};
-    availableArea.removeFromBottom(1);
+    // Imager row
+    const int METERS_TOTAL_WIDTH {160};
+    {
+        constexpr int IMAGER_ROW_HEIGHT {176};
+        constexpr int IMAGER_ROW_MARGIN {16};
+        juce::Rectangle<int> imagerRow = availableArea.removeFromTop(IMAGER_ROW_HEIGHT);
+        imagerRow.reduce(IMAGER_ROW_MARGIN, 0);
 
-    const juce::Rectangle<int> browseButtonArea = availableArea.removeFromBottom(IR_BROWSER_BUTTON_HEIGHT)
-        .withTrimmedLeft(IR_BROWSER_MARGIN)
-        .withTrimmedRight(IR_BROWSER_MARGIN);
-    _browseButton->setBounds(browseButtonArea);
+        juce::Rectangle<int> metersArea = imagerRow.removeFromRight(METERS_TOTAL_WIDTH);
+
+        auto getMeterSliderBounds = [](juce::Rectangle<int> bounds, const juce::Rectangle<int>& metersArea) {
+            return bounds.withBottomY(metersArea.getBottom() - 8).withHeight(metersArea.getHeight() + 16);
+        };
+
+        juce::Rectangle<int> meterButtonsArea = metersArea.removeFromTop(18);
+
+        const int METER_WIDTH {12};
+        const int METER_SLIDER_WIDTH {24};
+        const int METER_SCALE_WIDTH {32};
+        _levelMeterOut->setBounds(metersArea.removeFromRight(METER_WIDTH));
+        _wetSlider->setBounds(getMeterSliderBounds(metersArea.removeFromRight(METER_SLIDER_WIDTH), metersArea));
+        _decibelScaleOut->setBounds(metersArea.removeFromRight(METER_SCALE_WIDTH));
+
+        _decibelScaleDry->setBounds(metersArea.removeFromLeft(METER_SCALE_WIDTH));
+        _drySlider->setBounds(getMeterSliderBounds(metersArea.removeFromLeft(METER_SLIDER_WIDTH), metersArea));
+        _levelMeterDry->setBounds(metersArea.removeFromLeft(METER_WIDTH));
+
+        auto positionMeterButton = [&meterButtonsArea](juce::Component* button, const std::unique_ptr<LevelMeter>& meter) {
+            constexpr int BUTTON_WIDTH {28};
+            const int xPos {meter->getX() + meter->getWidth() / 2 - BUTTON_WIDTH / 2};
+            button->setBounds(xPos, meterButtonsArea.getY(), BUTTON_WIDTH, meterButtonsArea.getHeight());
+        };
+        positionMeterButton(_levelMeterDryLabel.get(), _levelMeterDry);
+        positionMeterButton(_levelMeterOutLabelButton.get(), _levelMeterOut);
+
+        imagerRow.removeFromRight(106);
+        _irTabComponent->setBounds(imagerRow);
+    }
+
+    // IR Browser
+    {
+        constexpr int IR_BROWSER_MARGIN {12};
+
+        if (_processor.getIrBrowserOpen()) {
+            const juce::Rectangle<int> irBrowserArea = availableArea.removeFromBottom(IR_BROWSER_AREA_HEIGHT)
+                .withTrimmedBottom(IR_BROWSER_MARGIN)
+                .withTrimmedLeft(IR_BROWSER_MARGIN)
+                .withTrimmedRight(IR_BROWSER_MARGIN);
+
+            _irBrowserComponent->setBounds(irBrowserArea);
+        } else {
+            _irBrowserComponent->setBounds(availableArea.removeFromBottom(0));
+        }
+
+        constexpr int IR_BROWSER_BUTTON_HEIGHT {24};
+        availableArea.removeFromBottom(1);
+
+        const juce::Rectangle<int> browseButtonArea = availableArea.removeFromBottom(IR_BROWSER_BUTTON_HEIGHT)
+            .withTrimmedLeft(IR_BROWSER_MARGIN)
+            .withTrimmedRight(IR_BROWSER_MARGIN);
+        _browseButton->setBounds(browseButtonArea);
+    }
 
     // Sliders row
-    juce::Rectangle<int> gainButtonsArea = availableArea.removeFromRight(METERS_TOTAL_WIDTH);
-    juce::Rectangle<int> gainButtonLabelsRow = gainButtonsArea.removeFromTop(24);
+    {
+        juce::Rectangle<int> gainButtonsArea = availableArea.removeFromRight(METERS_TOTAL_WIDTH);
+        juce::Rectangle<int> gainButtonLabelsRow = gainButtonsArea.removeFromTop(24);
 
-    constexpr int LEVEL_LABEL_WIDTH {60};
-    _dryLevelLabel->setBounds(_drySlider->getRight() - LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getY(), LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getHeight());
-    _wetLevelLabel->setBounds(_wetSlider->getRight() - LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getY(), LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getHeight());
+        constexpr int LEVEL_LABEL_WIDTH {60};
+        _dryLevelLabel->setBounds(_drySlider->getRight() - LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getY(), LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getHeight());
+        _wetLevelLabel->setBounds(_wetSlider->getRight() - LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getY(), LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getHeight());
 
-    juce::FlexBox flexBox;
-    flexBox.flexDirection = juce::FlexBox::Direction::row;
-    flexBox.flexWrap = juce::FlexBox::Wrap::wrap;
-    flexBox.justifyContent = juce::FlexBox::JustifyContent::spaceAround;
-    flexBox.alignContent = juce::FlexBox::AlignContent::flexStart;
+        juce::FlexBox flexBox;
+        flexBox.flexDirection = juce::FlexBox::Direction::row;
+        flexBox.flexWrap = juce::FlexBox::Wrap::wrap;
+        flexBox.justifyContent = juce::FlexBox::JustifyContent::spaceAround;
+        flexBox.alignContent = juce::FlexBox::AlignContent::flexStart;
 
-    const juce::FlexItem::Margin marginRight(0, 16, 0, 0);
-    const juce::FlexItem::Margin marginTop(8, 0, 0, 0);
-    flexBox.items.add(juce::FlexItem(*_dryButton.get()).withMinWidth(44).withMinHeight(24).withMargin(marginRight));
-    flexBox.items.add(juce::FlexItem(*_wetButton.get()).withMinWidth(44).withMinHeight(24));
-    flexBox.items.add(juce::FlexItem(*_autogainButton.get()).withMinWidth(132).withMinHeight(24).withMargin(marginTop));
-    flexBox.performLayout(gainButtonsArea.toFloat());
+        const juce::FlexItem::Margin marginRight(0, 16, 0, 0);
+        const juce::FlexItem::Margin marginTop(8, 0, 0, 0);
+        flexBox.items.add(juce::FlexItem(*_dryButton.get()).withMinWidth(44).withMinHeight(24).withMargin(marginRight));
+        flexBox.items.add(juce::FlexItem(*_wetButton.get()).withMinWidth(44).withMinHeight(24));
+        flexBox.items.add(juce::FlexItem(*_autogainButton.get()).withMinWidth(132).withMinHeight(24).withMargin(marginTop));
+        flexBox.performLayout(gainButtonsArea.toFloat());
+    }
 
     //[/UserResized]
 }
