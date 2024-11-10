@@ -465,102 +465,6 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
 
     _highEqButton->setBounds (488, 231, 72, 24);
 
-    _decayShapeLabel.reset (new juce::Label (juce::String(),
-                                             TRANS ("1.0")));
-    addAndMakeVisible (_decayShapeLabel.get());
-    _decayShapeLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _decayShapeLabel->setJustificationType (juce::Justification::centred);
-    _decayShapeLabel->setEditable (false, false, false);
-    _decayShapeLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
-    _decayShapeLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    _decayShapeLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
-    _decayShapeLabel->setBounds (276, 291, 52, 24);
-
-    _decayShapeHeaderLabel.reset (new juce::Label (juce::String(),
-                                                   TRANS ("Shape")));
-    addAndMakeVisible (_decayShapeHeaderLabel.get());
-    _decayShapeHeaderLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _decayShapeHeaderLabel->setJustificationType (juce::Justification::centred);
-    _decayShapeHeaderLabel->setEditable (false, false, false);
-    _decayShapeHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
-    _decayShapeHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    _decayShapeHeaderLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
-    _decayShapeHeaderLabel->setBounds (276, 247, 52, 24);
-
-    _decayShapeSlider.reset (new juce::Slider (juce::String()));
-    addAndMakeVisible (_decayShapeSlider.get());
-    _decayShapeSlider->setRange (0, 10, 0);
-    _decayShapeSlider->setSliderStyle (juce::Slider::RotaryVerticalDrag);
-    _decayShapeSlider->setTextBoxStyle (juce::Slider::NoTextBox, false, 80, 20);
-    _decayShapeSlider->setColour (juce::Slider::thumbColourId, juce::Colour (0xffafafff));
-    _decayShapeSlider->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xb1606060));
-    _decayShapeSlider->addListener (this);
-    _decayShapeSlider->setSkewFactor (0.5);
-
-    _decayShapeSlider->setBounds (284, 267, 36, 28);
-
-    _widthLabel.reset (new juce::Label (juce::String(),
-                                        TRANS ("1.0")));
-    addAndMakeVisible (_widthLabel.get());
-    _widthLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _widthLabel->setJustificationType (juce::Justification::centred);
-    _widthLabel->setEditable (false, false, false);
-    _widthLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
-    _widthLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    _widthLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
-    _widthLabel->setBounds (340, 291, 52, 24);
-
-    _widthHeaderLabel.reset (new juce::Label (juce::String(),
-                                              TRANS ("Width")));
-    addAndMakeVisible (_widthHeaderLabel.get());
-    _widthHeaderLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _widthHeaderLabel->setJustificationType (juce::Justification::centred);
-    _widthHeaderLabel->setEditable (false, false, false);
-    _widthHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
-    _widthHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    _widthHeaderLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
-    _widthHeaderLabel->setBounds (340, 247, 52, 24);
-
-    _widthSlider.reset (new juce::Slider (juce::String()));
-    addAndMakeVisible (_widthSlider.get());
-    _widthSlider->setRange (0, 10, 0);
-    _widthSlider->setSliderStyle (juce::Slider::RotaryVerticalDrag);
-    _widthSlider->setTextBoxStyle (juce::Slider::NoTextBox, false, 80, 20);
-    _widthSlider->setColour (juce::Slider::thumbColourId, juce::Colour (0xffafafff));
-    _widthSlider->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xb1606060));
-    _widthSlider->addListener (this);
-    _widthSlider->setSkewFactor (0.30102);
-
-    _widthSlider->setBounds (348, 267, 36, 28);
-
-    _decayHeaderLabel.reset (new juce::Label (juce::String(),
-                                              TRANS ("Decay")));
-    addAndMakeVisible (_decayHeaderLabel.get());
-    _decayHeaderLabel->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _decayHeaderLabel->setJustificationType (juce::Justification::centred);
-    _decayHeaderLabel->setEditable (false, false, false);
-    _decayHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
-    _decayHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colour (0xffb0b0b6));
-    _decayHeaderLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
-    _decayHeaderLabel->setBounds (256, 231, 88, 24);
-
-    _stereoHeaderLabel.reset (new juce::Label (juce::String(),
-                                               TRANS ("Stereo")));
-    addAndMakeVisible (_stereoHeaderLabel.get());
-    _stereoHeaderLabel->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _stereoHeaderLabel->setJustificationType (juce::Justification::centred);
-    _stereoHeaderLabel->setEditable (false, false, false);
-    _stereoHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
-    _stereoHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colour (0xffb0b0b6));
-    _stereoHeaderLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
-    _stereoHeaderLabel->setBounds (340, 231, 52, 24);
-
     _titleLabel.reset (new juce::Label ("Title Label",
                                         TRANS ("Body & Soul:")));
     addAndMakeVisible (_titleLabel.get());
@@ -612,6 +516,12 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
 
     _attackSliderGroup.reset(new AttackSliderGroup(_processor));
     addAndMakeVisible(_attackSliderGroup.get());
+
+    _decaySliderGroup.reset(new DecaySliderGroup(_processor));
+    addAndMakeVisible(_decaySliderGroup.get());
+
+    _stereoSliderGroup.reset(new StereoSliderGroup(_processor));
+    addAndMakeVisible(_stereoSliderGroup.get());
 
     setLookAndFeel(customLookAndFeel);
 
@@ -667,8 +577,6 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _resetButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, UIUtils::neutralColour);
     _resetButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, UIUtils::neutralColour);
 
-    _decayShapeSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
-    _widthSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _lowCutFreqSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _highCutFreqSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _loFreqSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
@@ -710,8 +618,6 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _hiGainSlider->setRange(Parameters::EqHighShelfDecibels.getMinValue(), Parameters::EqHighShelfDecibels.getMaxValue());
 
     // Double click to default
-    _decayShapeSlider->setDoubleClickReturnValue(true, 0);
-    _widthSlider->setDoubleClickReturnValue(true, Parameters::StereoWidth.getDefaultValue());
     _lowCutFreqSlider->setDoubleClickReturnValue(true, Parameters::EqLowCutFreq.getDefaultValue());
     _loFreqSlider->setDoubleClickReturnValue(true, Parameters::EqLowShelfFreq.getDefaultValue());
     _loGainSlider->setDoubleClickReturnValue(true, Parameters::EqLowShelfDecibels.getDefaultValue());
@@ -799,14 +705,6 @@ KlangFalterEditor::~KlangFalterEditor()
     _highCutFreqHeaderLabel = nullptr;
     _highCutFreqSlider = nullptr;
     _highEqButton = nullptr;
-    _decayShapeLabel = nullptr;
-    _decayShapeHeaderLabel = nullptr;
-    _decayShapeSlider = nullptr;
-    _widthLabel = nullptr;
-    _widthHeaderLabel = nullptr;
-    _widthSlider = nullptr;
-    _decayHeaderLabel = nullptr;
-    _stereoHeaderLabel = nullptr;
     _titleLabel = nullptr;
     _subtitleLabel = nullptr;
     _creditsButton = nullptr;
@@ -992,6 +890,12 @@ void KlangFalterEditor::resized()
 
         _attackSliderGroup->setBounds(availableArea.removeFromLeft(88));
         availableArea.removeFromLeft(SPACE_WIDTH);
+
+        _decaySliderGroup->setBounds(availableArea.removeFromLeft(52));
+        availableArea.removeFromLeft(SPACE_WIDTH);
+
+        _stereoSliderGroup->setBounds(availableArea.removeFromLeft(52));
+        availableArea.removeFromLeft(SPACE_WIDTH);
     }
 
     //[/UserResized]
@@ -1053,18 +957,6 @@ void KlangFalterEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
         //[UserSliderCode__highCutFreqSlider] -- add your slider handling code here..
         _processor.setParameterNotifyingHost(Parameters::EqHighCutFreq, static_cast<float>(_highCutFreqSlider->getValue()));
         //[/UserSliderCode__highCutFreqSlider]
-    }
-    else if (sliderThatWasMoved == _decayShapeSlider.get())
-    {
-        //[UserSliderCode__decayShapeSlider] -- add your slider handling code here..
-        _processor.setDecayShape(_decayShapeSlider->getValue());
-        //[/UserSliderCode__decayShapeSlider]
-    }
-    else if (sliderThatWasMoved == _widthSlider.get())
-    {
-        //[UserSliderCode__widthSlider] -- add your slider handling code here..
-        _processor.setParameterNotifyingHost(Parameters::StereoWidth, SnapValue(static_cast<float>(_widthSlider->getValue()), 1.0f, 0.05f));
-        //[/UserSliderCode__widthSlider]
     }
 
     //[UsersliderValueChanged_Post]
@@ -1145,6 +1037,8 @@ void KlangFalterEditor::updateUI()
   const size_t numOutputChannels = static_cast<size_t>(std::min(_processor.getTotalNumOutputChannels(), 2));
   _irSliderGroup->onUpdate(irAvailable);
   _attackSliderGroup->onUpdate(irAvailable);
+  _decaySliderGroup->onUpdate(irAvailable);
+  _stereoSliderGroup->onUpdate(irAvailable, numOutputChannels);
   {
     const float db = _processor.getParameter(Parameters::DryDecibels);
     const float scale = DecibelScaling::Db2Scale(db);
@@ -1166,12 +1060,6 @@ void KlangFalterEditor::updateUI()
   {
     _reverseButton->setEnabled(true);
     _reverseButton->setToggleState(_processor.getReverse(), juce::dontSendNotification);
-  }
-  {
-    const double decayShape = _processor.getDecayShape();
-    _decayShapeSlider->setValue(decayShape);
-    _decayShapeSlider->setEnabled(irAvailable);
-    _decayShapeLabel->setText((decayShape < 0.0001) ? juce::String("Neutral") : juce::String(decayShape, 2), juce::sendNotification);
   }
   {
     const float autoGainDecibels = _processor.getParameter(Parameters::AutoGainDecibels);
@@ -1231,12 +1119,6 @@ void KlangFalterEditor::updateUI()
     _hiGainSlider->setVisible(highEqType == Parameters::Shelf);
     _hiGainSlider->setEnabled(hiEqEnabled);
     _hiGainSlider->setValue(shelfGainDb, juce::dontSendNotification);
-  }
-  {
-    _widthSlider->setEnabled(irAvailable && numOutputChannels >= 2);
-    const float stereoWidth = _processor.getParameter(Parameters::StereoWidth);
-    _widthSlider->setValue(stereoWidth, juce::dontSendNotification);
-    _widthLabel->setText((::fabs(1.0f-stereoWidth) < 0.001) ? juce::String("Neutral") : juce::String(stereoWidth, 2), juce::sendNotification);
   }
   {
     _levelMeterDry->setChannelCount(numInputChannels);
@@ -1508,46 +1390,6 @@ BEGIN_JUCER_METADATA
               explicitFocusOrder="0" pos="488 231 72 24" bgColOff="bbbbff"
               bgColOn="2c2cff" textCol="ffb0b0b6" textColOn="ffb0b0b6" buttonText="High Cut"
               connectedEdges="3" needsCallback="1" radioGroupId="0"/>
-  <LABEL name="" id="31ae76799c1691c8" memberName="_decayShapeLabel" virtualName=""
-         explicitFocusOrder="0" pos="276 291 52 24" textCol="ffb0b0b6"
-         edTextCol="ff000000" edBkgCol="0" labelText="1.0" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
-  <LABEL name="" id="23dd6aa127e1d22c" memberName="_decayShapeHeaderLabel"
-         virtualName="" explicitFocusOrder="0" pos="276 247 52 24" textCol="ffb0b0b6"
-         edTextCol="ff000000" edBkgCol="0" labelText="Shape" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
-  <SLIDER name="" id="ec6cfdb461a4ddf" memberName="_decayShapeSlider" virtualName=""
-          explicitFocusOrder="0" pos="284 267 36 28" thumbcol="ffafafff"
-          rotarysliderfill="b1606060" min="0.0" max="10.0" int="0.0" style="RotaryVerticalDrag"
-          textBoxPos="NoTextBox" textBoxEditable="1" textBoxWidth="80"
-          textBoxHeight="20" skewFactor="0.5" needsCallback="1"/>
-  <LABEL name="" id="90fac88de886d96b" memberName="_widthLabel" virtualName=""
-         explicitFocusOrder="0" pos="340 291 52 24" textCol="ffb0b0b6"
-         edTextCol="ff000000" edBkgCol="0" labelText="1.0" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
-  <LABEL name="" id="3476a26a68685b9e" memberName="_widthHeaderLabel"
-         virtualName="" explicitFocusOrder="0" pos="340 247 52 24" textCol="ffb0b0b6"
-         edTextCol="ff000000" edBkgCol="0" labelText="Width" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
-  <SLIDER name="" id="31fdb25b044eaf7f" memberName="_widthSlider" virtualName=""
-          explicitFocusOrder="0" pos="348 267 36 28" thumbcol="ffafafff"
-          rotarysliderfill="b1606060" min="0.0" max="10.0" int="0.0" style="RotaryVerticalDrag"
-          textBoxPos="NoTextBox" textBoxEditable="1" textBoxWidth="80"
-          textBoxHeight="20" skewFactor="0.30102" needsCallback="1"/>
-  <LABEL name="" id="9ac1cf0b8251e7f3" memberName="_decayHeaderLabel"
-         virtualName="" explicitFocusOrder="0" pos="256 231 88 24" textCol="ffb0b0b6"
-         edTextCol="ffb0b0b6" edBkgCol="0" labelText="Decay" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="36"/>
-  <LABEL name="" id="3deee43dc79846d0" memberName="_stereoHeaderLabel"
-         virtualName="" explicitFocusOrder="0" pos="340 231 52 24" textCol="ffb0b0b6"
-         edTextCol="ffb0b0b6" edBkgCol="0" labelText="Stereo" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <LABEL name="Title Label" id="f44017b03503c913" memberName="_titleLabel"
          virtualName="" explicitFocusOrder="0" pos="248 4 195 40" textCol="ffb0b0b6"
          edTextCol="ffb0b0b6" edBkgCol="0" labelText="Body &amp; Soul:"

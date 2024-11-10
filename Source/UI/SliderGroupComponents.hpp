@@ -62,3 +62,45 @@ private:
     std::unique_ptr<juce::Slider> _attackLengthSlider;
     std::unique_ptr<juce::Label> _attackLengthLabel;
 };
+
+class DecaySliderGroup : public juce::Component {
+public:
+    DecaySliderGroup(Processor& processor);
+    virtual ~DecaySliderGroup();
+
+    void resized() override;
+
+    void onUpdate(bool enableSliders);
+
+private:
+    Processor& _processor;
+
+    std::unique_ptr<UIUtils::RotarySliderLookAndFeel> _rotarySliderLookAndFeel;
+
+    std::unique_ptr<juce::Label> _decayHeaderLabel;
+
+    std::unique_ptr<juce::Label> _decayShapeHeaderLabel;
+    std::unique_ptr<juce::Slider> _decayShapeSlider;
+    std::unique_ptr<juce::Label> _decayShapeLabel;
+};
+
+class StereoSliderGroup : public juce::Component {
+public:
+    StereoSliderGroup(Processor& processor);
+    virtual ~StereoSliderGroup();
+
+    void resized() override;
+
+    void onUpdate(bool enableSliders, int numOutputChannels);
+
+private:
+    Processor& _processor;
+
+    std::unique_ptr<UIUtils::RotarySliderLookAndFeel> _rotarySliderLookAndFeel;
+
+    std::unique_ptr<juce::Label> _stereoHeaderLabel;
+
+    std::unique_ptr<juce::Label> _widthHeaderLabel;
+    std::unique_ptr<juce::Slider> _widthSlider;
+    std::unique_ptr<juce::Label> _widthLabel;
+};

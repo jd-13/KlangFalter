@@ -1,4 +1,5 @@
 #include "SliderGroupComponents.hpp"
+#include "../Parameters.h"
 
 namespace {
     juce::String FormatSeconds(double seconds) {
@@ -6,6 +7,12 @@ namespace {
             return juce::String(static_cast<int>(seconds * 1000.0)) + juce::String("ms");
         }
         return juce::String(seconds, 2) + juce::String("s");
+    }
+
+    template<typename T>
+    T SnapValue(T val, T snapValue, T sensitivity)
+    {
+    return (::fabs(val - snapValue) < sensitivity) ? snapValue : val;
     }
 
     void layoutSlider(juce::Rectangle<int> bounds, juce::Label* headerLabel, juce::Slider* slider, juce::Label* label) {
@@ -340,4 +347,142 @@ void AttackSliderGroup::onUpdate(bool enableSliders) {
     _attackShapeSlider->setValue(attackShape);
     _attackShapeSlider->setEnabled(enableSliders);
     _attackShapeLabel->setText((attackShape < 0.0001) ? juce::String("Neutral") : juce::String(attackShape, 2), juce::sendNotification);
+}
+
+DecaySliderGroup::DecaySliderGroup(Processor& processor) :
+        _processor(processor),
+        _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()) {
+    _decayHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Decay")));
+    addAndMakeVisible(_decayHeaderLabel.get());
+    _decayHeaderLabel->setFont(juce::Font(15.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _decayHeaderLabel->setJustificationType(juce::Justification::centred);
+    _decayHeaderLabel->setEditable(false, false, false);
+    _decayHeaderLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
+    _decayHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colour(0xffb0b0b6));
+    _decayHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+
+    _decayShapeHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Shape")));
+    addAndMakeVisible(_decayShapeHeaderLabel.get());
+    _decayShapeHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _decayShapeHeaderLabel->setJustificationType(juce::Justification::centred);
+    _decayShapeHeaderLabel->setEditable(false, false, false);
+    _decayShapeHeaderLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
+    _decayShapeHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
+    _decayShapeHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+
+    _decayShapeSlider.reset(new juce::Slider(juce::String()));
+    addAndMakeVisible(_decayShapeSlider.get());
+    _decayShapeSlider->setRange(0, 10, 0);
+    _decayShapeSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
+    _decayShapeSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
+    _decayShapeSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
+    _decayShapeSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
+    _decayShapeSlider->setSkewFactor(0.5);
+    _decayShapeSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
+    _decayShapeSlider->setDoubleClickReturnValue(true, 0);
+    _decayShapeSlider->onValueChange = [this] {
+        _processor.setDecayShape(_decayShapeSlider->getValue());
+    };
+
+    _decayShapeLabel.reset(new juce::Label(juce::String(), TRANS("1.0")));
+    addAndMakeVisible(_decayShapeLabel.get());
+    _decayShapeLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _decayShapeLabel->setJustificationType(juce::Justification::centred);
+    _decayShapeLabel->setEditable(false, false, false);
+    _decayShapeLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
+    _decayShapeLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
+    _decayShapeLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+}
+
+DecaySliderGroup::~DecaySliderGroup() {
+    _decayHeaderLabel = nullptr;
+
+    _decayShapeHeaderLabel = nullptr;
+    _decayShapeSlider = nullptr;
+    _decayShapeLabel = nullptr;
+}
+
+void DecaySliderGroup::resized() {
+    juce::Rectangle<int> availableArea = getLocalBounds();
+
+    _decayHeaderLabel->setBounds(availableArea.withHeight(24));
+    availableArea.removeFromTop(16);
+
+    layoutSlider(availableArea, _decayShapeHeaderLabel.get(), _decayShapeSlider.get(), _decayShapeLabel.get());
+}
+
+void DecaySliderGroup::onUpdate(bool enableSliders) {
+    const double decayShape = _processor.getDecayShape();
+    _decayShapeSlider->setValue(decayShape);
+    _decayShapeSlider->setEnabled(enableSliders);
+    _decayShapeLabel->setText((decayShape < 0.0001) ? juce::String("Neutral") : juce::String(decayShape, 2), juce::sendNotification);
+}
+
+StereoSliderGroup::StereoSliderGroup(Processor& processor) :
+        _processor(processor),
+        _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()) {
+    _stereoHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Stereo")));
+    addAndMakeVisible(_stereoHeaderLabel.get());
+    _stereoHeaderLabel->setFont(juce::Font(15.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _stereoHeaderLabel->setJustificationType(juce::Justification::centred);
+    _stereoHeaderLabel->setEditable(false, false, false);
+    _stereoHeaderLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
+    _stereoHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colour(0xffb0b0b6));
+    _stereoHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+
+    _widthHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Width")));
+    addAndMakeVisible(_widthHeaderLabel.get());
+    _widthHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _widthHeaderLabel->setJustificationType(juce::Justification::centred);
+    _widthHeaderLabel->setEditable(false, false, false);
+    _widthHeaderLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
+    _widthHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
+    _widthHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+
+    _widthSlider.reset(new juce::Slider(juce::String()));
+    addAndMakeVisible(_widthSlider.get());
+    _widthSlider->setRange(0, 10, 0);
+    _widthSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
+    _widthSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
+    _widthSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
+    _widthSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
+    _widthSlider->setSkewFactor(0.30102);
+    _widthSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
+    _widthSlider->setDoubleClickReturnValue(true, Parameters::StereoWidth.getDefaultValue());
+    _widthSlider->onValueChange = [this] {
+        _processor.setParameterNotifyingHost(Parameters::StereoWidth, SnapValue(static_cast<float>(_widthSlider->getValue()), 1.0f, 0.05f));
+    };
+
+    _widthLabel.reset(new juce::Label(juce::String(), TRANS("1.0")));
+    addAndMakeVisible(_widthLabel.get());
+    _widthLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _widthLabel->setJustificationType(juce::Justification::centred);
+    _widthLabel->setEditable(false, false, false);
+    _widthLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
+    _widthLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
+    _widthLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+}
+
+StereoSliderGroup::~StereoSliderGroup() {
+    _stereoHeaderLabel = nullptr;
+
+    _widthHeaderLabel = nullptr;
+    _widthLabel = nullptr;
+    _widthSlider = nullptr;
+}
+
+void StereoSliderGroup::resized() {
+    juce::Rectangle<int> availableArea = getLocalBounds();
+
+    _stereoHeaderLabel->setBounds(availableArea.withHeight(24));
+    availableArea.removeFromTop(16);
+
+    layoutSlider(availableArea, _widthHeaderLabel.get(), _widthSlider.get(), _widthLabel.get());
+}
+
+void StereoSliderGroup::onUpdate(bool enableSliders, int numOutputChannels) {
+    _widthSlider->setEnabled(enableSliders && numOutputChannels >= 2);
+    const float stereoWidth = _processor.getParameter(Parameters::StereoWidth);
+    _widthSlider->setValue(stereoWidth, juce::dontSendNotification);
+    _widthLabel->setText((::fabs(1.0f-stereoWidth) < 0.001) ? juce::String("Neutral") : juce::String(stereoWidth, 2), juce::sendNotification);
 }
