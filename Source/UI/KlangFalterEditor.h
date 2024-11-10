@@ -83,6 +83,8 @@ private:
     std::unique_ptr<AttackSliderGroup> _attackSliderGroup;
     std::unique_ptr<DecaySliderGroup> _decaySliderGroup;
     std::unique_ptr<StereoSliderGroup> _stereoSliderGroup;
+    std::unique_ptr<LowEqSliderGroup> _lowEqSliderGroup;
+    std::unique_ptr<HighEqSliderGroup> _highEqSliderGroup;
 
     void _updateIRBrowserOpen(bool isOpen);
     //[/UserVariables]
@@ -102,29 +104,9 @@ private:
     std::unique_ptr<juce::TextButton> _dryButton;
     std::unique_ptr<juce::TextButton> _autogainButton;
     std::unique_ptr<juce::TextButton> _reverseButton;
-    std::unique_ptr<juce::Label> _hiFreqLabel;
-    std::unique_ptr<juce::Label> _hiGainLabel;
-    std::unique_ptr<juce::Label> _hiGainHeaderLabel;
-    std::unique_ptr<juce::Label> _hiFreqHeaderLabel;
-    std::unique_ptr<juce::Slider> _hiGainSlider;
-    std::unique_ptr<juce::Slider> _hiFreqSlider;
-    std::unique_ptr<juce::Label> _loFreqLabel;
-    std::unique_ptr<juce::Label> _loGainLabel;
-    std::unique_ptr<juce::Label> _loGainHeaderLabel;
-    std::unique_ptr<juce::Label> _loFreqHeaderLabel;
-    std::unique_ptr<juce::Slider> _loGainSlider;
-    std::unique_ptr<juce::Slider> _loFreqSlider;
     std::unique_ptr<LevelMeter> _levelMeterOut;
     std::unique_ptr<juce::TextButton> _levelMeterOutLabelButton;
     std::unique_ptr<juce::Label> _levelMeterDryLabel;
-    std::unique_ptr<juce::TextButton> _lowEqButton;
-    std::unique_ptr<juce::Label> _lowCutFreqLabel;
-    std::unique_ptr<juce::Label> _lowCutFreqHeaderLabel;
-    std::unique_ptr<juce::Slider> _lowCutFreqSlider;
-    std::unique_ptr<juce::Label> _highCutFreqLabel;
-    std::unique_ptr<juce::Label> _highCutFreqHeaderLabel;
-    std::unique_ptr<juce::Slider> _highCutFreqSlider;
-    std::unique_ptr<juce::TextButton> _highEqButton;
     std::unique_ptr<juce::Label> _titleLabel;
     std::unique_ptr<juce::Label> _subtitleLabel;
     std::unique_ptr<juce::TextButton> _creditsButton;

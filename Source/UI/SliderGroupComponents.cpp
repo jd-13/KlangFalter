@@ -1,5 +1,6 @@
 #include "SliderGroupComponents.hpp"
 #include "../Parameters.h"
+#include "../DecibelScaling.h"
 
 namespace {
     juce::String FormatSeconds(double seconds) {
@@ -7,6 +8,13 @@ namespace {
             return juce::String(static_cast<int>(seconds * 1000.0)) + juce::String("ms");
         }
         return juce::String(seconds, 2) + juce::String("s");
+    }
+
+    juce::String FormatFrequency(float freq) {
+        if (freq < 1000.0f) {
+            return juce::String(static_cast<int>(freq+0.5f)) + juce::String("Hz");
+        }
+        return juce::String(freq/1000.0f, (freq < 1500.0f) ? 2 : 1) + juce::String("kHz");
     }
 
     template<typename T>
@@ -485,4 +493,350 @@ void StereoSliderGroup::onUpdate(bool enableSliders, int numOutputChannels) {
     const float stereoWidth = _processor.getParameter(Parameters::StereoWidth);
     _widthSlider->setValue(stereoWidth, juce::dontSendNotification);
     _widthLabel->setText((::fabs(1.0f-stereoWidth) < 0.001) ? juce::String("Neutral") : juce::String(stereoWidth, 2), juce::sendNotification);
+}
+
+LowEqSliderGroup::LowEqSliderGroup(Processor& processor) :
+        _processor(processor),
+        _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()) {
+    _lowEqButton.reset(new juce::TextButton(juce::String()));
+    addAndMakeVisible(_lowEqButton.get());
+    _lowEqButton->setButtonText(TRANS("Low Cut"));
+    _lowEqButton->setConnectedEdges(juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
+    _lowEqButton->setColour(juce::TextButton::buttonColourId, juce::Colour(0x00bbbbff));
+    _lowEqButton->setColour(juce::TextButton::buttonOnColourId, juce::Colour(0x002c2cff));
+    _lowEqButton->setColour(juce::TextButton::textColourOffId, juce::Colour(0xffb0b0b6));
+    _lowEqButton->setColour(juce::TextButton::textColourOnId, juce::Colour(0xffb0b0b6));
+    _lowEqButton->onClick = [this] {
+        const Parameters::EqType lowEqType = static_cast<Parameters::EqType>(_processor.getParameter(Parameters::EqLowType));
+        _processor.setParameterNotifyingHost(Parameters::EqLowType, static_cast<int>((lowEqType == Parameters::Cut) ? Parameters::Shelf : Parameters::Cut));
+    };
+
+    _lowCutFreqHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Freq")));
+    addAndMakeVisible(_lowCutFreqHeaderLabel.get());
+    _lowCutFreqHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _lowCutFreqHeaderLabel->setJustificationType(juce::Justification::centred);
+    _lowCutFreqHeaderLabel->setEditable(false, false, false);
+    _lowCutFreqHeaderLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
+    _lowCutFreqHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
+    _lowCutFreqHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+
+    _lowCutFreqSlider.reset(new juce::Slider(juce::String()));
+    addAndMakeVisible(_lowCutFreqSlider.get());
+    _lowCutFreqSlider->setRange(20, 2000, 0);
+    _lowCutFreqSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
+    _lowCutFreqSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
+    _lowCutFreqSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
+    _lowCutFreqSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
+    _lowCutFreqSlider->setSkewFactor(0.5);
+    _lowCutFreqSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
+    _lowCutFreqSlider->setRange(Parameters::EqLowCutFreq.getMinValue(), Parameters::EqLowCutFreq.getMaxValue());
+    _lowCutFreqSlider->setDoubleClickReturnValue(true, Parameters::EqLowCutFreq.getDefaultValue());
+    _lowCutFreqSlider->onValueChange = [this] {
+        _processor.setParameterNotifyingHost(Parameters::EqLowCutFreq, static_cast<float>(_lowCutFreqSlider->getValue()));
+    };
+
+    _lowCutFreqLabel.reset(new juce::Label(juce::String(), TRANS("1234Hz")));
+    addAndMakeVisible(_lowCutFreqLabel.get());
+    _lowCutFreqLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _lowCutFreqLabel->setJustificationType(juce::Justification::centred);
+    _lowCutFreqLabel->setEditable(false, false, false);
+    _lowCutFreqLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
+    _lowCutFreqLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
+    _lowCutFreqLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+
+    _loFreqHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Freq")));
+    addAndMakeVisible(_loFreqHeaderLabel.get());
+    _loFreqHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _loFreqHeaderLabel->setJustificationType(juce::Justification::centred);
+    _loFreqHeaderLabel->setEditable(false, false, false);
+    _loFreqHeaderLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
+    _loFreqHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
+    _loFreqHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+
+    _loFreqSlider.reset(new juce::Slider(juce::String()));
+    addAndMakeVisible(_loFreqSlider.get());
+    _loFreqSlider->setRange(20, 2000, 0);
+    _loFreqSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
+    _loFreqSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
+    _loFreqSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
+    _loFreqSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
+    _loFreqSlider->setSkewFactor(0.5);
+    _loFreqSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
+    _loFreqSlider->setRange(Parameters::EqLowShelfFreq.getMinValue(), Parameters::EqLowShelfFreq.getMaxValue());
+    _loFreqSlider->setDoubleClickReturnValue(true, Parameters::EqLowShelfFreq.getDefaultValue());
+    _loFreqSlider->onValueChange = [this] {
+        _processor.setParameterNotifyingHost(Parameters::EqLowShelfFreq, static_cast<float>(_loFreqSlider->getValue()));
+    };
+
+    _loFreqLabel.reset(new juce::Label(juce::String(), TRANS("1234Hz")));
+    addAndMakeVisible(_loFreqLabel.get());
+    _loFreqLabel->setFont(juce::Font (11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _loFreqLabel->setJustificationType(juce::Justification::centred);
+    _loFreqLabel->setEditable(false, false, false);
+    _loFreqLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
+    _loFreqLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
+    _loFreqLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+
+    _loGainHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Gain")));
+    addAndMakeVisible(_loGainHeaderLabel.get());
+    _loGainHeaderLabel->setFont(juce::Font (11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _loGainHeaderLabel->setJustificationType(juce::Justification::centred);
+    _loGainHeaderLabel->setEditable(false, false, false);
+    _loGainHeaderLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
+    _loGainHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
+    _loGainHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+
+    _loGainSlider.reset(new juce::Slider(juce::String()));
+    addAndMakeVisible(_loGainSlider.get());
+    _loGainSlider->setRange(-30, 30, 0);
+    _loGainSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
+    _loGainSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
+    _loGainSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
+    _loGainSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
+    _loGainSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
+    _loGainSlider->setRange(Parameters::EqLowShelfDecibels.getMinValue(), Parameters::EqLowShelfDecibels.getMaxValue());
+    _loGainSlider->setDoubleClickReturnValue(true, Parameters::EqLowShelfDecibels.getDefaultValue());
+    _loGainSlider->onValueChange = [this] {
+        _processor.setParameterNotifyingHost(Parameters::EqLowShelfDecibels, SnapValue(static_cast<float>(_loGainSlider->getValue()), 0.0f, 0.5f));
+    };
+
+     _loGainLabel.reset(new juce::Label (juce::String(), TRANS("0.0dB")));
+    addAndMakeVisible(_loGainLabel.get());
+    _loGainLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _loGainLabel->setJustificationType(juce::Justification::centred);
+    _loGainLabel->setEditable(false, false, false);
+    _loGainLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
+    _loGainLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
+    _loGainLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+}
+
+LowEqSliderGroup::~LowEqSliderGroup() {
+    _lowEqButton = nullptr;
+
+    _lowCutFreqHeaderLabel = nullptr;
+    _lowCutFreqLabel = nullptr;
+    _lowCutFreqSlider = nullptr;
+
+    _loFreqHeaderLabel = nullptr;
+    _loFreqSlider = nullptr;
+    _loFreqLabel = nullptr;
+
+    _loGainHeaderLabel = nullptr;
+    _loGainSlider = nullptr;
+    _loGainLabel = nullptr;
+}
+
+void LowEqSliderGroup::resized() {
+    juce::Rectangle<int> availableArea = getLocalBounds();
+
+    _lowEqButton->setBounds(availableArea.withHeight(24));
+    availableArea.removeFromTop(16);
+
+    layoutSlider(availableArea, _lowCutFreqHeaderLabel.get(), _lowCutFreqSlider.get(), _lowCutFreqLabel.get());
+
+    const int sliderAreaWidth {availableArea.getWidth() / 2};
+    juce::Rectangle<int> loFreqArea = availableArea.removeFromLeft(sliderAreaWidth);
+    layoutSlider(loFreqArea, _loFreqHeaderLabel.get(), _loFreqSlider.get(), _loFreqLabel.get());
+
+    juce::Rectangle<int> loGainArea = availableArea.removeFromLeft(sliderAreaWidth);
+    layoutSlider(loGainArea, _loGainHeaderLabel.get(), _loGainSlider.get(), _loGainLabel.get());
+}
+
+void LowEqSliderGroup::onUpdate(bool enableSliders) {
+    Parameters::EqType lowEqType = static_cast<Parameters::EqType>(_processor.getParameter(Parameters::EqLowType));
+    const float cutFreq = _processor.getParameter(Parameters::EqLowCutFreq);
+    const float shelfFreq = _processor.getParameter(Parameters::EqLowShelfFreq);
+    const float shelfGainDb = _processor.getParameter(Parameters::EqLowShelfDecibels);
+    _lowEqButton->setButtonText(lowEqType == Parameters::Shelf ? juce::String("Low Shelf") : juce::String("Low Cut"));
+    _lowCutFreqHeaderLabel->setVisible(lowEqType == Parameters::Cut);
+    _lowCutFreqLabel->setVisible(lowEqType == Parameters::Cut);
+    _lowCutFreqLabel->setText((::fabs(cutFreq-Parameters::EqLowCutFreq.getMinValue()) > 0.0001f) ? FormatFrequency(cutFreq) : juce::String("Off"), juce::sendNotification);
+    _lowCutFreqSlider->setVisible(lowEqType == Parameters::Cut);
+    _lowCutFreqSlider->setEnabled(enableSliders);
+    _lowCutFreqSlider->setValue(cutFreq, juce::dontSendNotification);
+    _loFreqHeaderLabel->setVisible(lowEqType == Parameters::Shelf);
+    _loFreqLabel->setVisible(lowEqType == Parameters::Shelf);
+    _loFreqLabel->setText(FormatFrequency(shelfFreq), juce::sendNotification);
+    _loFreqSlider->setVisible(lowEqType == Parameters::Shelf);
+    _loFreqSlider->setEnabled(enableSliders);
+    _loFreqSlider->setValue(shelfFreq, juce::dontSendNotification);
+    _loGainHeaderLabel->setVisible(lowEqType == Parameters::Shelf);
+    _loGainLabel->setVisible(lowEqType == Parameters::Shelf);
+    _loGainLabel->setText(DecibelScaling::DecibelString(shelfGainDb), juce::sendNotification);
+    _loGainSlider->setVisible(lowEqType == Parameters::Shelf);
+    _loGainSlider->setEnabled(enableSliders);
+    _loGainSlider->setValue(shelfGainDb, juce::dontSendNotification);
+}
+
+HighEqSliderGroup::HighEqSliderGroup(Processor& processor) :
+        _processor(processor),
+        _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()) {
+    _highEqButton.reset(new juce::TextButton(juce::String()));
+    addAndMakeVisible(_highEqButton.get());
+    _highEqButton->setButtonText(TRANS("High Cut"));
+    _highEqButton->setConnectedEdges(juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
+    _highEqButton->setColour(juce::TextButton::buttonColourId, juce::Colour(0x00bbbbff));
+    _highEqButton->setColour(juce::TextButton::buttonOnColourId, juce::Colour(0x002c2cff));
+    _highEqButton->setColour(juce::TextButton::textColourOffId, juce::Colour(0xffb0b0b6));
+    _highEqButton->setColour(juce::TextButton::textColourOnId, juce::Colour(0xffb0b0b6));
+    _highEqButton->onClick = [this] {
+        const Parameters::EqType highEqType = static_cast<Parameters::EqType>(_processor.getParameter(Parameters::EqHighType));
+        _processor.setParameterNotifyingHost(Parameters::EqHighType, static_cast<int>((highEqType == Parameters::Cut) ? Parameters::Shelf : Parameters::Cut));
+    };
+
+    _highCutFreqHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Freq")));
+    addAndMakeVisible(_highCutFreqHeaderLabel.get());
+    _highCutFreqHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _highCutFreqHeaderLabel->setJustificationType(juce::Justification::centred);
+    _highCutFreqHeaderLabel->setEditable(false, false, false);
+    _highCutFreqHeaderLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
+    _highCutFreqHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
+    _highCutFreqHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+
+    _highCutFreqSlider.reset(new juce::Slider(juce::String()));
+    addAndMakeVisible(_highCutFreqSlider.get());
+    _highCutFreqSlider->setRange(2000, 20000, 0);
+    _highCutFreqSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
+    _highCutFreqSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
+    _highCutFreqSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
+    _highCutFreqSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
+    _highCutFreqSlider->setSkewFactor(0.7);
+    _highCutFreqSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
+    _highCutFreqSlider->setRange(Parameters::EqHighCutFreq.getMinValue(), Parameters::EqHighCutFreq.getMaxValue());
+    _highCutFreqSlider->setDoubleClickReturnValue(true, Parameters::EqHighCutFreq.getDefaultValue());
+    _highCutFreqSlider->onValueChange = [this] {
+        _processor.setParameterNotifyingHost(Parameters::EqHighCutFreq, static_cast<float>(_highCutFreqSlider->getValue()));
+    };
+
+    _highCutFreqLabel.reset(new juce::Label(juce::String(), TRANS("15.2kHz")));
+    addAndMakeVisible(_highCutFreqLabel.get());
+    _highCutFreqLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _highCutFreqLabel->setJustificationType(juce::Justification::centred);
+    _highCutFreqLabel->setEditable(false, false, false);
+    _highCutFreqLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
+    _highCutFreqLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
+    _highCutFreqLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+
+    _hiFreqHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Freq")));
+    addAndMakeVisible(_hiFreqHeaderLabel.get());
+    _hiFreqHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _hiFreqHeaderLabel->setJustificationType(juce::Justification::centred);
+    _hiFreqHeaderLabel->setEditable(false, false, false);
+    _hiFreqHeaderLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
+    _hiFreqHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
+    _hiFreqHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+
+    _hiFreqSlider.reset(new juce::Slider(juce::String()));
+    addAndMakeVisible(_hiFreqSlider.get());
+    _hiFreqSlider->setRange(2000, 20000, 0);
+    _hiFreqSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
+    _hiFreqSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
+    _hiFreqSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
+    _hiFreqSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
+    _hiFreqSlider->setSkewFactor(0.7);
+    _hiFreqSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
+    _hiFreqSlider->setRange(Parameters::EqHighShelfFreq.getMinValue(), Parameters::EqHighShelfFreq.getMaxValue());
+    _hiFreqSlider->setDoubleClickReturnValue(true, Parameters::EqHighShelfFreq.getDefaultValue());
+    _hiFreqSlider->onValueChange = [this] {
+        _processor.setParameterNotifyingHost(Parameters::EqHighShelfFreq, static_cast<float>(_hiFreqSlider->getValue()));
+    };
+
+    _hiFreqLabel.reset(new juce::Label(juce::String(), TRANS("15.2kHz")));
+    addAndMakeVisible(_hiFreqLabel.get());
+    _hiFreqLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _hiFreqLabel->setJustificationType(juce::Justification::centred);
+    _hiFreqLabel->setEditable(false, false, false);
+    _hiFreqLabel->setColour(juce::Label::textColourId, juce::Colour (0xffb0b0b6));
+    _hiFreqLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
+    _hiFreqLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+
+    _hiGainHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Gain")));
+    addAndMakeVisible(_hiGainHeaderLabel.get());
+    _hiGainHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _hiGainHeaderLabel->setJustificationType(juce::Justification::centred);
+    _hiGainHeaderLabel->setEditable(false, false, false);
+    _hiGainHeaderLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
+    _hiGainHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
+    _hiGainHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+
+    _hiGainSlider.reset(new juce::Slider(juce::String()));
+    addAndMakeVisible(_hiGainSlider.get());
+    _hiGainSlider->setRange(-30, 30, 0);
+    _hiGainSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
+    _hiGainSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
+    _hiGainSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
+    _hiGainSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
+    _hiGainSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
+    _hiGainSlider->setRange(Parameters::EqHighShelfDecibels.getMinValue(), Parameters::EqHighShelfDecibels.getMaxValue());
+    _hiGainSlider->setDoubleClickReturnValue(true, Parameters::EqHighShelfDecibels.getDefaultValue());
+    _hiGainSlider->onValueChange = [this] {
+        _processor.setParameterNotifyingHost(Parameters::EqHighShelfDecibels, SnapValue(static_cast<float>(_hiGainSlider->getValue()), 0.0f, 0.5f));
+    };
+
+    _hiGainLabel.reset(new juce::Label(juce::String(), TRANS("0.0dB")));
+    addAndMakeVisible (_hiGainLabel.get());
+    _hiGainLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _hiGainLabel->setJustificationType(juce::Justification::centred);
+    _hiGainLabel->setEditable(false, false, false);
+    _hiGainLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
+    _hiGainLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
+    _hiGainLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+}
+
+HighEqSliderGroup::~HighEqSliderGroup() {
+    _highEqButton = nullptr;
+
+    _highCutFreqHeaderLabel = nullptr;
+    _highCutFreqLabel = nullptr;
+    _highCutFreqSlider = nullptr;
+
+    _hiFreqHeaderLabel = nullptr;
+    _hiFreqSlider = nullptr;
+    _hiFreqLabel = nullptr;
+
+    _hiGainHeaderLabel = nullptr;
+    _hiGainSlider = nullptr;
+    _hiGainLabel = nullptr;
+}
+
+void HighEqSliderGroup::resized() {
+    juce::Rectangle<int> availableArea = getLocalBounds();
+
+    _highEqButton->setBounds(availableArea.withHeight(24));
+    availableArea.removeFromTop(16);
+
+    layoutSlider(availableArea, _highCutFreqHeaderLabel.get(), _highCutFreqSlider.get(), _highCutFreqLabel.get());
+
+    const int sliderAreaWidth {availableArea.getWidth() / 2};
+    juce::Rectangle<int> hiFreqArea = availableArea.removeFromLeft(sliderAreaWidth);
+    layoutSlider(hiFreqArea, _hiFreqHeaderLabel.get(), _hiFreqSlider.get(), _hiFreqLabel.get());
+
+    juce::Rectangle<int> hiGainArea = availableArea.removeFromLeft(sliderAreaWidth);
+    layoutSlider(hiGainArea, _hiGainHeaderLabel.get(), _hiGainSlider.get(), _hiGainLabel.get());
+}
+
+void HighEqSliderGroup::onUpdate(bool enableSliders) {
+    Parameters::EqType highEqType = static_cast<Parameters::EqType>(_processor.getParameter(Parameters::EqHighType));
+    const float cutFreq = _processor.getParameter(Parameters::EqHighCutFreq);
+    const float shelfFreq = _processor.getParameter(Parameters::EqHighShelfFreq);
+    const float shelfGainDb = _processor.getParameter(Parameters::EqHighShelfDecibels);
+    _highEqButton->setButtonText(highEqType == Parameters::Shelf ? juce::String("High Shelf") : juce::String("High Cut"));
+    _highCutFreqHeaderLabel->setVisible(highEqType == Parameters::Cut);
+    _highCutFreqLabel->setVisible(highEqType == Parameters::Cut);
+    _highCutFreqLabel->setText((::fabs(cutFreq-Parameters::EqHighCutFreq.getMaxValue()) > 0.0001f) ? FormatFrequency(cutFreq) : juce::String("Off"), juce::sendNotification);
+    _highCutFreqSlider->setVisible(highEqType == Parameters::Cut);
+    _highCutFreqSlider->setEnabled(enableSliders);
+    _highCutFreqSlider->setValue(cutFreq, juce::dontSendNotification);
+    _hiFreqHeaderLabel->setVisible(highEqType == Parameters::Shelf);
+    _hiFreqLabel->setVisible(highEqType == Parameters::Shelf);
+    _hiFreqLabel->setText(FormatFrequency(shelfFreq), juce::sendNotification);
+    _hiFreqSlider->setVisible(highEqType == Parameters::Shelf);
+    _hiFreqSlider->setEnabled(enableSliders);
+    _hiFreqSlider->setValue(shelfFreq, juce::dontSendNotification);
+    _hiGainHeaderLabel->setVisible(highEqType == Parameters::Shelf);
+    _hiGainLabel->setVisible(highEqType == Parameters::Shelf);
+    _hiGainLabel->setText(DecibelScaling::DecibelString(shelfGainDb), juce::sendNotification);
+    _hiGainSlider->setVisible(highEqType == Parameters::Shelf);
+    _hiGainSlider->setEnabled(enableSliders);
+    _hiGainSlider->setValue(shelfGainDb, juce::dontSendNotification);
 }

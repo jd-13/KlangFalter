@@ -38,14 +38,6 @@ T SnapValue(T val, T snapValue, T sensitivity)
 }
 
 
-static juce::String FormatFrequency(float freq)
-{
-  if (freq < 1000.0f)
-  {
-    return juce::String(static_cast<int>(freq+0.5f)) + juce::String("Hz");
-  }
-  return juce::String(freq/1000.0f, (freq < 1500.0f) ? 2 : 1) + juce::String("kHz");
-}
 
 namespace {
     constexpr int IR_BROWSER_AREA_HEIGHT {300};
@@ -197,148 +189,6 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
 
     _reverseButton->setBounds (20, 198, 72, 24);
 
-    _hiFreqLabel.reset (new juce::Label (juce::String(),
-                                         TRANS ("15.2kHz")));
-    addAndMakeVisible (_hiFreqLabel.get());
-    _hiFreqLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _hiFreqLabel->setJustificationType (juce::Justification::centred);
-    _hiFreqLabel->setEditable (false, false, false);
-    _hiFreqLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
-    _hiFreqLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    _hiFreqLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
-    _hiFreqLabel->setBounds (480, 291, 52, 24);
-
-    _hiGainLabel.reset (new juce::Label (juce::String(),
-                                         TRANS ("0.0dB")));
-    addAndMakeVisible (_hiGainLabel.get());
-    _hiGainLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _hiGainLabel->setJustificationType (juce::Justification::centred);
-    _hiGainLabel->setEditable (false, false, false);
-    _hiGainLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
-    _hiGainLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    _hiGainLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
-    _hiGainLabel->setBounds (516, 291, 52, 24);
-
-    _hiGainHeaderLabel.reset (new juce::Label (juce::String(),
-                                               TRANS ("Gain")));
-    addAndMakeVisible (_hiGainHeaderLabel.get());
-    _hiGainHeaderLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _hiGainHeaderLabel->setJustificationType (juce::Justification::centred);
-    _hiGainHeaderLabel->setEditable (false, false, false);
-    _hiGainHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
-    _hiGainHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    _hiGainHeaderLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
-    _hiGainHeaderLabel->setBounds (516, 247, 52, 24);
-
-    _hiFreqHeaderLabel.reset (new juce::Label (juce::String(),
-                                               TRANS ("Freq")));
-    addAndMakeVisible (_hiFreqHeaderLabel.get());
-    _hiFreqHeaderLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _hiFreqHeaderLabel->setJustificationType (juce::Justification::centred);
-    _hiFreqHeaderLabel->setEditable (false, false, false);
-    _hiFreqHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
-    _hiFreqHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    _hiFreqHeaderLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
-    _hiFreqHeaderLabel->setBounds (480, 247, 52, 24);
-
-    _hiGainSlider.reset (new juce::Slider (juce::String()));
-    addAndMakeVisible (_hiGainSlider.get());
-    _hiGainSlider->setRange (-30, 30, 0);
-    _hiGainSlider->setSliderStyle (juce::Slider::RotaryVerticalDrag);
-    _hiGainSlider->setTextBoxStyle (juce::Slider::NoTextBox, false, 80, 20);
-    _hiGainSlider->setColour (juce::Slider::thumbColourId, juce::Colour (0xffafafff));
-    _hiGainSlider->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xb1606060));
-    _hiGainSlider->addListener (this);
-
-    _hiGainSlider->setBounds (524, 267, 36, 28);
-
-    _hiFreqSlider.reset (new juce::Slider (juce::String()));
-    addAndMakeVisible (_hiFreqSlider.get());
-    _hiFreqSlider->setRange (2000, 20000, 0);
-    _hiFreqSlider->setSliderStyle (juce::Slider::RotaryVerticalDrag);
-    _hiFreqSlider->setTextBoxStyle (juce::Slider::NoTextBox, false, 80, 20);
-    _hiFreqSlider->setColour (juce::Slider::thumbColourId, juce::Colour (0xffafafff));
-    _hiFreqSlider->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xb1606060));
-    _hiFreqSlider->addListener (this);
-    _hiFreqSlider->setSkewFactor (0.7);
-
-    _hiFreqSlider->setBounds (488, 267, 36, 28);
-
-    _loFreqLabel.reset (new juce::Label (juce::String(),
-                                         TRANS ("1234Hz")));
-    addAndMakeVisible (_loFreqLabel.get());
-    _loFreqLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _loFreqLabel->setJustificationType (juce::Justification::centred);
-    _loFreqLabel->setEditable (false, false, false);
-    _loFreqLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
-    _loFreqLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    _loFreqLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
-    _loFreqLabel->setBounds (396, 291, 52, 24);
-
-    _loGainLabel.reset (new juce::Label (juce::String(),
-                                         TRANS ("0.0dB")));
-    addAndMakeVisible (_loGainLabel.get());
-    _loGainLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _loGainLabel->setJustificationType (juce::Justification::centred);
-    _loGainLabel->setEditable (false, false, false);
-    _loGainLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
-    _loGainLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    _loGainLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
-    _loGainLabel->setBounds (432, 291, 52, 24);
-
-    _loGainHeaderLabel.reset (new juce::Label (juce::String(),
-                                               TRANS ("Gain")));
-    addAndMakeVisible (_loGainHeaderLabel.get());
-    _loGainHeaderLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _loGainHeaderLabel->setJustificationType (juce::Justification::centred);
-    _loGainHeaderLabel->setEditable (false, false, false);
-    _loGainHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
-    _loGainHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    _loGainHeaderLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
-    _loGainHeaderLabel->setBounds (432, 247, 52, 24);
-
-    _loFreqHeaderLabel.reset (new juce::Label (juce::String(),
-                                               TRANS ("Freq")));
-    addAndMakeVisible (_loFreqHeaderLabel.get());
-    _loFreqHeaderLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _loFreqHeaderLabel->setJustificationType (juce::Justification::centred);
-    _loFreqHeaderLabel->setEditable (false, false, false);
-    _loFreqHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
-    _loFreqHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    _loFreqHeaderLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
-    _loFreqHeaderLabel->setBounds (396, 247, 52, 24);
-
-    _loGainSlider.reset (new juce::Slider (juce::String()));
-    addAndMakeVisible (_loGainSlider.get());
-    _loGainSlider->setRange (-30, 30, 0);
-    _loGainSlider->setSliderStyle (juce::Slider::RotaryVerticalDrag);
-    _loGainSlider->setTextBoxStyle (juce::Slider::NoTextBox, false, 80, 20);
-    _loGainSlider->setColour (juce::Slider::thumbColourId, juce::Colour (0xffafafff));
-    _loGainSlider->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xb1606060));
-    _loGainSlider->addListener (this);
-
-    _loGainSlider->setBounds (440, 267, 36, 28);
-
-    _loFreqSlider.reset (new juce::Slider (juce::String()));
-    addAndMakeVisible (_loFreqSlider.get());
-    _loFreqSlider->setRange (20, 2000, 0);
-    _loFreqSlider->setSliderStyle (juce::Slider::RotaryVerticalDrag);
-    _loFreqSlider->setTextBoxStyle (juce::Slider::NoTextBox, false, 80, 20);
-    _loFreqSlider->setColour (juce::Slider::thumbColourId, juce::Colour (0xffafafff));
-    _loFreqSlider->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xb1606060));
-    _loFreqSlider->addListener (this);
-    _loFreqSlider->setSkewFactor (0.5);
-
-    _loFreqSlider->setBounds (404, 267, 36, 28);
-
     _levelMeterOut.reset (new LevelMeter());
     addAndMakeVisible (_levelMeterOut.get());
 
@@ -368,102 +218,6 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _levelMeterDryLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
     _levelMeterDryLabel->setBounds (620, 27, 36, 24);
-
-    _lowEqButton.reset (new juce::TextButton (juce::String()));
-    addAndMakeVisible (_lowEqButton.get());
-    _lowEqButton->setButtonText (TRANS ("Low Cut"));
-    _lowEqButton->setConnectedEdges (juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
-    _lowEqButton->addListener (this);
-    _lowEqButton->setColour (juce::TextButton::buttonColourId, juce::Colour (0x00bbbbff));
-    _lowEqButton->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0x002c2cff));
-    _lowEqButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xffb0b0b6));
-    _lowEqButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xffb0b0b6));
-
-    _lowEqButton->setBounds (404, 231, 72, 24);
-
-    _lowCutFreqLabel.reset (new juce::Label (juce::String(),
-                                             TRANS ("1234Hz")));
-    addAndMakeVisible (_lowCutFreqLabel.get());
-    _lowCutFreqLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _lowCutFreqLabel->setJustificationType (juce::Justification::centred);
-    _lowCutFreqLabel->setEditable (false, false, false);
-    _lowCutFreqLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
-    _lowCutFreqLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    _lowCutFreqLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
-    _lowCutFreqLabel->setBounds (414, 291, 52, 24);
-
-    _lowCutFreqHeaderLabel.reset (new juce::Label (juce::String(),
-                                                   TRANS ("Freq")));
-    addAndMakeVisible (_lowCutFreqHeaderLabel.get());
-    _lowCutFreqHeaderLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _lowCutFreqHeaderLabel->setJustificationType (juce::Justification::centred);
-    _lowCutFreqHeaderLabel->setEditable (false, false, false);
-    _lowCutFreqHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
-    _lowCutFreqHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    _lowCutFreqHeaderLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
-    _lowCutFreqHeaderLabel->setBounds (414, 247, 52, 24);
-
-    _lowCutFreqSlider.reset (new juce::Slider (juce::String()));
-    addAndMakeVisible (_lowCutFreqSlider.get());
-    _lowCutFreqSlider->setRange (20, 2000, 0);
-    _lowCutFreqSlider->setSliderStyle (juce::Slider::RotaryVerticalDrag);
-    _lowCutFreqSlider->setTextBoxStyle (juce::Slider::NoTextBox, false, 80, 20);
-    _lowCutFreqSlider->setColour (juce::Slider::thumbColourId, juce::Colour (0xffafafff));
-    _lowCutFreqSlider->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xb1606060));
-    _lowCutFreqSlider->addListener (this);
-    _lowCutFreqSlider->setSkewFactor (0.5);
-
-    _lowCutFreqSlider->setBounds (422, 267, 36, 28);
-
-    _highCutFreqLabel.reset (new juce::Label (juce::String(),
-                                              TRANS ("15.2kHz")));
-    addAndMakeVisible (_highCutFreqLabel.get());
-    _highCutFreqLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _highCutFreqLabel->setJustificationType (juce::Justification::centred);
-    _highCutFreqLabel->setEditable (false, false, false);
-    _highCutFreqLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
-    _highCutFreqLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    _highCutFreqLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
-    _highCutFreqLabel->setBounds (498, 291, 52, 24);
-
-    _highCutFreqHeaderLabel.reset (new juce::Label (juce::String(),
-                                                    TRANS ("Freq")));
-    addAndMakeVisible (_highCutFreqHeaderLabel.get());
-    _highCutFreqHeaderLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _highCutFreqHeaderLabel->setJustificationType (juce::Justification::centred);
-    _highCutFreqHeaderLabel->setEditable (false, false, false);
-    _highCutFreqHeaderLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
-    _highCutFreqHeaderLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    _highCutFreqHeaderLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
-    _highCutFreqHeaderLabel->setBounds (498, 247, 52, 24);
-
-    _highCutFreqSlider.reset (new juce::Slider (juce::String()));
-    addAndMakeVisible (_highCutFreqSlider.get());
-    _highCutFreqSlider->setRange (2000, 20000, 0);
-    _highCutFreqSlider->setSliderStyle (juce::Slider::RotaryVerticalDrag);
-    _highCutFreqSlider->setTextBoxStyle (juce::Slider::NoTextBox, false, 80, 20);
-    _highCutFreqSlider->setColour (juce::Slider::thumbColourId, juce::Colour (0xffafafff));
-    _highCutFreqSlider->setColour (juce::Slider::rotarySliderFillColourId, juce::Colour (0xb1606060));
-    _highCutFreqSlider->addListener (this);
-    _highCutFreqSlider->setSkewFactor (0.7);
-
-    _highCutFreqSlider->setBounds (506, 267, 36, 28);
-
-    _highEqButton.reset (new juce::TextButton (juce::String()));
-    addAndMakeVisible (_highEqButton.get());
-    _highEqButton->setButtonText (TRANS ("High Cut"));
-    _highEqButton->setConnectedEdges (juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
-    _highEqButton->addListener (this);
-    _highEqButton->setColour (juce::TextButton::buttonColourId, juce::Colour (0x00bbbbff));
-    _highEqButton->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0x002c2cff));
-    _highEqButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xffb0b0b6));
-    _highEqButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xffb0b0b6));
-
-    _highEqButton->setBounds (488, 231, 72, 24);
 
     _titleLabel.reset (new juce::Label ("Title Label",
                                         TRANS ("Body & Soul:")));
@@ -523,6 +277,12 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _stereoSliderGroup.reset(new StereoSliderGroup(_processor));
     addAndMakeVisible(_stereoSliderGroup.get());
 
+    _lowEqSliderGroup.reset(new LowEqSliderGroup(_processor));
+    addAndMakeVisible(_lowEqSliderGroup.get());
+
+    _highEqSliderGroup.reset(new HighEqSliderGroup(_processor));
+    addAndMakeVisible(_highEqSliderGroup.get());
+
     setLookAndFeel(customLookAndFeel);
 
     _creditsWindowOptions.reset(new juce::DialogWindow::LaunchOptions());
@@ -577,12 +337,6 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _resetButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, UIUtils::neutralColour);
     _resetButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, UIUtils::neutralColour);
 
-    _lowCutFreqSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
-    _highCutFreqSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
-    _loFreqSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
-    _loGainSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
-    _hiFreqSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
-    _hiGainSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _drySlider->setLookAndFeel(_linearSliderLookAndFeel.get());
     _wetSlider->setLookAndFeel(_linearSliderLookAndFeel.get());
 
@@ -609,21 +363,8 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _reverseButton->setClickingTogglesState(true);
     _levelMeterOutLabelButton->setClickingTogglesState(true);
 
-    _lowCutFreqSlider->setRange(Parameters::EqLowCutFreq.getMinValue(), Parameters::EqLowCutFreq.getMaxValue());
-    _loFreqSlider->setRange(Parameters::EqLowShelfFreq.getMinValue(), Parameters::EqLowShelfFreq.getMaxValue());
-    _loGainSlider->setRange(Parameters::EqLowShelfDecibels.getMinValue(), Parameters::EqLowShelfDecibels.getMaxValue());
-
-    _highCutFreqSlider->setRange(Parameters::EqHighCutFreq.getMinValue(), Parameters::EqHighCutFreq.getMaxValue());
-    _hiFreqSlider->setRange(Parameters::EqHighShelfFreq.getMinValue(), Parameters::EqHighShelfFreq.getMaxValue());
-    _hiGainSlider->setRange(Parameters::EqHighShelfDecibels.getMinValue(), Parameters::EqHighShelfDecibels.getMaxValue());
 
     // Double click to default
-    _lowCutFreqSlider->setDoubleClickReturnValue(true, Parameters::EqLowCutFreq.getDefaultValue());
-    _loFreqSlider->setDoubleClickReturnValue(true, Parameters::EqLowShelfFreq.getDefaultValue());
-    _loGainSlider->setDoubleClickReturnValue(true, Parameters::EqLowShelfDecibels.getDefaultValue());
-    _highCutFreqSlider->setDoubleClickReturnValue(true, Parameters::EqHighCutFreq.getDefaultValue());
-    _hiFreqSlider->setDoubleClickReturnValue(true, Parameters::EqHighShelfFreq.getDefaultValue());
-    _hiGainSlider->setDoubleClickReturnValue(true, Parameters::EqHighShelfDecibels.getDefaultValue());
     _drySlider->setDoubleClickReturnValue(true, DecibelScaling::Db2Scale(Parameters::DryDecibels.getDefaultValue()));
     _wetSlider->setDoubleClickReturnValue(true, DecibelScaling::Db2Scale(Parameters::WetDecibels.getDefaultValue()));
 
@@ -666,6 +407,11 @@ KlangFalterEditor::~KlangFalterEditor()
     _processor.removeNotificationListener(this);
     _processor.getSettings().removeChangeListener(this);
     _irSliderGroup = nullptr;
+    _attackSliderGroup = nullptr;
+    _decaySliderGroup = nullptr;
+    _stereoSliderGroup = nullptr;
+    _lowEqSliderGroup = nullptr;
+    _highEqSliderGroup = nullptr;
     //[/Destructor_pre]
 
     _decibelScaleDry = nullptr;
@@ -682,29 +428,9 @@ KlangFalterEditor::~KlangFalterEditor()
     _dryButton = nullptr;
     _autogainButton = nullptr;
     _reverseButton = nullptr;
-    _hiFreqLabel = nullptr;
-    _hiGainLabel = nullptr;
-    _hiGainHeaderLabel = nullptr;
-    _hiFreqHeaderLabel = nullptr;
-    _hiGainSlider = nullptr;
-    _hiFreqSlider = nullptr;
-    _loFreqLabel = nullptr;
-    _loGainLabel = nullptr;
-    _loGainHeaderLabel = nullptr;
-    _loFreqHeaderLabel = nullptr;
-    _loGainSlider = nullptr;
-    _loFreqSlider = nullptr;
     _levelMeterOut = nullptr;
     _levelMeterOutLabelButton = nullptr;
     _levelMeterDryLabel = nullptr;
-    _lowEqButton = nullptr;
-    _lowCutFreqLabel = nullptr;
-    _lowCutFreqHeaderLabel = nullptr;
-    _lowCutFreqSlider = nullptr;
-    _highCutFreqLabel = nullptr;
-    _highCutFreqHeaderLabel = nullptr;
-    _highCutFreqSlider = nullptr;
-    _highEqButton = nullptr;
     _titleLabel = nullptr;
     _subtitleLabel = nullptr;
     _creditsButton = nullptr;
@@ -896,6 +622,11 @@ void KlangFalterEditor::resized()
 
         _stereoSliderGroup->setBounds(availableArea.removeFromLeft(52));
         availableArea.removeFromLeft(SPACE_WIDTH);
+
+        _lowEqSliderGroup->setBounds(availableArea.removeFromLeft(72));
+        availableArea.removeFromLeft(SPACE_WIDTH);
+
+        _highEqSliderGroup->setBounds(availableArea.removeFromLeft(72));
     }
 
     //[/UserResized]
@@ -921,42 +652,6 @@ void KlangFalterEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
         const float decibels = SnapValue(DecibelScaling::Scale2Db(scale), 0.0f, 0.5f);
         _processor.setParameterNotifyingHost(Parameters::WetDecibels, decibels);
         //[/UserSliderCode__wetSlider]
-    }
-    else if (sliderThatWasMoved == _hiGainSlider.get())
-    {
-        //[UserSliderCode__hiGainSlider] -- add your slider handling code here..
-        _processor.setParameterNotifyingHost(Parameters::EqHighShelfDecibels, SnapValue(static_cast<float>(_hiGainSlider->getValue()), 0.0f, 0.5f));
-        //[/UserSliderCode__hiGainSlider]
-    }
-    else if (sliderThatWasMoved == _hiFreqSlider.get())
-    {
-        //[UserSliderCode__hiFreqSlider] -- add your slider handling code here..
-        _processor.setParameterNotifyingHost(Parameters::EqHighShelfFreq, static_cast<float>(_hiFreqSlider->getValue()));
-        //[/UserSliderCode__hiFreqSlider]
-    }
-    else if (sliderThatWasMoved == _loGainSlider.get())
-    {
-        //[UserSliderCode__loGainSlider] -- add your slider handling code here..
-        _processor.setParameterNotifyingHost(Parameters::EqLowShelfDecibels, SnapValue(static_cast<float>(_loGainSlider->getValue()), 0.0f, 0.5f));
-        //[/UserSliderCode__loGainSlider]
-    }
-    else if (sliderThatWasMoved == _loFreqSlider.get())
-    {
-        //[UserSliderCode__loFreqSlider] -- add your slider handling code here..
-        _processor.setParameterNotifyingHost(Parameters::EqLowShelfFreq, static_cast<float>(_loFreqSlider->getValue()));
-        //[/UserSliderCode__loFreqSlider]
-    }
-    else if (sliderThatWasMoved == _lowCutFreqSlider.get())
-    {
-        //[UserSliderCode__lowCutFreqSlider] -- add your slider handling code here..
-        _processor.setParameterNotifyingHost(Parameters::EqLowCutFreq, static_cast<float>(_lowCutFreqSlider->getValue()));
-        //[/UserSliderCode__lowCutFreqSlider]
-    }
-    else if (sliderThatWasMoved == _highCutFreqSlider.get())
-    {
-        //[UserSliderCode__highCutFreqSlider] -- add your slider handling code here..
-        _processor.setParameterNotifyingHost(Parameters::EqHighCutFreq, static_cast<float>(_highCutFreqSlider->getValue()));
-        //[/UserSliderCode__highCutFreqSlider]
     }
 
     //[UsersliderValueChanged_Post]
@@ -1007,20 +702,6 @@ void KlangFalterEditor::buttonClicked (juce::Button* buttonThatWasClicked)
         _processor.getSettings().setResultLevelMeterDisplay(_levelMeterOutLabelButton->getToggleState() ? Settings::Out : Settings::Wet);
         //[/UserButtonCode__levelMeterOutLabelButton]
     }
-    else if (buttonThatWasClicked == _lowEqButton.get())
-    {
-        //[UserButtonCode__lowEqButton] -- add your button handler code here..
-        const Parameters::EqType lowEqType = static_cast<Parameters::EqType>(_processor.getParameter(Parameters::EqLowType));
-        _processor.setParameterNotifyingHost(Parameters::EqLowType, static_cast<int>((lowEqType == Parameters::Cut) ? Parameters::Shelf : Parameters::Cut));
-        //[/UserButtonCode__lowEqButton]
-    }
-    else if (buttonThatWasClicked == _highEqButton.get())
-    {
-        //[UserButtonCode__highEqButton] -- add your button handler code here..
-        const Parameters::EqType highEqType = static_cast<Parameters::EqType>(_processor.getParameter(Parameters::EqHighType));
-        _processor.setParameterNotifyingHost(Parameters::EqHighType, static_cast<int>((highEqType == Parameters::Cut) ? Parameters::Shelf : Parameters::Cut));
-        //[/UserButtonCode__highEqButton]
-    }
 
     //[UserbuttonClicked_Post]
     //[/UserbuttonClicked_Post]
@@ -1039,6 +720,8 @@ void KlangFalterEditor::updateUI()
   _attackSliderGroup->onUpdate(irAvailable);
   _decaySliderGroup->onUpdate(irAvailable);
   _stereoSliderGroup->onUpdate(irAvailable, numOutputChannels);
+  _lowEqSliderGroup->onUpdate(irAvailable);
+  _highEqSliderGroup->onUpdate(irAvailable);
   {
     const float db = _processor.getParameter(Parameters::DryDecibels);
     const float scale = DecibelScaling::Db2Scale(db);
@@ -1067,58 +750,6 @@ void KlangFalterEditor::updateUI()
     const juce::String autoGainText = DecibelScaling::DecibelString(autoGainDecibels);
     _autogainButton->setButtonText(juce::String("Autogain ") + autoGainText);
     _autogainButton->setToggleState(autoGainOn, juce::dontSendNotification);
-  }
-  {
-    Parameters::EqType lowEqType = static_cast<Parameters::EqType>(_processor.getParameter(Parameters::EqLowType));
-    const bool loEqEnabled = irAvailable;
-    const float cutFreq = _processor.getParameter(Parameters::EqLowCutFreq);
-    const float shelfFreq = _processor.getParameter(Parameters::EqLowShelfFreq);
-    const float shelfGainDb = _processor.getParameter(Parameters::EqLowShelfDecibels);
-    _lowEqButton->setButtonText(lowEqType == Parameters::Shelf ? juce::String("Low Shelf") : juce::String("Low Cut"));
-    _lowCutFreqHeaderLabel->setVisible(lowEqType == Parameters::Cut);
-    _lowCutFreqLabel->setVisible(lowEqType == Parameters::Cut);
-    _lowCutFreqLabel->setText((::fabs(cutFreq-Parameters::EqLowCutFreq.getMinValue()) > 0.0001f) ? FormatFrequency(cutFreq) : juce::String("Off"), juce::sendNotification);
-    _lowCutFreqSlider->setVisible(lowEqType == Parameters::Cut);
-    _lowCutFreqSlider->setEnabled(loEqEnabled);
-    _lowCutFreqSlider->setValue(cutFreq, juce::dontSendNotification);
-    _loFreqHeaderLabel->setVisible(lowEqType == Parameters::Shelf);
-    _loFreqLabel->setVisible(lowEqType == Parameters::Shelf);
-    _loFreqLabel->setText(FormatFrequency(shelfFreq), juce::sendNotification);
-    _loFreqSlider->setVisible(lowEqType == Parameters::Shelf);
-    _loFreqSlider->setEnabled(loEqEnabled);
-    _loFreqSlider->setValue(shelfFreq, juce::dontSendNotification);
-    _loGainHeaderLabel->setVisible(lowEqType == Parameters::Shelf);
-    _loGainLabel->setVisible(lowEqType == Parameters::Shelf);
-    _loGainLabel->setText(DecibelScaling::DecibelString(shelfGainDb), juce::sendNotification);
-    _loGainSlider->setVisible(lowEqType == Parameters::Shelf);
-    _loGainSlider->setEnabled(loEqEnabled);
-    _loGainSlider->setValue(shelfGainDb, juce::dontSendNotification);
-  }
-  {
-    Parameters::EqType highEqType = static_cast<Parameters::EqType>(_processor.getParameter(Parameters::EqHighType));
-    const bool hiEqEnabled = irAvailable;
-    const float cutFreq = _processor.getParameter(Parameters::EqHighCutFreq);
-    const float shelfFreq = _processor.getParameter(Parameters::EqHighShelfFreq);
-    const float shelfGainDb = _processor.getParameter(Parameters::EqHighShelfDecibels);
-    _highEqButton->setButtonText(highEqType == Parameters::Shelf ? juce::String("High Shelf") : juce::String("High Cut"));
-    _highCutFreqHeaderLabel->setVisible(highEqType == Parameters::Cut);
-    _highCutFreqLabel->setVisible(highEqType == Parameters::Cut);
-    _highCutFreqLabel->setText((::fabs(cutFreq-Parameters::EqHighCutFreq.getMaxValue()) > 0.0001f) ? FormatFrequency(cutFreq) : juce::String("Off"), juce::sendNotification);
-    _highCutFreqSlider->setVisible(highEqType == Parameters::Cut);
-    _highCutFreqSlider->setEnabled(hiEqEnabled);
-    _highCutFreqSlider->setValue(cutFreq, juce::dontSendNotification);
-    _hiFreqHeaderLabel->setVisible(highEqType == Parameters::Shelf);
-    _hiFreqLabel->setVisible(highEqType == Parameters::Shelf);
-    _hiFreqLabel->setText(FormatFrequency(shelfFreq), juce::sendNotification);
-    _hiFreqSlider->setVisible(highEqType == Parameters::Shelf);
-    _hiFreqSlider->setEnabled(hiEqEnabled);
-    _hiFreqSlider->setValue(shelfFreq, juce::dontSendNotification);
-    _hiGainHeaderLabel->setVisible(highEqType == Parameters::Shelf);
-    _hiGainLabel->setVisible(highEqType == Parameters::Shelf);
-    _hiGainLabel->setText(DecibelScaling::DecibelString(shelfGainDb), juce::sendNotification);
-    _hiGainSlider->setVisible(highEqType == Parameters::Shelf);
-    _hiGainSlider->setEnabled(hiEqEnabled);
-    _hiGainSlider->setValue(shelfGainDb, juce::dontSendNotification);
   }
   {
     _levelMeterDry->setChannelCount(numInputChannels);
@@ -1280,66 +911,6 @@ BEGIN_JUCER_METADATA
               explicitFocusOrder="0" pos="20 198 72 24" tooltip="Reverse Impulse Response"
               bgColOff="80bcbcbc" bgColOn="ffbcbcff" textCol="ff202020" textColOn="ff202020"
               buttonText="Reverse" connectedEdges="3" needsCallback="1" radioGroupId="0"/>
-  <LABEL name="" id="841738a894cf241a" memberName="_hiFreqLabel" virtualName=""
-         explicitFocusOrder="0" pos="480 291 52 24" textCol="ffb0b0b6"
-         edTextCol="ff000000" edBkgCol="0" labelText="15.2kHz" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
-  <LABEL name="" id="fc2c2b94ce457ca1" memberName="_hiGainLabel" virtualName=""
-         explicitFocusOrder="0" pos="516 291 52 24" textCol="ffb0b0b6"
-         edTextCol="ff000000" edBkgCol="0" labelText="0.0dB" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
-  <LABEL name="" id="56744cc537b91ad6" memberName="_hiGainHeaderLabel"
-         virtualName="" explicitFocusOrder="0" pos="516 247 52 24" textCol="ffb0b0b6"
-         edTextCol="ff000000" edBkgCol="0" labelText="Gain" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
-  <LABEL name="" id="71caf1a3b5a498dd" memberName="_hiFreqHeaderLabel"
-         virtualName="" explicitFocusOrder="0" pos="480 247 52 24" textCol="ffb0b0b6"
-         edTextCol="ff000000" edBkgCol="0" labelText="Freq" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
-  <SLIDER name="" id="1c3776d0e6cbce1d" memberName="_hiGainSlider" virtualName=""
-          explicitFocusOrder="0" pos="524 267 36 28" thumbcol="ffafafff"
-          rotarysliderfill="b1606060" min="-30.0" max="30.0" int="0.0"
-          style="RotaryVerticalDrag" textBoxPos="NoTextBox" textBoxEditable="1"
-          textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
-  <SLIDER name="" id="702db07b37c24f93" memberName="_hiFreqSlider" virtualName=""
-          explicitFocusOrder="0" pos="488 267 36 28" thumbcol="ffafafff"
-          rotarysliderfill="b1606060" min="2000.0" max="20000.0" int="0.0"
-          style="RotaryVerticalDrag" textBoxPos="NoTextBox" textBoxEditable="1"
-          textBoxWidth="80" textBoxHeight="20" skewFactor="0.7" needsCallback="1"/>
-  <LABEL name="" id="8b28430d938b39ca" memberName="_loFreqLabel" virtualName=""
-         explicitFocusOrder="0" pos="396 291 52 24" textCol="ffb0b0b6"
-         edTextCol="ff000000" edBkgCol="0" labelText="1234Hz" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
-  <LABEL name="" id="390bab67dc140d90" memberName="_loGainLabel" virtualName=""
-         explicitFocusOrder="0" pos="432 291 52 24" textCol="ffb0b0b6"
-         edTextCol="ff000000" edBkgCol="0" labelText="0.0dB" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
-  <LABEL name="" id="8d9e4adc7538b7dc" memberName="_loGainHeaderLabel"
-         virtualName="" explicitFocusOrder="0" pos="432 247 52 24" textCol="ffb0b0b6"
-         edTextCol="ff000000" edBkgCol="0" labelText="Gain" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
-  <LABEL name="" id="f3b3523aee42340f" memberName="_loFreqHeaderLabel"
-         virtualName="" explicitFocusOrder="0" pos="396 247 52 24" textCol="ffb0b0b6"
-         edTextCol="ff000000" edBkgCol="0" labelText="Freq" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
-  <SLIDER name="" id="a3dc7342caaa661f" memberName="_loGainSlider" virtualName=""
-          explicitFocusOrder="0" pos="440 267 36 28" thumbcol="ffafafff"
-          rotarysliderfill="b1606060" min="-30.0" max="30.0" int="0.0"
-          style="RotaryVerticalDrag" textBoxPos="NoTextBox" textBoxEditable="1"
-          textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
-  <SLIDER name="" id="313e885756edaea8" memberName="_loFreqSlider" virtualName=""
-          explicitFocusOrder="0" pos="404 267 36 28" thumbcol="ffafafff"
-          rotarysliderfill="b1606060" min="20.0" max="2000.0" int="0.0"
-          style="RotaryVerticalDrag" textBoxPos="NoTextBox" textBoxEditable="1"
-          textBoxWidth="80" textBoxHeight="20" skewFactor="0.5" needsCallback="1"/>
   <GENERICCOMPONENT name="" id="e4867bf99a47726a" memberName="_levelMeterOut" virtualName=""
                     explicitFocusOrder="0" pos="720 51 12 176" class="LevelMeter"
                     params=""/>
@@ -1352,44 +923,6 @@ BEGIN_JUCER_METADATA
          edTextCol="ffb0b0b6" edBkgCol="0" labelText="Dry" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
-  <TEXTBUTTON name="" id="91aebb1e5cd3b857" memberName="_lowEqButton" virtualName=""
-              explicitFocusOrder="0" pos="404 231 72 24" bgColOff="bbbbff"
-              bgColOn="2c2cff" textCol="ffb0b0b6" textColOn="ffb0b0b6" buttonText="Low Cut"
-              connectedEdges="3" needsCallback="1" radioGroupId="0"/>
-  <LABEL name="" id="3c3de25483a2083a" memberName="_lowCutFreqLabel" virtualName=""
-         explicitFocusOrder="0" pos="414 291 52 24" textCol="ffb0b0b6"
-         edTextCol="ff000000" edBkgCol="0" labelText="1234Hz" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
-  <LABEL name="" id="e7ff4fcd0be82eec" memberName="_lowCutFreqHeaderLabel"
-         virtualName="" explicitFocusOrder="0" pos="414 247 52 24" textCol="ffb0b0b6"
-         edTextCol="ff000000" edBkgCol="0" labelText="Freq" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
-  <SLIDER name="" id="939a6b5201207a68" memberName="_lowCutFreqSlider"
-          virtualName="" explicitFocusOrder="0" pos="422 267 36 28" thumbcol="ffafafff"
-          rotarysliderfill="b1606060" min="20.0" max="2000.0" int="0.0"
-          style="RotaryVerticalDrag" textBoxPos="NoTextBox" textBoxEditable="1"
-          textBoxWidth="80" textBoxHeight="20" skewFactor="0.5" needsCallback="1"/>
-  <LABEL name="" id="54b3891e3f360022" memberName="_highCutFreqLabel"
-         virtualName="" explicitFocusOrder="0" pos="498 291 52 24" textCol="ffb0b0b6"
-         edTextCol="ff000000" edBkgCol="0" labelText="15.2kHz" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
-  <LABEL name="" id="e765fe8c17a454cf" memberName="_highCutFreqHeaderLabel"
-         virtualName="" explicitFocusOrder="0" pos="498 247 52 24" textCol="ffb0b0b6"
-         edTextCol="ff000000" edBkgCol="0" labelText="Freq" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="11.0" kerning="0.0" bold="0" italic="0" justification="36"/>
-  <SLIDER name="" id="b5ba6600a0fbff4e" memberName="_highCutFreqSlider"
-          virtualName="" explicitFocusOrder="0" pos="506 267 36 28" thumbcol="ffafafff"
-          rotarysliderfill="b1606060" min="2000.0" max="20000.0" int="0.0"
-          style="RotaryVerticalDrag" textBoxPos="NoTextBox" textBoxEditable="1"
-          textBoxWidth="80" textBoxHeight="20" skewFactor="0.7" needsCallback="1"/>
-  <TEXTBUTTON name="" id="e0f66dc6348e3991" memberName="_highEqButton" virtualName=""
-              explicitFocusOrder="0" pos="488 231 72 24" bgColOff="bbbbff"
-              bgColOn="2c2cff" textCol="ffb0b0b6" textColOn="ffb0b0b6" buttonText="High Cut"
-              connectedEdges="3" needsCallback="1" radioGroupId="0"/>
   <LABEL name="Title Label" id="f44017b03503c913" memberName="_titleLabel"
          virtualName="" explicitFocusOrder="0" pos="248 4 195 40" textCol="ffb0b0b6"
          edTextCol="ffb0b0b6" edBkgCol="0" labelText="Body &amp; Soul:"

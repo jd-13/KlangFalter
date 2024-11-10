@@ -104,3 +104,61 @@ private:
     std::unique_ptr<juce::Slider> _widthSlider;
     std::unique_ptr<juce::Label> _widthLabel;
 };
+
+class LowEqSliderGroup : public juce::Component {
+public:
+    LowEqSliderGroup(Processor& processor);
+    virtual ~LowEqSliderGroup();
+
+    void resized() override;
+
+    void onUpdate(bool enableSliders);
+
+private:
+    Processor& _processor;
+
+    std::unique_ptr<UIUtils::RotarySliderLookAndFeel> _rotarySliderLookAndFeel;
+
+    std::unique_ptr<juce::TextButton> _lowEqButton;
+
+    std::unique_ptr<juce::Label> _lowCutFreqHeaderLabel;
+    std::unique_ptr<juce::Slider> _lowCutFreqSlider;
+    std::unique_ptr<juce::Label> _lowCutFreqLabel;
+
+    std::unique_ptr<juce::Label> _loFreqHeaderLabel;
+    std::unique_ptr<juce::Slider> _loFreqSlider;
+    std::unique_ptr<juce::Label> _loFreqLabel;
+
+    std::unique_ptr<juce::Label> _loGainHeaderLabel;
+    std::unique_ptr<juce::Slider> _loGainSlider;
+    std::unique_ptr<juce::Label> _loGainLabel;
+};
+
+class HighEqSliderGroup : public juce::Component {
+public:
+    HighEqSliderGroup(Processor& processor);
+    virtual ~HighEqSliderGroup();
+
+    void resized() override;
+
+    void onUpdate(bool enableSliders);
+
+private:
+    Processor& _processor;
+
+    std::unique_ptr<UIUtils::RotarySliderLookAndFeel> _rotarySliderLookAndFeel;
+
+    std::unique_ptr<juce::TextButton> _highEqButton;
+
+    std::unique_ptr<juce::Label> _highCutFreqHeaderLabel;
+    std::unique_ptr<juce::Slider> _highCutFreqSlider;
+    std::unique_ptr<juce::Label> _highCutFreqLabel;
+
+    std::unique_ptr<juce::Label> _hiFreqHeaderLabel;
+    std::unique_ptr<juce::Slider> _hiFreqSlider;
+    std::unique_ptr<juce::Label> _hiFreqLabel;
+
+    std::unique_ptr<juce::Label> _hiGainHeaderLabel;
+    std::unique_ptr<juce::Slider> _hiGainSlider;
+    std::unique_ptr<juce::Label> _hiGainLabel;
+};
