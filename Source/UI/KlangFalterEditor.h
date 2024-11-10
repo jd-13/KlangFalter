@@ -80,6 +80,7 @@ private:
     std::map<std::pair<size_t, size_t>, IRComponent*> _irComponents;
     std::unique_ptr<juce::DialogWindow::LaunchOptions> _creditsWindowOptions;
     std::unique_ptr<IRSliderGroup> _irSliderGroup;
+    std::unique_ptr<AttackSliderGroup> _attackSliderGroup;
 
     void _updateIRBrowserOpen(bool isOpen);
     //[/UserVariables]
@@ -122,19 +123,12 @@ private:
     std::unique_ptr<juce::Label> _highCutFreqHeaderLabel;
     std::unique_ptr<juce::Slider> _highCutFreqSlider;
     std::unique_ptr<juce::TextButton> _highEqButton;
-    std::unique_ptr<juce::Label> _attackShapeLabel;
-    std::unique_ptr<juce::Slider> _attackShapeSlider;
     std::unique_ptr<juce::Label> _decayShapeLabel;
     std::unique_ptr<juce::Label> _decayShapeHeaderLabel;
     std::unique_ptr<juce::Slider> _decayShapeSlider;
-    std::unique_ptr<juce::Label> _attackShapeHeaderLabel;
     std::unique_ptr<juce::Label> _widthLabel;
     std::unique_ptr<juce::Label> _widthHeaderLabel;
     std::unique_ptr<juce::Slider> _widthSlider;
-    std::unique_ptr<juce::Label> _attackHeaderLabel;
-    std::unique_ptr<juce::Label> _attackLengthLabel;
-    std::unique_ptr<juce::Slider> _attackLengthSlider;
-    std::unique_ptr<juce::Label> _attackLengthHeaderLabel;
     std::unique_ptr<juce::Label> _decayHeaderLabel;
     std::unique_ptr<juce::Label> _stereoHeaderLabel;
     std::unique_ptr<juce::Label> _titleLabel;

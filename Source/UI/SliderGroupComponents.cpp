@@ -226,3 +226,118 @@ void IRSliderGroup::onUpdate(bool enableSliders) {
     _stretchSlider->setValue(tune, juce::dontSendNotification);
     _stretchLabel->setText(String(static_cast<int>(100.0*tune)) + String("%"), juce::sendNotification);
 }
+
+AttackSliderGroup::AttackSliderGroup(Processor& processor) :
+        _processor(processor),
+        _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()) {
+    _attackHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Attack")));
+    addAndMakeVisible(_attackHeaderLabel.get());
+    _attackHeaderLabel->setFont(juce::Font(15.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _attackHeaderLabel->setJustificationType(juce::Justification::centred);
+    _attackHeaderLabel->setEditable(false, false, false);
+    _attackHeaderLabel->setColour(juce::Label::textColourId, juce::Colour (0xffb0b0b6));
+    _attackHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colour (0xffb0b0b6));
+    _attackHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+
+    _attackLengthHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Length")));
+    addAndMakeVisible(_attackLengthHeaderLabel.get());
+    _attackLengthHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _attackLengthHeaderLabel->setJustificationType(juce::Justification::centred);
+    _attackLengthHeaderLabel->setEditable(false, false, false);
+    _attackLengthHeaderLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
+    _attackLengthHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
+    _attackLengthHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+
+    _attackLengthSlider.reset(new juce::Slider(juce::String()));
+    addAndMakeVisible(_attackLengthSlider.get());
+    _attackLengthSlider->setRange(0, 1, 0);
+    _attackLengthSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
+    _attackLengthSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
+    _attackLengthSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
+    _attackLengthSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
+    _attackLengthSlider->setSkewFactor(0.5);
+    _attackLengthSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
+    _attackLengthSlider->setDoubleClickReturnValue(true, 0);
+    _attackLengthSlider->onValueChange = [this] {
+        _processor.setAttackLength(_attackLengthSlider->getValue());
+    };
+
+    _attackLengthLabel.reset(new juce::Label(juce::String(), TRANS("0ms")));
+    addAndMakeVisible (_attackLengthLabel.get());
+    _attackLengthLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
+    _attackLengthLabel->setJustificationType (juce::Justification::centred);
+    _attackLengthLabel->setEditable (false, false, false);
+    _attackLengthLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
+    _attackLengthLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
+    _attackLengthLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+
+    _attackShapeHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Shape")));
+    addAndMakeVisible(_attackShapeHeaderLabel.get());
+    _attackShapeHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _attackShapeHeaderLabel->setJustificationType(juce::Justification::centred);
+    _attackShapeHeaderLabel->setEditable(false, false, false);
+    _attackShapeHeaderLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
+    _attackShapeHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
+    _attackShapeHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+
+    _attackShapeSlider.reset(new juce::Slider(juce::String()));
+    addAndMakeVisible(_attackShapeSlider.get());
+    _attackShapeSlider->setRange(0, 10, 0);
+    _attackShapeSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
+    _attackShapeSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
+    _attackShapeSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
+    _attackShapeSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
+    _attackShapeSlider->setSkewFactor(0.5);
+    _attackShapeSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
+    _attackShapeSlider->setDoubleClickReturnValue(true, 0);
+    _attackShapeSlider->onValueChange = [this] {
+        _processor.setAttackShape(_attackShapeSlider->getValue());
+    };
+
+    _attackShapeLabel.reset(new juce::Label(juce::String(), TRANS("1.0")));
+    addAndMakeVisible(_attackShapeLabel.get());
+    _attackShapeLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _attackShapeLabel->setJustificationType(juce::Justification::centred);
+    _attackShapeLabel->setEditable(false, false, false);
+    _attackShapeLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
+    _attackShapeLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
+    _attackShapeLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+}
+
+AttackSliderGroup::~AttackSliderGroup() {
+    _attackHeaderLabel = nullptr;
+
+    _attackLengthHeaderLabel = nullptr;
+    _attackLengthSlider = nullptr;
+    _attackLengthLabel = nullptr;
+
+    _attackShapeHeaderLabel = nullptr;
+    _attackShapeSlider = nullptr;
+    _attackShapeLabel = nullptr;
+}
+
+void AttackSliderGroup::resized() {
+    juce::Rectangle<int> availableArea = getLocalBounds();
+
+    _attackHeaderLabel->setBounds(availableArea.withHeight(24));
+    availableArea.removeFromTop(16);
+
+    const int sliderAreaWidth {availableArea.getWidth() / 2};
+    juce::Rectangle<int> attackLengthArea = availableArea.removeFromLeft(sliderAreaWidth);
+    layoutSlider(attackLengthArea, _attackLengthHeaderLabel.get(), _attackLengthSlider.get(), _attackLengthLabel.get());
+
+    juce::Rectangle<int> attackShapeArea = availableArea.removeFromLeft(sliderAreaWidth);
+    layoutSlider(attackShapeArea, _attackShapeHeaderLabel.get(), _attackShapeSlider.get(), _attackShapeLabel.get());
+}
+
+void AttackSliderGroup::onUpdate(bool enableSliders) {
+    const double attackLength = _processor.getAttackLength();
+    _attackLengthSlider->setValue(attackLength);
+    _attackLengthSlider->setEnabled(enableSliders);
+    _attackLengthLabel->setText(juce::String(100.0 * attackLength, 1)+juce::String("%"), juce::sendNotification);
+
+    const double attackShape = _processor.getAttackShape();
+    _attackShapeSlider->setValue(attackShape);
+    _attackShapeSlider->setEnabled(enableSliders);
+    _attackShapeLabel->setText((attackShape < 0.0001) ? juce::String("Neutral") : juce::String(attackShape, 2), juce::sendNotification);
+}
