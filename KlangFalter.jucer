@@ -103,6 +103,10 @@
             file="Source/UI/KlangFalterEditor.h"/>
       <FILE id="VEaG8F" name="LevelMeter.cpp" compile="1" resource="0" file="Source/UI/LevelMeter.cpp"/>
       <FILE id="zRwaj0" name="LevelMeter.h" compile="0" resource="0" file="Source/UI/LevelMeter.h"/>
+      <FILE id="EHhfnf" name="SliderGroupComponents.cpp" compile="1" resource="0"
+            file="Source/UI/SliderGroupComponents.cpp"/>
+      <FILE id="fPHWuW" name="SliderGroupComponents.hpp" compile="0" resource="0"
+            file="Source/UI/SliderGroupComponents.hpp"/>
       <FILE id="atIeXr" name="UIUtils.cpp" compile="1" resource="0" file="Source/UI/UIUtils.cpp"/>
       <FILE id="NpWwBu" name="UIUtils.hpp" compile="0" resource="0" file="Source/UI/UIUtils.hpp"/>
       <FILE id="xM5QfR" name="WaveformComponent.cpp" compile="1" resource="0"
