@@ -5,7 +5,7 @@ set -e
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null 2>&1 && pwd )"
 
 echo "=== Downloading JUCE ==="
-JUCE_VERSION=7.0.9
+JUCE_VERSION=8.0.4
 wget https://github.com/juce-framework/JUCE/releases/download/$JUCE_VERSION/juce-$JUCE_VERSION-osx.zip \
      -P $SCRIPT_DIR/../..
 unzip $SCRIPT_DIR/../../juce-$JUCE_VERSION-osx.zip
