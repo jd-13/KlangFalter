@@ -88,6 +88,7 @@ private:
     std::unique_ptr<juce::ComponentBoundsConstrainer> _constrainer;
 
     void _updateIRBrowserOpen(bool isOpen);
+    int scaled(float value) const;
     //[/UserVariables]
 
     //==============================================================================

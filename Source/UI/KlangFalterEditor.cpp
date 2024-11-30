@@ -473,21 +473,21 @@ void KlangFalterEditor::paint (juce::Graphics& g)
     const int logoAreaWidth {_decibelScaleDry->getX() - _irTabComponent->getRight()};
     const int xMid {_irTabComponent->getRight() + logoAreaWidth / 2};
     {
-        constexpr int logoWidth {35};
+        const int logoWidth {scaled(35)};
         juce::Image tomLogo(juce::ImageCache::getFromMemory(BinaryData::tom_png, BinaryData::tom_pngSize));
         const float aspect {tomLogo.getWidth() / static_cast<float>(tomLogo.getHeight())};
         const int logoHeight {static_cast<int>(logoWidth / aspect)};
         g.drawImage(tomLogo,
-                    xMid - logoWidth / 2, 60, logoWidth, logoHeight,
+                    xMid - logoWidth / 2, scaled(60), logoWidth, logoHeight,
                     0, 0, tomLogo.getWidth(), tomLogo.getHeight());
     }
     {
-        constexpr int logoWidth {80};
+        const int logoWidth {scaled(80)};
         juce::Image weaLogo(juce::ImageCache::getFromMemory(BinaryData::wea_png, BinaryData::wea_pngSize));
         const float aspect {weaLogo.getWidth() / static_cast<float>(weaLogo.getHeight())};
         const int logoHeight {static_cast<int>(logoWidth / aspect)};
         g.drawImage(weaLogo,
-                    xMid - logoWidth / 2, 170, logoWidth, logoHeight,
+                    xMid - logoWidth / 2, scaled(170), logoWidth, logoHeight,
                     0, 0, weaLogo.getWidth(), weaLogo.getHeight());
     }
 
@@ -504,9 +504,9 @@ void KlangFalterEditor::resized()
 
     // Title row
     {
-        constexpr int TITLE_ROW_HEIGHT {51};
-        constexpr int TITLE_TEXT_HEIGHT {40};
-        juce::Rectangle<int> titleRow = availableArea.removeFromTop(TITLE_ROW_HEIGHT).withTrimmedTop(4);
+        const int TITLE_ROW_HEIGHT {scaled(51)};
+        const int TITLE_TEXT_HEIGHT {scaled(40)};
+        juce::Rectangle<int> titleRow = availableArea.removeFromTop(TITLE_ROW_HEIGHT).withTrimmedTop(scaled(4));
 
         const int titleRowYCentre {availableArea.getWidth() / 2};
         const int titleTextWidth {_titleLabel->getFont().getStringWidth(_titleLabel->getText())};
@@ -514,30 +514,44 @@ void KlangFalterEditor::resized()
             titleTextWidth + _subtitleLabel->getFont().getStringWidth(_subtitleLabel->getText())
         };
 
-        _titleLabel->setBounds(titleRowYCentre - titleTextTotalWidth / 2, 4, titleTextWidth, TITLE_TEXT_HEIGHT);
-        _subtitleLabel->setBounds(titleRowYCentre - titleTextTotalWidth / 2 + titleTextWidth, 4, titleTextTotalWidth - titleTextWidth, TITLE_TEXT_HEIGHT);
-        _creditsButton->setBounds(_titleLabel->getX(), _titleLabel->getY(), titleTextTotalWidth, TITLE_TEXT_HEIGHT);
+        _titleLabel->setBounds(
+            titleRowYCentre - titleTextTotalWidth / 2,
+            scaled(4),
+            titleTextWidth,
+            TITLE_TEXT_HEIGHT);
+
+        _subtitleLabel->setBounds(
+            titleRowYCentre - titleTextTotalWidth / 2 + titleTextWidth,
+            scaled(4),
+            titleTextTotalWidth - titleTextWidth,
+            TITLE_TEXT_HEIGHT);
+
+        _creditsButton->setBounds(
+            _titleLabel->getX(),
+            _titleLabel->getY(),
+            titleTextTotalWidth,
+            TITLE_TEXT_HEIGHT);
     }
 
     // Imager row
-    const int METERS_TOTAL_WIDTH {160};
+    const int METERS_TOTAL_WIDTH {scaled(160)};
     {
-        constexpr int IMAGER_ROW_HEIGHT {176};
-        constexpr int IMAGER_ROW_MARGIN {16};
+        const int IMAGER_ROW_HEIGHT {scaled(176)};
+        const int IMAGER_ROW_MARGIN {scaled(16)};
         juce::Rectangle<int> imagerRow = availableArea.removeFromTop(IMAGER_ROW_HEIGHT);
         imagerRow.reduce(IMAGER_ROW_MARGIN, 0);
 
         juce::Rectangle<int> metersArea = imagerRow.removeFromRight(METERS_TOTAL_WIDTH);
 
-        auto getMeterSliderBounds = [](juce::Rectangle<int> bounds, const juce::Rectangle<int>& metersArea) {
-            return bounds.withBottomY(metersArea.getBottom() - 8).withHeight(metersArea.getHeight() + 16);
+        auto getMeterSliderBounds = [&](juce::Rectangle<int> bounds, const juce::Rectangle<int>& metersArea) {
+            return bounds.withBottomY(metersArea.getBottom() - scaled(8)).withHeight(metersArea.getHeight() + scaled(16));
         };
 
-        juce::Rectangle<int> meterButtonsArea = metersArea.removeFromTop(18);
+        juce::Rectangle<int> meterButtonsArea = metersArea.removeFromTop(scaled(18));
 
-        const int METER_WIDTH {12};
-        const int METER_SLIDER_WIDTH {24};
-        const int METER_SCALE_WIDTH {32};
+        const int METER_WIDTH {scaled(12)};
+        const int METER_SLIDER_WIDTH {METER_WIDTH * 2};
+        const int METER_SCALE_WIDTH {METER_WIDTH * 3};
         _levelMeterOut->setBounds(metersArea.removeFromRight(METER_WIDTH));
         _wetSlider->setBounds(getMeterSliderBounds(metersArea.removeFromRight(METER_SLIDER_WIDTH), metersArea));
         _decibelScaleOut->setBounds(metersArea.removeFromRight(METER_SCALE_WIDTH));
@@ -546,24 +560,24 @@ void KlangFalterEditor::resized()
         _drySlider->setBounds(getMeterSliderBounds(metersArea.removeFromLeft(METER_SLIDER_WIDTH), metersArea));
         _levelMeterDry->setBounds(metersArea.removeFromLeft(METER_WIDTH));
 
-        auto positionMeterButton = [&meterButtonsArea](juce::Component* button, const std::unique_ptr<LevelMeter>& meter) {
-            constexpr int BUTTON_WIDTH {28};
+        auto positionMeterButton = [&](juce::Component* button, const std::unique_ptr<LevelMeter>& meter) {
+            const int BUTTON_WIDTH {scaled(28)};
             const int xPos {meter->getX() + meter->getWidth() / 2 - BUTTON_WIDTH / 2};
             button->setBounds(xPos, meterButtonsArea.getY(), BUTTON_WIDTH, meterButtonsArea.getHeight());
         };
         positionMeterButton(_levelMeterDryLabel.get(), _levelMeterDry);
         positionMeterButton(_levelMeterOutLabelButton.get(), _levelMeterOut);
 
-        imagerRow.removeFromRight(106);
+        imagerRow.removeFromRight(scaled(106));
         _irTabComponent->setBounds(imagerRow);
     }
 
     // IR Browser
     {
-        constexpr int IR_BROWSER_MARGIN {12};
+        const int IR_BROWSER_MARGIN {scaled(12)};
 
         if (_processor.getIrBrowserOpen()) {
-            const juce::Rectangle<int> irBrowserArea = availableArea.removeFromBottom(IR_BROWSER_AREA_HEIGHT)
+            const juce::Rectangle<int> irBrowserArea = availableArea.removeFromBottom(scaled(IR_BROWSER_AREA_HEIGHT))
                 .withTrimmedBottom(IR_BROWSER_MARGIN)
                 .withTrimmedLeft(IR_BROWSER_MARGIN)
                 .withTrimmedRight(IR_BROWSER_MARGIN);
@@ -573,8 +587,8 @@ void KlangFalterEditor::resized()
             _irBrowserComponent->setBounds(availableArea.removeFromBottom(0));
         }
 
-        constexpr int IR_BROWSER_BUTTON_HEIGHT {24};
-        availableArea.removeFromBottom(1);
+        const int IR_BROWSER_BUTTON_HEIGHT {scaled(24)};
+        availableArea.removeFromBottom(scaled(1));
 
         const juce::Rectangle<int> browseButtonArea = availableArea.removeFromBottom(IR_BROWSER_BUTTON_HEIGHT)
             .withTrimmedLeft(IR_BROWSER_MARGIN)
@@ -587,9 +601,9 @@ void KlangFalterEditor::resized()
     // Gain buttons
     {
         juce::Rectangle<int> gainButtonsArea = availableArea.removeFromRight(METERS_TOTAL_WIDTH);
-        juce::Rectangle<int> gainButtonLabelsRow = gainButtonsArea.removeFromTop(24);
+        juce::Rectangle<int> gainButtonLabelsRow = gainButtonsArea.removeFromTop(scaled(24));
 
-        constexpr int LEVEL_LABEL_WIDTH {60};
+        const int LEVEL_LABEL_WIDTH {scaled(60)};
         _dryLevelLabel->setBounds(_drySlider->getRight() - LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getY(), LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getHeight());
         _wetLevelLabel->setBounds(_wetSlider->getRight() - LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getY(), LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getHeight());
 
@@ -599,37 +613,37 @@ void KlangFalterEditor::resized()
         flexBox.justifyContent = juce::FlexBox::JustifyContent::spaceAround;
         flexBox.alignContent = juce::FlexBox::AlignContent::flexStart;
 
-        const juce::FlexItem::Margin marginRight(0, 16, 0, 0);
-        const juce::FlexItem::Margin marginTop(8, 0, 0, 0);
-        flexBox.items.add(juce::FlexItem(*_dryButton.get()).withMinWidth(44).withMinHeight(24).withMargin(marginRight));
-        flexBox.items.add(juce::FlexItem(*_wetButton.get()).withMinWidth(44).withMinHeight(24));
-        flexBox.items.add(juce::FlexItem(*_autogainButton.get()).withMinWidth(132).withMinHeight(24).withMargin(marginTop));
+        const juce::FlexItem::Margin marginRight(0, scaled(16), 0, 0);
+        const juce::FlexItem::Margin marginTop(scaled(8), 0, 0, 0);
+        flexBox.items.add(juce::FlexItem(*_dryButton.get()).withMinWidth(scaled(44)).withMinHeight(scaled(24)).withMargin(marginRight));
+        flexBox.items.add(juce::FlexItem(*_wetButton.get()).withMinWidth(scaled(44)).withMinHeight(scaled(24)));
+        flexBox.items.add(juce::FlexItem(*_autogainButton.get()).withMinWidth(scaled(132)).withMinHeight(scaled(24)).withMargin(marginTop));
         flexBox.performLayout(gainButtonsArea.toFloat());
     }
 
-    availableArea.removeFromTop(4);
-    availableArea.removeFromBottom(4);
-    availableArea.removeFromLeft(12);
+    availableArea.removeFromTop(scaled(4));
+    availableArea.removeFromBottom(scaled(4));
+    availableArea.removeFromLeft(scaled(12));
 
     // Sliders
     {
-        constexpr int SPACE_WIDTH {20};
-        _irSliderGroup->setBounds(availableArea.removeFromLeft(144));
+        const int SPACE_WIDTH {scaled(20)};
+        _irSliderGroup->setBounds(availableArea.removeFromLeft(scaled(144)));
         availableArea.removeFromLeft(SPACE_WIDTH);
 
-        _attackSliderGroup->setBounds(availableArea.removeFromLeft(88));
+        _attackSliderGroup->setBounds(availableArea.removeFromLeft(scaled(88)));
         availableArea.removeFromLeft(SPACE_WIDTH);
 
-        _decaySliderGroup->setBounds(availableArea.removeFromLeft(52));
+        _decaySliderGroup->setBounds(availableArea.removeFromLeft(scaled(52)));
         availableArea.removeFromLeft(SPACE_WIDTH);
 
-        _stereoSliderGroup->setBounds(availableArea.removeFromLeft(52));
+        _stereoSliderGroup->setBounds(availableArea.removeFromLeft(scaled(52)));
         availableArea.removeFromLeft(SPACE_WIDTH);
 
-        _lowEqSliderGroup->setBounds(availableArea.removeFromLeft(72));
+        _lowEqSliderGroup->setBounds(availableArea.removeFromLeft(scaled(72)));
         availableArea.removeFromLeft(SPACE_WIDTH);
 
-        _highEqSliderGroup->setBounds(availableArea.removeFromLeft(72));
+        _highEqSliderGroup->setBounds(availableArea.removeFromLeft(scaled(72)));
     }
 
     //[/UserResized]
@@ -841,6 +855,12 @@ void KlangFalterEditor::_updateIRBrowserOpen(bool isOpen) {
     setBounds(getBounds().withHeight(newHeight));
 
     _browseButton->setButtonText(browseButtonText);
+}
+
+int KlangFalterEditor::scaled(float value) const {
+    // All measurements based on getWidth(), as getHeight() changes if the browser is open
+    constexpr float NOMINAL_WIDTH {760};
+    return static_cast<int>(getWidth() / (NOMINAL_WIDTH / value));
 }
 
 
