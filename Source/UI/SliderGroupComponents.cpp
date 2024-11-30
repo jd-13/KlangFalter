@@ -23,14 +23,18 @@ namespace {
     return (::fabs(val - snapValue) < sensitivity) ? snapValue : val;
     }
 
-    void layoutSlider(juce::Rectangle<int> bounds, juce::Label* headerLabel, juce::Slider* slider, juce::Label* label) {
-        headerLabel->setBounds(bounds.withHeight(24));
-        bounds.removeFromTop(20);
+    int scaled(int nominalParentWidth, int currentParentWidth, float value) {
+        return static_cast<int>(currentParentWidth / (nominalParentWidth / value));
+    }
 
-        slider->setBounds(bounds.withHeight(28));
-        bounds.removeFromTop(24);
+    void layoutSlider(juce::Rectangle<int> bounds, juce::Label* headerLabel, juce::Slider* slider, juce::Label* label, int nominalParentWidth, int currentParentWidth) {
+        headerLabel->setBounds(bounds.withHeight(scaled(nominalParentWidth, currentParentWidth, 24)));
+        bounds.removeFromTop(scaled(nominalParentWidth, currentParentWidth, 20));
 
-        label->setBounds(bounds.removeFromTop(24));
+        slider->setBounds(bounds.withHeight(scaled(nominalParentWidth, currentParentWidth, 28)));
+        bounds.removeFromTop(scaled(nominalParentWidth, currentParentWidth, 24));
+
+        label->setBounds(bounds.removeFromTop(scaled(nominalParentWidth, currentParentWidth, 24)));
     }
 }
 
@@ -199,23 +203,25 @@ IRSliderGroup::~IRSliderGroup() {
 }
 
 void IRSliderGroup::resized() {
+    constexpr float NOMINAL_WIDTH {144};
+
     juce::Rectangle<int> availableArea = getLocalBounds();
 
-    _impulseResponseHeaderLabel->setBounds(availableArea.withHeight(24));
-    availableArea.removeFromTop(16);
+    _impulseResponseHeaderLabel->setBounds(availableArea.withHeight(scaled(NOMINAL_WIDTH, getWidth(), 24)));
+    availableArea.removeFromTop(scaled(NOMINAL_WIDTH, getWidth(), 16));
 
     const int sliderAreaWidth {availableArea.getWidth() / 4};
     juce::Rectangle<int> predelayArea = availableArea.removeFromLeft(sliderAreaWidth);
-    layoutSlider(predelayArea, _predelayHeaderLabel.get(), _predelaySlider.get(), _predelayLabel.get());
+    layoutSlider(predelayArea, _predelayHeaderLabel.get(), _predelaySlider.get(), _predelayLabel.get(), NOMINAL_WIDTH, getWidth());
 
     juce::Rectangle<int> beginArea = availableArea.removeFromLeft(sliderAreaWidth);
-    layoutSlider(beginArea, _beginHeaderLabel.get(), _beginSlider.get(), _beginLabel.get());
+    layoutSlider(beginArea, _beginHeaderLabel.get(), _beginSlider.get(), _beginLabel.get(), NOMINAL_WIDTH, getWidth());
 
     juce::Rectangle<int> endArea = availableArea.removeFromLeft(sliderAreaWidth);
-    layoutSlider(endArea, _endHeaderLabel.get(), _endSlider.get(), _endLabel.get());
+    layoutSlider(endArea, _endHeaderLabel.get(), _endSlider.get(), _endLabel.get(), NOMINAL_WIDTH, getWidth());
 
     juce::Rectangle<int> stretchArea = availableArea.removeFromLeft(sliderAreaWidth);
-    layoutSlider(stretchArea, _stretchHeaderLabel.get(), _stretchSlider.get(), _stretchLabel.get());
+    layoutSlider(stretchArea, _stretchHeaderLabel.get(), _stretchSlider.get(), _stretchLabel.get(), NOMINAL_WIDTH, getWidth());
 }
 
 void IRSliderGroup::onUpdate(bool enableSliders) {
@@ -332,6 +338,8 @@ AttackSliderGroup::~AttackSliderGroup() {
 }
 
 void AttackSliderGroup::resized() {
+    constexpr float NOMINAL_WIDTH {88};
+
     juce::Rectangle<int> availableArea = getLocalBounds();
 
     _attackHeaderLabel->setBounds(availableArea.withHeight(24));
@@ -339,10 +347,10 @@ void AttackSliderGroup::resized() {
 
     const int sliderAreaWidth {availableArea.getWidth() / 2};
     juce::Rectangle<int> attackLengthArea = availableArea.removeFromLeft(sliderAreaWidth);
-    layoutSlider(attackLengthArea, _attackLengthHeaderLabel.get(), _attackLengthSlider.get(), _attackLengthLabel.get());
+    layoutSlider(attackLengthArea, _attackLengthHeaderLabel.get(), _attackLengthSlider.get(), _attackLengthLabel.get(), NOMINAL_WIDTH, getWidth());
 
     juce::Rectangle<int> attackShapeArea = availableArea.removeFromLeft(sliderAreaWidth);
-    layoutSlider(attackShapeArea, _attackShapeHeaderLabel.get(), _attackShapeSlider.get(), _attackShapeLabel.get());
+    layoutSlider(attackShapeArea, _attackShapeHeaderLabel.get(), _attackShapeSlider.get(), _attackShapeLabel.get(), NOMINAL_WIDTH, getWidth());
 }
 
 void AttackSliderGroup::onUpdate(bool enableSliders) {
@@ -411,12 +419,14 @@ DecaySliderGroup::~DecaySliderGroup() {
 }
 
 void DecaySliderGroup::resized() {
+    constexpr float NOMINAL_WIDTH {52};
+
     juce::Rectangle<int> availableArea = getLocalBounds();
 
     _decayHeaderLabel->setBounds(availableArea.withHeight(24));
     availableArea.removeFromTop(16);
 
-    layoutSlider(availableArea, _decayShapeHeaderLabel.get(), _decayShapeSlider.get(), _decayShapeLabel.get());
+    layoutSlider(availableArea, _decayShapeHeaderLabel.get(), _decayShapeSlider.get(), _decayShapeLabel.get(), NOMINAL_WIDTH, getWidth());
 }
 
 void DecaySliderGroup::onUpdate(bool enableSliders) {
@@ -480,12 +490,14 @@ StereoSliderGroup::~StereoSliderGroup() {
 }
 
 void StereoSliderGroup::resized() {
+    constexpr float NOMINAL_WIDTH {52};
+
     juce::Rectangle<int> availableArea = getLocalBounds();
 
     _stereoHeaderLabel->setBounds(availableArea.withHeight(24));
     availableArea.removeFromTop(16);
 
-    layoutSlider(availableArea, _widthHeaderLabel.get(), _widthSlider.get(), _widthLabel.get());
+    layoutSlider(availableArea, _widthHeaderLabel.get(), _widthSlider.get(), _widthLabel.get(), NOMINAL_WIDTH, getWidth());
 }
 
 void StereoSliderGroup::onUpdate(bool enableSliders, int numOutputChannels) {
@@ -627,19 +639,21 @@ LowEqSliderGroup::~LowEqSliderGroup() {
 }
 
 void LowEqSliderGroup::resized() {
+    constexpr float NOMINAL_WIDTH {72};
+
     juce::Rectangle<int> availableArea = getLocalBounds();
 
     _lowEqButton->setBounds(availableArea.withHeight(24));
     availableArea.removeFromTop(16);
 
-    layoutSlider(availableArea, _lowCutFreqHeaderLabel.get(), _lowCutFreqSlider.get(), _lowCutFreqLabel.get());
+    layoutSlider(availableArea, _lowCutFreqHeaderLabel.get(), _lowCutFreqSlider.get(), _lowCutFreqLabel.get(), NOMINAL_WIDTH, getWidth());
 
     const int sliderAreaWidth {availableArea.getWidth() / 2};
     juce::Rectangle<int> loFreqArea = availableArea.removeFromLeft(sliderAreaWidth);
-    layoutSlider(loFreqArea, _loFreqHeaderLabel.get(), _loFreqSlider.get(), _loFreqLabel.get());
+    layoutSlider(loFreqArea, _loFreqHeaderLabel.get(), _loFreqSlider.get(), _loFreqLabel.get(), NOMINAL_WIDTH, getWidth());
 
     juce::Rectangle<int> loGainArea = availableArea.removeFromLeft(sliderAreaWidth);
-    layoutSlider(loGainArea, _loGainHeaderLabel.get(), _loGainSlider.get(), _loGainLabel.get());
+    layoutSlider(loGainArea, _loGainHeaderLabel.get(), _loGainSlider.get(), _loGainLabel.get(), NOMINAL_WIDTH, getWidth());
 }
 
 void LowEqSliderGroup::onUpdate(bool enableSliders) {
@@ -800,19 +814,21 @@ HighEqSliderGroup::~HighEqSliderGroup() {
 }
 
 void HighEqSliderGroup::resized() {
+    constexpr float NOMINAL_WIDTH {72};
+
     juce::Rectangle<int> availableArea = getLocalBounds();
 
     _highEqButton->setBounds(availableArea.withHeight(24));
     availableArea.removeFromTop(16);
 
-    layoutSlider(availableArea, _highCutFreqHeaderLabel.get(), _highCutFreqSlider.get(), _highCutFreqLabel.get());
+    layoutSlider(availableArea, _highCutFreqHeaderLabel.get(), _highCutFreqSlider.get(), _highCutFreqLabel.get(), NOMINAL_WIDTH, getWidth());
 
     const int sliderAreaWidth {availableArea.getWidth() / 2};
     juce::Rectangle<int> hiFreqArea = availableArea.removeFromLeft(sliderAreaWidth);
-    layoutSlider(hiFreqArea, _hiFreqHeaderLabel.get(), _hiFreqSlider.get(), _hiFreqLabel.get());
+    layoutSlider(hiFreqArea, _hiFreqHeaderLabel.get(), _hiFreqSlider.get(), _hiFreqLabel.get(), NOMINAL_WIDTH, getWidth());
 
     juce::Rectangle<int> hiGainArea = availableArea.removeFromLeft(sliderAreaWidth);
-    layoutSlider(hiGainArea, _hiGainHeaderLabel.get(), _hiGainSlider.get(), _hiGainLabel.get());
+    layoutSlider(hiGainArea, _hiGainHeaderLabel.get(), _hiGainSlider.get(), _hiGainLabel.get(), NOMINAL_WIDTH, getWidth());
 }
 
 void HighEqSliderGroup::onUpdate(bool enableSliders) {
