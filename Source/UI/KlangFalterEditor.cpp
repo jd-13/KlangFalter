@@ -52,7 +52,8 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
       _processor(processor),
       _toggleButtonLookAndFeel(new UIUtils::ToggleButtonLookAndFeel()),
       _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()),
-      _linearSliderLookAndFeel(new UIUtils::LinearSliderLookAndFeel())
+      _linearSliderLookAndFeel(new UIUtils::LinearSliderLookAndFeel()),
+      _constrainer(new juce::ComponentBoundsConstrainer())
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
@@ -354,6 +355,8 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
 
     //[Constructor] You can add your own custom stuff here..
     setResizable(true, true);
+    _constrainer->setFixedAspectRatio(760.0 / 340.0);
+    setConstrainer(_constrainer.get());
 
     _irTabComponent->clearTabs(); // Remove placeholder only used as dummy in the Jucer
     _browseButton->setClickingTogglesState(true);
@@ -819,7 +822,7 @@ void KlangFalterEditor::_updateIRBrowserOpen(bool isOpen) {
     juce::String browseButtonText;
     if (isOpen)
     {
-        browserHeight = IR_BROWSER_AREA_HEIGHT;
+        browserHeight = IR_BROWSER_AREA_HEIGHT + 1;
         browseButtonText = juce::String("Hide Browser");
     }
     else
@@ -827,11 +830,16 @@ void KlangFalterEditor::_updateIRBrowserOpen(bool isOpen) {
         browserHeight = 0;
         browseButtonText = juce::String("Show Browser");
     }
+
     // Make sure state is always consistent
     _processor.setIrBrowserOpen(isOpen);
     _browseButton->setToggleState(isOpen, juce::dontSendNotification);
 
-    setBounds(getBounds().withHeight(_browseButton->getY() + _browseButton->getHeight() + browserHeight + 1));
+    _constrainer->setFixedAspectRatio(760.0 / (340.0 + browserHeight));
+
+    const int newHeight = getWidth() / _constrainer->getFixedAspectRatio();
+    setBounds(getBounds().withHeight(newHeight));
+
     _browseButton->setButtonText(browseButtonText);
 }
 

@@ -85,6 +85,7 @@ private:
     std::unique_ptr<StereoSliderGroup> _stereoSliderGroup;
     std::unique_ptr<LowEqSliderGroup> _lowEqSliderGroup;
     std::unique_ptr<HighEqSliderGroup> _highEqSliderGroup;
+    std::unique_ptr<juce::ComponentBoundsConstrainer> _constrainer;
 
     void _updateIRBrowserOpen(bool isOpen);
     //[/UserVariables]
