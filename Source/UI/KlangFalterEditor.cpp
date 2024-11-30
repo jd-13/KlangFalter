@@ -531,6 +531,8 @@ void KlangFalterEditor::resized()
             _titleLabel->getY(),
             titleTextTotalWidth,
             TITLE_TEXT_HEIGHT);
+
+        _resetButton->setBounds(scaled(16), scaled(14), scaled(52), scaled(24));
     }
 
     // Imager row
@@ -570,6 +572,8 @@ void KlangFalterEditor::resized()
 
         imagerRow.removeFromRight(scaled(106));
         _irTabComponent->setBounds(imagerRow);
+
+        _reverseButton->setBounds(scaled(20), scaled(198), scaled(72), scaled(24));
     }
 
     // IR Browser
