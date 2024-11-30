@@ -98,6 +98,13 @@ void IRComponent::resized()
     //[/UserPreResize]
 
     //[UserResized] Add your own custom resize handling here..
+    auto scaled = [&](float value) {
+        constexpr float NOMINAL_WIDTH {462};
+        return static_cast<int>(getWidth() / (NOMINAL_WIDTH / value));
+    };
+
+    _waveformComponent->setBounds(scaled(4), scaled(4), scaled(454), scaled(140));
+    _loadButton->setBounds(scaled(80), scaled(148), scaled(378), scaled(24));
     //[/UserResized]
 }
 
