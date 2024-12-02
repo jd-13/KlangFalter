@@ -23,8 +23,8 @@ namespace {
     return (::fabs(val - snapValue) < sensitivity) ? snapValue : val;
     }
 
-    int scaled(int nominalParentWidth, int currentParentWidth, float value) {
-        return static_cast<int>(currentParentWidth / (nominalParentWidth / value));
+    float scaled(int nominalParentWidth, int currentParentWidth, float value) {
+        return currentParentWidth / (nominalParentWidth / value);
     }
 
     void layoutSlider(juce::Rectangle<int> bounds, juce::Label* headerLabel, juce::Slider* slider, juce::Label* label, int nominalParentWidth, int currentParentWidth) {
@@ -36,6 +36,13 @@ namespace {
 
         label->setBounds(bounds.removeFromTop(scaled(nominalParentWidth, currentParentWidth, 24)));
     }
+
+    void setFontHeight(juce::Label* label, float height) {
+        label->setFont(label->getFont().withHeight(height));
+    }
+
+    constexpr int GROUP_HEADER_FONT_SIZE {15};
+    constexpr int LABEL_FONT_SIZE {11};
 }
 
 IRSliderGroup::IRSliderGroup(Processor& processor) :
@@ -205,6 +212,20 @@ IRSliderGroup::~IRSliderGroup() {
 void IRSliderGroup::resized() {
     constexpr float NOMINAL_WIDTH {144};
 
+    setFontHeight(_impulseResponseHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), GROUP_HEADER_FONT_SIZE));
+
+    setFontHeight(_predelayHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+    setFontHeight(_predelayLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+
+    setFontHeight(_beginHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+    setFontHeight(_beginLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+
+    setFontHeight(_endHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+    setFontHeight(_endLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+
+    setFontHeight(_stretchHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+    setFontHeight(_stretchLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+
     juce::Rectangle<int> availableArea = getLocalBounds();
 
     _impulseResponseHeaderLabel->setBounds(availableArea.withHeight(scaled(NOMINAL_WIDTH, getWidth(), 24)));
@@ -340,6 +361,14 @@ AttackSliderGroup::~AttackSliderGroup() {
 void AttackSliderGroup::resized() {
     constexpr float NOMINAL_WIDTH {88};
 
+    setFontHeight(_attackHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), GROUP_HEADER_FONT_SIZE));
+
+    setFontHeight(_attackLengthHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+    setFontHeight(_attackLengthLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+
+    setFontHeight(_attackShapeHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+    setFontHeight(_attackShapeLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+
     juce::Rectangle<int> availableArea = getLocalBounds();
 
     _attackHeaderLabel->setBounds(availableArea.withHeight(scaled(NOMINAL_WIDTH, getWidth(), 24)));
@@ -421,6 +450,11 @@ DecaySliderGroup::~DecaySliderGroup() {
 void DecaySliderGroup::resized() {
     constexpr float NOMINAL_WIDTH {52};
 
+    setFontHeight(_decayHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), GROUP_HEADER_FONT_SIZE));
+
+    setFontHeight(_decayShapeHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+    setFontHeight(_decayShapeLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+
     juce::Rectangle<int> availableArea = getLocalBounds();
 
     _decayHeaderLabel->setBounds(availableArea.withHeight(scaled(NOMINAL_WIDTH, getWidth(), 24)));
@@ -491,6 +525,11 @@ StereoSliderGroup::~StereoSliderGroup() {
 
 void StereoSliderGroup::resized() {
     constexpr float NOMINAL_WIDTH {52};
+
+    setFontHeight(_stereoHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), GROUP_HEADER_FONT_SIZE));
+
+    setFontHeight(_widthHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+    setFontHeight(_widthLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
 
     juce::Rectangle<int> availableArea = getLocalBounds();
 
@@ -640,6 +679,15 @@ LowEqSliderGroup::~LowEqSliderGroup() {
 
 void LowEqSliderGroup::resized() {
     constexpr float NOMINAL_WIDTH {72};
+
+    setFontHeight(_lowCutFreqHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+    setFontHeight(_lowCutFreqLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+
+    setFontHeight(_loFreqHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+    setFontHeight(_loFreqLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+
+    setFontHeight(_loGainHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+    setFontHeight(_loGainLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
 
     juce::Rectangle<int> availableArea = getLocalBounds();
 
@@ -815,6 +863,14 @@ HighEqSliderGroup::~HighEqSliderGroup() {
 
 void HighEqSliderGroup::resized() {
     constexpr float NOMINAL_WIDTH {72};
+
+    setFontHeight(_highCutFreqHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+
+    setFontHeight(_hiFreqHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+    setFontHeight(_hiFreqLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+
+    setFontHeight(_hiGainHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+    setFontHeight(_hiGainLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
 
     juce::Rectangle<int> availableArea = getLocalBounds();
 
