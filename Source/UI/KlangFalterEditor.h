@@ -89,6 +89,7 @@ private:
 
     void _updateIRBrowserOpen(bool isOpen);
     int scaled(float value) const;
+    float scaledFloat(float value) const;
     //[/UserVariables]
 
     //==============================================================================

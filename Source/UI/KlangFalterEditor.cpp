@@ -502,6 +502,13 @@ void KlangFalterEditor::resized()
     //[/UserPreResize]
 
     //[UserResized] Add your own custom resize handling here..
+    auto setFontHeight = [](juce::Label* label, float height) {
+        label->setFont(label->getFont().withHeight(height));
+    };
+
+    setFontHeight(_titleLabel.get(), scaledFloat(35.30f));
+    setFontHeight(_subtitleLabel.get(), scaledFloat(35.30f));
+
     juce::Rectangle<int> availableArea = getLocalBounds();
 
     // Title row
@@ -869,6 +876,11 @@ int KlangFalterEditor::scaled(float value) const {
     return static_cast<int>(getWidth() / (NOMINAL_WIDTH / value));
 }
 
+float KlangFalterEditor::scaledFloat(float value) const {
+    // All measurements based on getWidth(), as getHeight() changes if the browser is open
+    constexpr float NOMINAL_WIDTH {760};
+    return getWidth() / (NOMINAL_WIDTH / value);
+}
 
 //[/MiscUserCode]
 
