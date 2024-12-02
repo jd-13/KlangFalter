@@ -342,8 +342,8 @@ void AttackSliderGroup::resized() {
 
     juce::Rectangle<int> availableArea = getLocalBounds();
 
-    _attackHeaderLabel->setBounds(availableArea.withHeight(24));
-    availableArea.removeFromTop(16);
+    _attackHeaderLabel->setBounds(availableArea.withHeight(scaled(NOMINAL_WIDTH, getWidth(), 24)));
+    availableArea.removeFromTop(scaled(NOMINAL_WIDTH, getWidth(), 16));
 
     const int sliderAreaWidth {availableArea.getWidth() / 2};
     juce::Rectangle<int> attackLengthArea = availableArea.removeFromLeft(sliderAreaWidth);
@@ -423,8 +423,8 @@ void DecaySliderGroup::resized() {
 
     juce::Rectangle<int> availableArea = getLocalBounds();
 
-    _decayHeaderLabel->setBounds(availableArea.withHeight(24));
-    availableArea.removeFromTop(16);
+    _decayHeaderLabel->setBounds(availableArea.withHeight(scaled(NOMINAL_WIDTH, getWidth(), 24)));
+    availableArea.removeFromTop(scaled(NOMINAL_WIDTH, getWidth(), 16));
 
     layoutSlider(availableArea, _decayShapeHeaderLabel.get(), _decayShapeSlider.get(), _decayShapeLabel.get(), NOMINAL_WIDTH, getWidth());
 }
@@ -494,8 +494,8 @@ void StereoSliderGroup::resized() {
 
     juce::Rectangle<int> availableArea = getLocalBounds();
 
-    _stereoHeaderLabel->setBounds(availableArea.withHeight(24));
-    availableArea.removeFromTop(16);
+    _stereoHeaderLabel->setBounds(availableArea.withHeight(scaled(NOMINAL_WIDTH, getWidth(), 24)));
+    availableArea.removeFromTop(scaled(NOMINAL_WIDTH, getWidth(), 16));
 
     layoutSlider(availableArea, _widthHeaderLabel.get(), _widthSlider.get(), _widthLabel.get(), NOMINAL_WIDTH, getWidth());
 }
@@ -643,8 +643,8 @@ void LowEqSliderGroup::resized() {
 
     juce::Rectangle<int> availableArea = getLocalBounds();
 
-    _lowEqButton->setBounds(availableArea.withHeight(24));
-    availableArea.removeFromTop(16);
+    _lowEqButton->setBounds(availableArea.withHeight(scaled(NOMINAL_WIDTH, getWidth(), 24)));
+    availableArea.removeFromTop(scaled(NOMINAL_WIDTH, getWidth(), 16));
 
     layoutSlider(availableArea, _lowCutFreqHeaderLabel.get(), _lowCutFreqSlider.get(), _lowCutFreqLabel.get(), NOMINAL_WIDTH, getWidth());
 
@@ -818,8 +818,8 @@ void HighEqSliderGroup::resized() {
 
     juce::Rectangle<int> availableArea = getLocalBounds();
 
-    _highEqButton->setBounds(availableArea.withHeight(24));
-    availableArea.removeFromTop(16);
+    _highEqButton->setBounds(availableArea.withHeight(scaled(NOMINAL_WIDTH, getWidth(), 24)));
+    availableArea.removeFromTop(scaled(NOMINAL_WIDTH, getWidth(), 16));
 
     layoutSlider(availableArea, _highCutFreqHeaderLabel.get(), _highCutFreqSlider.get(), _highCutFreqLabel.get(), NOMINAL_WIDTH, getWidth());
 
