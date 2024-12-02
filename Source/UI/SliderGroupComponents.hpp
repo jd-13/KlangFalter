@@ -118,6 +118,7 @@ private:
     Processor& _processor;
 
     std::unique_ptr<UIUtils::RotarySliderLookAndFeel> _rotarySliderLookAndFeel;
+    std::unique_ptr<UIUtils::SimpleButtonLookAndFeel> _simpleButtonLookAndFeel;
 
     std::unique_ptr<juce::TextButton> _lowEqButton;
 
@@ -147,6 +148,7 @@ private:
     Processor& _processor;
 
     std::unique_ptr<UIUtils::RotarySliderLookAndFeel> _rotarySliderLookAndFeel;
+    std::unique_ptr<UIUtils::SimpleButtonLookAndFeel> _simpleButtonLookAndFeel;
 
     std::unique_ptr<juce::TextButton> _highEqButton;
 

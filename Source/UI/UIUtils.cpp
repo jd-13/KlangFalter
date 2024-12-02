@@ -71,6 +71,23 @@ namespace UIUtils {
                         0);
     }
 
+    void SimpleButtonLookAndFeel::drawButtonText(juce::Graphics& g,
+                                                 juce::TextButton& textButton,
+                                                 bool isMouseOverButton,
+                                                 bool isButtonDown) {
+        g.setColour(textButton.findColour(juce::TextButton::textColourOnId));
+        g.setFont(g.getCurrentFont().withHeight(scaled(textButton.getTopLevelComponent()->getWidth(), 14.0f)));
+
+        constexpr int MARGIN {0};
+        g.drawFittedText(textButton.getButtonText(),
+                         MARGIN,
+                         0,
+                         textButton.getWidth() - 2 * MARGIN,
+                         textButton.getHeight(),
+                         juce::Justification::centred,
+                         0);
+    }
+
     void RotarySliderLookAndFeel::drawRotarySlider(juce::Graphics& g,
                                                    int /*x*/,
                                                    int /*y*/,

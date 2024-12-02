@@ -548,7 +548,8 @@ void StereoSliderGroup::onUpdate(bool enableSliders, int numOutputChannels) {
 
 LowEqSliderGroup::LowEqSliderGroup(Processor& processor) :
         _processor(processor),
-        _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()) {
+        _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()),
+        _simpleButtonLookAndFeel(new UIUtils::SimpleButtonLookAndFeel()) {
     _lowEqButton.reset(new juce::TextButton(juce::String()));
     addAndMakeVisible(_lowEqButton.get());
     _lowEqButton->setButtonText(TRANS("Low Cut"));
@@ -561,6 +562,7 @@ LowEqSliderGroup::LowEqSliderGroup(Processor& processor) :
         const Parameters::EqType lowEqType = static_cast<Parameters::EqType>(_processor.getParameter(Parameters::EqLowType));
         _processor.setParameterNotifyingHost(Parameters::EqLowType, static_cast<int>((lowEqType == Parameters::Cut) ? Parameters::Shelf : Parameters::Cut));
     };
+    _lowEqButton->setLookAndFeel(_simpleButtonLookAndFeel.get());
 
     _lowCutFreqHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Freq")));
     addAndMakeVisible(_lowCutFreqHeaderLabel.get());
@@ -732,7 +734,8 @@ void LowEqSliderGroup::onUpdate(bool enableSliders) {
 
 HighEqSliderGroup::HighEqSliderGroup(Processor& processor) :
         _processor(processor),
-        _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()) {
+        _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()),
+        _simpleButtonLookAndFeel(new UIUtils::SimpleButtonLookAndFeel()) {
     _highEqButton.reset(new juce::TextButton(juce::String()));
     addAndMakeVisible(_highEqButton.get());
     _highEqButton->setButtonText(TRANS("High Cut"));
@@ -745,6 +748,7 @@ HighEqSliderGroup::HighEqSliderGroup(Processor& processor) :
         const Parameters::EqType highEqType = static_cast<Parameters::EqType>(_processor.getParameter(Parameters::EqHighType));
         _processor.setParameterNotifyingHost(Parameters::EqHighType, static_cast<int>((highEqType == Parameters::Cut) ? Parameters::Shelf : Parameters::Cut));
     };
+    _highEqButton->setLookAndFeel(_simpleButtonLookAndFeel.get());
 
     _highCutFreqHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Freq")));
     addAndMakeVisible(_highCutFreqHeaderLabel.get());

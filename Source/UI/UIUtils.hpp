@@ -27,6 +27,14 @@ namespace UIUtils {
                             bool isButtonDown) override;
     };
 
+    class SimpleButtonLookAndFeel : public juce::LookAndFeel_V2 {
+    public:
+        void drawButtonText(juce::Graphics& g,
+                            juce::TextButton& textButton,
+                            bool isMouseOverButton,
+                            bool isButtonDown) override;
+    };
+
     class RotarySliderLookAndFeel : public juce::LookAndFeel_V2 {
     public:
         void drawRotarySlider(juce::Graphics& g,
