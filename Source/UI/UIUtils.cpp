@@ -6,6 +6,11 @@ namespace {
 
     constexpr long double LONG_TAU {2 * LONG_PI};
     constexpr double DOUBLE_TAU {static_cast<double>(LONG_TAU)};
+
+    float scaled(int currentParentWidth, float value) {
+        constexpr float NOMINAL_WIDTH {760};
+        return currentParentWidth / (NOMINAL_WIDTH / value);
+    }
 }
 
 namespace UIUtils {
@@ -53,6 +58,8 @@ namespace UIUtils {
         } else {
             g.setColour(textButton.findColour(offColour));
         }
+
+        g.setFont(g.getCurrentFont().withHeight(scaled(textButton.getParentWidth(), 14.0f)));
 
         constexpr int MARGIN {0};
         g.drawFittedText(textButton.getButtonText(),
