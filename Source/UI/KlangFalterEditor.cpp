@@ -356,6 +356,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     //[Constructor] You can add your own custom stuff here..
     setResizable(true, true);
     _constrainer->setFixedAspectRatio(760.0 / 340.0);
+    _constrainer->setMinimumWidth(760);
     setConstrainer(_constrainer.get());
 
     _irTabComponent->clearTabs(); // Remove placeholder only used as dummy in the Jucer
@@ -409,6 +410,7 @@ KlangFalterEditor::~KlangFalterEditor()
     _settingsDialogWindow.deleteAndZero();
     _processor.removeNotificationListener(this);
     _processor.getSettings().removeChangeListener(this);
+    setConstrainer(nullptr);
     _irSliderGroup = nullptr;
     _attackSliderGroup = nullptr;
     _decaySliderGroup = nullptr;
