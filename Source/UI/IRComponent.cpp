@@ -29,7 +29,7 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-IRComponent::IRComponent ()
+IRComponent::IRComponent () : _simpleButtonLookAndFeel(new UIUtils::SimpleButtonLookAndFeel())
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
@@ -63,6 +63,7 @@ IRComponent::IRComponent ()
 
     //[Constructor] You can add your own custom stuff here..
     _irAgent = nullptr;
+    _loadButton->setLookAndFeel(_simpleButtonLookAndFeel.get());
     //[/Constructor]
 }
 

@@ -25,6 +25,7 @@
 #include "WaveformComponent.h"
 #include "../IRAgent.h"
 #include "../Processor.h"
+#include "UIUtils.hpp"
 //[/Headers]
 
 
@@ -64,6 +65,7 @@ public:
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     IRAgent* _irAgent;
+    std::unique_ptr<UIUtils::SimpleButtonLookAndFeel> _simpleButtonLookAndFeel;
     //[/UserVariables]
 
     //==============================================================================
