@@ -51,6 +51,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     : AudioProcessorEditor(&processor),
       _processor(processor),
       _toggleButtonLookAndFeel(new UIUtils::ToggleButtonLookAndFeel()),
+      _simpleButtonLookAndFeel(new UIUtils::SimpleButtonLookAndFeel()),
       _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()),
       _linearSliderLookAndFeel(new UIUtils::LinearSliderLookAndFeel()),
       _constrainer(new juce::ComponentBoundsConstrainer())
@@ -79,7 +80,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _dryLevelLabel.reset (new juce::Label ("DryLevelLabel",
                                            TRANS ("-inf")));
     addAndMakeVisible (_dryLevelLabel.get());
-    _dryLevelLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
+    _dryLevelLabel->setFont (juce::Font (14.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _dryLevelLabel->setJustificationType (juce::Justification::centredRight);
     _dryLevelLabel->setEditable (false, false, false);
     _dryLevelLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
@@ -367,6 +368,8 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _reverseButton->setClickingTogglesState(true);
     _levelMeterOutLabelButton->setClickingTogglesState(true);
 
+    _levelMeterOutLabelButton->setLookAndFeel(_simpleButtonLookAndFeel.get());
+
 
     // Double click to default
     _drySlider->setDoubleClickReturnValue(true, DecibelScaling::Db2Scale(Parameters::DryDecibels.getDefaultValue()));
@@ -578,6 +581,7 @@ void KlangFalterEditor::resized()
         };
         positionMeterButton(_levelMeterDryLabel.get(), _levelMeterDry);
         positionMeterButton(_levelMeterOutLabelButton.get(), _levelMeterOut);
+        setFontHeight(_levelMeterDryLabel.get(), scaledFloat(14.0f));
 
         imagerRow.removeFromRight(scaled(106));
         _irTabComponent->setBounds(imagerRow);

@@ -73,6 +73,7 @@ private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     SharedResourcePointer<CustomLookAndFeel> customLookAndFeel;
     std::unique_ptr<UIUtils::ToggleButtonLookAndFeel> _toggleButtonLookAndFeel;
+    std::unique_ptr<UIUtils::SimpleButtonLookAndFeel> _simpleButtonLookAndFeel;
     std::unique_ptr<UIUtils::RotarySliderLookAndFeel> _rotarySliderLookAndFeel;
     std::unique_ptr<UIUtils::LinearSliderLookAndFeel> _linearSliderLookAndFeel;
     Processor& _processor;
