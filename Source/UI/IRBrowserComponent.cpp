@@ -91,20 +91,33 @@ void IRBrowserComponent::init(Processor* processor)
 
 void IRBrowserComponent::updateLayout()
 {
+  auto scaled = [&](float value) {
+    constexpr float NOMINAL_WIDTH {736};
+    return getWidth() / (NOMINAL_WIDTH / value);
+  };
+
   if (_fileTreeComponent && _infoLabel)
   {
     const int width = getWidth();
     const int height = getHeight();
 
-    const int treeWidth = std::min(static_cast<int>(0.75 * static_cast<double>(width)), width - 280) - 2;
-    const int treeHeight = height - 2;
-    const int infoMargin = 8;
+    const int treeWidth = std::min(static_cast<int>(0.75 * static_cast<double>(width)), static_cast<int>(width - scaled(280))) - scaled(2);
+    const int treeHeight = height - scaled(2);
+    const int infoMargin = scaled(8);
     const int infoX = treeWidth + infoMargin;
     const int infoWidth = width - (infoX + infoMargin);
     const int infoHeight = height - (2 * infoMargin);
 
     _fileTreeComponent->setBounds(1, 1, treeWidth, treeHeight);
     _infoLabel->setBounds(infoX, infoMargin, infoWidth, infoHeight);
+
+    _fileTreeComponent->setItemHeight(scaled(22));
+
+    auto setFontHeight = [](juce::Label* label, float height) {
+        label->setFont(label->getFont().withHeight(height));
+    };
+
+    setFontHeight(_infoLabel.get(), scaled(15.0f));
   }
 }
 
