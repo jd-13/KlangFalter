@@ -21,6 +21,13 @@
 #include "UIUtils.hpp"
 
 
+namespace {
+  float scaled(int currentRootWidth, float value) {
+    constexpr float NOMINAL_WIDTH {760};
+    return currentRootWidth / (NOMINAL_WIDTH / value);
+  }
+}
+
 CustomLookAndFeel::CustomLookAndFeel() :
   juce::LookAndFeel_V3()
 {
@@ -62,10 +69,10 @@ juce::Colour CustomLookAndFeel::getEnvelopeNodeColour(bool highlighted) const
 // Scales
 // ==============================================
 
-juce::Font CustomLookAndFeel::getScaleFont() const
+juce::Font CustomLookAndFeel::getScaleFont(int currentParentWidth) const
 {
   juce::Font font;
-  font.setHeight(0.7f * font.getHeight());
+  font.setHeight(scaled(currentParentWidth, 0.7f * font.getHeight()));
   return font;
 }
 

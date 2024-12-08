@@ -27,10 +27,10 @@ void DecibelScale::paint(Graphics& g)
 
   const float w = static_cast<float>(width);
   const float h = static_cast<float>(height);
-  
-  const juce::Font font = customLookAndFeel->getScaleFont();
+
+  const juce::Font font = customLookAndFeel->getScaleFont(getTopLevelComponent()->getWidth());
   const Colour colour = customLookAndFeel->getScaleColour();
-  
+
   const int textWidth = width - 3;
   const int textHeight = static_cast<int>(::ceil(font.getHeight()));
 
@@ -43,7 +43,7 @@ void DecibelScale::paint(Graphics& g)
   g.setFont(font);
   g.drawVerticalLine(width-1, 0.0f, h);
 
-  const int steps[] = { 20, 0, -20, -40 };  
+  const int steps[] = { 20, 0, -20, -40 };
   for (size_t i=0; i<4; ++i)
   {
     const int db = steps[i];
@@ -57,7 +57,7 @@ void DecibelScale::paint(Graphics& g)
                textJustificationTopRight,
                false);
   }
-  
+
   g.drawHorizontalLine(height-1, tickLeft, tickRight);
   g.drawText(DecibelScaling::DecibelString(static_cast<int>(DecibelScaling::MinScaleDb())),
              0,

@@ -53,7 +53,7 @@ void WaveformComponent::resized()
 
 void WaveformComponent::updateArea()
 {
-  const juce::Font scaleFont = customLookAndFeel->getScaleFont();
+  const juce::Font scaleFont = customLookAndFeel->getScaleFont(getTopLevelComponent()->getWidth());
 
   const int marginTop = 0;
   const int widthDbScale = scaleFont.getStringWidth("-XXdB") + 4;
@@ -74,7 +74,7 @@ void WaveformComponent::paint(Graphics& g)
   const int width = getWidth();
   const int height = getHeight();
 
-  const juce::Font scaleFont = customLookAndFeel->getScaleFont();
+  const juce::Font scaleFont = customLookAndFeel->getScaleFont(getTopLevelComponent()->getWidth());
   const juce::Colour scaleColour = customLookAndFeel->getWaveformScaleColour();
 
   // Something to paint?

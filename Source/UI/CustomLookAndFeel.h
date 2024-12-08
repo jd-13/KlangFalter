@@ -26,7 +26,7 @@ public:
   CustomLookAndFeel();
 
   // Scales
-  juce::Font getScaleFont() const;
+  juce::Font getScaleFont(int currentParentWidth) const;
   juce::Colour getScaleColour() const;
   juce::Colour getWaveformScaleColour() const;
   juce::Colour getLevelColourMinusInfDb() const;
