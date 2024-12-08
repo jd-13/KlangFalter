@@ -80,7 +80,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _dryLevelLabel.reset (new juce::Label ("DryLevelLabel",
                                            TRANS ("-inf")));
     addAndMakeVisible (_dryLevelLabel.get());
-    _dryLevelLabel->setFont (juce::Font (14.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
+    _dryLevelLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _dryLevelLabel->setJustificationType (juce::Justification::centredRight);
     _dryLevelLabel->setEditable (false, false, false);
     _dryLevelLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
@@ -623,6 +623,9 @@ void KlangFalterEditor::resized()
         const int LEVEL_LABEL_WIDTH {scaled(60)};
         _dryLevelLabel->setBounds(_drySlider->getRight() - LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getY(), LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getHeight());
         _wetLevelLabel->setBounds(_wetSlider->getRight() - LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getY(), LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getHeight());
+
+        setFontHeight(_dryLevelLabel.get(), scaledFloat(11.0f));
+        setFontHeight(_wetLevelLabel.get(), scaledFloat(11.0f));
 
         juce::FlexBox flexBox;
         flexBox.flexDirection = juce::FlexBox::Direction::row;
