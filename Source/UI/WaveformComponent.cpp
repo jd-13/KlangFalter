@@ -196,7 +196,7 @@ void WaveformComponent::paint(Graphics& g)
       g.drawText(DecibelScaling::DecibelString(db),
                  0,
                  yTick + 1,
-                 scaleTextWidth,
+                 scaleTextWidth + 1, // Add a pixel to stop the end of the text from flapping when the UI is resized
                  scaleTextHeight,
                  justificationTopRight,
                  false);
