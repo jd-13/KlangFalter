@@ -92,7 +92,9 @@ void WaveformComponent::paint(Graphics& g)
   g.fillRect(_area);
 
   // Timeline
-  const double secondsPerPx = _samplesPerPx / _sampleRate;
+  constexpr float NOMINAL_COMPONENT_WIDTH {452};
+  const float UIScaleFactor {width / NOMINAL_COMPONENT_WIDTH};
+  const double secondsPerPx = (_samplesPerPx / _sampleRate) / UIScaleFactor;
   {
     const float yTime = static_cast<float>(_area.getBottom());
     const int hTick = static_cast<int>(yTime) - 2;
@@ -133,7 +135,7 @@ void WaveformComponent::paint(Graphics& g)
     {
       // Seconds
       const int minTickWidth = 2 * scaleFont.getStringWidth("XX.XXs");
-      double secondsPerTick = minTickWidth * secondsPerPx;
+      double secondsPerTick = minTickWidth * secondsPerPx - 0.1; // Subtract a little to stop the tickWidth from flapping when the UI is resized
       double nextPowerOf10 = 0.1;
       while (nextPowerOf10 < secondsPerTick)
       {
@@ -208,17 +210,19 @@ void WaveformComponent::paint(Graphics& g)
   const size_t xLen = std::min(static_cast<size_t>(w), _maximaDecibels.size());
   const float bottom = static_cast<float>(_area.getBottom());
   g.setColour(customLookAndFeel->getWaveformColour());
+  const float lineWidth {std::max(1.0f, std::ceil(UIScaleFactor))}; // Use ceil to prevent gaps between the lines at different UI sizes
   for (size_t x=0; x<xLen; ++x)
   {
     const float top = bottom - (_pxPerDecibel * (_maximaDecibels[x]-DecibelScaling::MinScaleDb()));
-    g.drawVerticalLine(static_cast<int>(x)+_area.getX()+1, top, bottom);
+    const float lineX {UIScaleFactor * x + _area.getX()+1};
+    g.fillRect(lineX, top, lineWidth, bottom - top);
   }
 
   // Envelope
   if (!_maximaDecibels.empty())
   {
     const size_t predelayPx = static_cast<size_t>((_predelayMs / 1000.0) / secondsPerPx);
-    const size_t envelopeLen = (_maximaDecibels.size() > predelayPx) ? (_maximaDecibels.size() - predelayPx) : 0;
+    const size_t envelopeLen = (_maximaDecibels.size() > predelayPx) ? (UIScaleFactor * _maximaDecibels.size() - predelayPx) : 0;
     std::vector<float> envelope(envelopeLen, 1.0f);
     ApplyEnvelope(&envelope[0], envelope.size(), _attackLength, _attackShape, _decayShape);
     if (_irAgent->getProcessor().getReverse())

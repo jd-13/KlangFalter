@@ -169,7 +169,8 @@ void IRComponent::irChanged()
       fileLabelText = file.getFileName() + String(", ") + String(fileChannelCount) + String(" Channels, ") + String(fileSeconds, 2) + String(" s");
 
       sampleRate = processor.getSampleRate();
-      samplesPerPx = static_cast<size_t>(1.6 * (processor.getMaxFileDuration()+1.0) * sampleRate) / _waveformComponent->getWidth();
+      constexpr int WAVEFORM_NOMINAL_WIDTH {452};
+      samplesPerPx = static_cast<size_t>(1.6 * (processor.getMaxFileDuration()+1.0) * sampleRate) / WAVEFORM_NOMINAL_WIDTH;
     }
   }
   _waveformComponent->init(_irAgent, sampleRate, samplesPerPx);
