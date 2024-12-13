@@ -11,15 +11,15 @@ jobs:
       - name: Checkout IRs
         uses: actions/checkout@v4
         with:
-          repository: jd-13/body-and-soul-intro-irs
-          token: ${{ secrets.INTRO_IRS_SECRET }}
+          repository: jd-13/body-and-soul-100-irs
+          token: ${{ secrets.IRS_100_SECRET }}
           path: IRs
       - name: RunBuild
         run: Scripts/macos/build.sh
       - uses: actions/upload-artifact@v4
         if: ${{ success() }}
         with:
-          name: BodyandSoulIntro-macOS
+          name: BodyandSoul-macOS
           path: Scripts/macos/dist
 
   BuildWindows:
@@ -30,8 +30,8 @@ jobs:
       - name: Checkout IRs
         uses: actions/checkout@v4
         with:
-          repository: jd-13/body-and-soul-intro-irs
-          token: ${{ secrets.INTRO_IRS_SECRET }}
+          repository: jd-13/body-and-soul-100-irs
+          token: ${{ secrets.IRS_100_SECRET }}
           path: IRs
       - name: SetupMSBuild
         uses: microsoft/setup-msbuild@v1.0.2
@@ -41,5 +41,5 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: ${{ success() }}
         with:
-          name: BodyandSoulIntro-windows
+          name: BodyandSoul-windows
           path: Release
