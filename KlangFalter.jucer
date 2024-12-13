@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="IRcjcT" name="Body and Soul Intro" projectType="audioplug"
-              bundleIdentifier="com.thesoundofmerlin.BodyAndSoulIntro" buildVST="0"
-              buildRTAS="0" buildAU="1" pluginName="B&amp;S Intro" pluginDesc="Body and Soul Intro"
+<JUCERPROJECT id="IRcjcT" name="Body and Soul" projectType="audioplug" bundleIdentifier="com.thesoundofmerlin.BodyAndSoul"
+              buildVST="0" buildRTAS="0" buildAU="1" pluginName="B&amp;S" pluginDesc="Body and Soul"
               pluginManufacturer="The Sound of Merlin" pluginManufacturerCode="Tsom"
-              pluginCode="Tbsi" pluginChannelConfigs="{1, 1}, {2, 2}, {1, 2}"
+              pluginCode="Tbas" pluginChannelConfigs="{1, 1}, {2, 2}, {1, 2}"
               pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
               pluginSilenceInIsSilenceOut="0" pluginTailLength="0" pluginEditorRequiresKeys="0"
-              pluginAUExportPrefix="BodyAndSoulIntroAU" pluginAUViewClass="KlangFalterAU_V1"
-              pluginRTASCategory="" companyName="The Sound of Merlin" aaxIdentifier="com.thesoundofmerlin.BodyAndSoulIntro"
+              pluginAUExportPrefix="BodyAndSoulAU" pluginAUViewClass="KlangFalterAU_V1"
+              pluginRTASCategory="" companyName="The Sound of Merlin" aaxIdentifier="com.thesoundofmerlin.BodyAndSoul"
               buildAAX="0" buildVST3="1" pluginIsMidiEffectPlugin="0" includeBinaryInAppConfig="1"
               buildAUv3="0" pluginFormats="buildAU,buildVST3" projectLineFeed="&#10;"
               buildStandalone="0" enableIAA="0" defines="JUCE_USE_CUSTOM_PLUGIN_STANDALONE_APP"
@@ -64,7 +63,7 @@
       </MODULEPATHS>
     </VS2019>
   </EXPORTFORMATS>
-  <MAINGROUP id="tWkHhV" name="Body and Soul Intro">
+  <MAINGROUP id="tWkHhV" name="Body and Soul">
     <GROUP id="{25281D04-97AD-E16A-DD2E-04A6860714ED}" name="FFTConvolver">
       <FILE id="aLGk1s" name="Utilities.cpp" compile="1" resource="0" file="Source/FFTConvolver/Utilities.cpp"/>
       <FILE id="ePIVdC" name="Utilities.h" compile="0" resource="0" file="Source/FFTConvolver/Utilities.h"/>
