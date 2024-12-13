@@ -31,6 +31,6 @@ cp -r ~/Library/Audio/Plug-Ins/Components/TSoM-BodyandSoulIntro.component $SCRIP
 
 echo "=== Copying IRs ==="
 mkdir -p $SCRIPT_DIR/dist/TSoM-BodyandSoulIntro.vst3/Contents/Resources/IRs
-cp $PROJECT_DIR/IRs/* $SCRIPT_DIR/dist/TSoM-BodyandSoulIntro.vst3/Contents/Resources/IRs
+cp -r $PROJECT_DIR/IRs/* $SCRIPT_DIR/dist/TSoM-BodyandSoulIntro.vst3/Contents/Resources/IRs
 mkdir -p $SCRIPT_DIR/dist/TSoM-BodyandSoulIntro.component/Contents/Resources/IRs
-cp $PROJECT_DIR/IRs/* $SCRIPT_DIR/dist/TSoM-BodyandSoulIntro.component/Contents/Resources/IRs
+cp -r $PROJECT_DIR/IRs/* $SCRIPT_DIR/dist/TSoM-BodyandSoulIntro.component/Contents/Resources/IRs
