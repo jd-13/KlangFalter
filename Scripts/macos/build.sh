@@ -21,16 +21,16 @@ $JUCE_HOME/Projucer.app/Contents/MacOS/Projucer --resave $PROJECT_DIR/KlangFalte
 echo "=== Starting KlangFalter build ==="
 cd $PROJECT_DIR/Builds/MacOSX
 xcodebuild -version
-xcodebuild -project "Body and Soul Intro.xcodeproj" -scheme "Body and Soul Intro - All" -configuration Release
+xcodebuild -project "Body and Soul.xcodeproj" -scheme "Body and Soul - All" -configuration Release
 
 echo "=== Collecting artefacts ==="
 mkdir -p $SCRIPT_DIR/dist
 
-cp -r ~/Library/Audio/Plug-Ins/VST3/TSoM-BodyandSoulIntro.vst3 $SCRIPT_DIR/dist
-cp -r ~/Library/Audio/Plug-Ins/Components/TSoM-BodyandSoulIntro.component $SCRIPT_DIR/dist
+cp -r ~/Library/Audio/Plug-Ins/VST3/TSoM-BodyandSoul.vst3 $SCRIPT_DIR/dist
+cp -r ~/Library/Audio/Plug-Ins/Components/TSoM-BodyandSoul.component $SCRIPT_DIR/dist
 
 echo "=== Copying IRs ==="
-mkdir -p $SCRIPT_DIR/dist/TSoM-BodyandSoulIntro.vst3/Contents/Resources/IRs
-cp -r $PROJECT_DIR/IRs/* $SCRIPT_DIR/dist/TSoM-BodyandSoulIntro.vst3/Contents/Resources/IRs
-mkdir -p $SCRIPT_DIR/dist/TSoM-BodyandSoulIntro.component/Contents/Resources/IRs
-cp -r $PROJECT_DIR/IRs/* $SCRIPT_DIR/dist/TSoM-BodyandSoulIntro.component/Contents/Resources/IRs
+mkdir -p $SCRIPT_DIR/dist/TSoM-BodyandSoul.vst3/Contents/Resources/IRs
+cp -r $PROJECT_DIR/IRs/* $SCRIPT_DIR/dist/TSoM-BodyandSoul.vst3/Contents/Resources/IRs
+mkdir -p $SCRIPT_DIR/dist/TSoM-BodyandSoul.component/Contents/Resources/IRs
+cp -r $PROJECT_DIR/IRs/* $SCRIPT_DIR/dist/TSoM-BodyandSoul.component/Contents/Resources/IRs

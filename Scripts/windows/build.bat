@@ -13,16 +13,16 @@ set PROJECT_DIR=%SCRIPT_DIR%..\..
 ECHO "=== Starting KlangFalter build ==="
 cd %PROJECT_DIR%\Builds\VisualStudio2019
 msbuild -version
-msbuild "Body and Soul Intro.sln" /p:Configuration=Release /p:Platform=x64 || exit /b
+msbuild "Body and Soul.sln" /p:Configuration=Release /p:Platform=x64 || exit /b
 
 ECHO "=== Make Release folder ==="
 cd %SCRIPT_DIR%..\..\
-mkdir -p Release\TSoM-BodyandSoulIntro.vst3\Contents
-cd Release\TSoM-BodyandSoulIntro.vst3\Contents
+mkdir -p Release\TSoM-BodyandSoul.vst3\Contents
+cd Release\TSoM-BodyandSoul.vst3\Contents
 
 mkdir x86_64-win
 cd x86_64-win
-copy %PROJECT_DIR%\Builds\VisualStudio2019\x64\Release\VST3\TSoM-BodyandSoulIntro.vst3\Contents\x86_64-win\TSoM-BodyandSoulIntro.vst3 || exit /b
+copy %PROJECT_DIR%\Builds\VisualStudio2019\x64\Release\VST3\TSoM-BodyandSoul.vst3\Contents\x86_64-win\TSoM-BodyandSoul.vst3 || exit /b
 
 ECHO "=== Copying IRs ==="
 cd ..
