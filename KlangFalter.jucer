@@ -18,10 +18,10 @@
     <XCODE_MAC targetFolder="Builds/MacOSX" objCExtraSuffix="C54DO8" extraCompilerFlags=""
                extraFrameworks="Accelerate" extraDefs="AUDIOFFT_APPLE_ACCELERATE=1">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="TSoM-BodyandSoulIntro"
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="TSoM-BodyandSoul"
                        defines="JUCE_MODAL_LOOPS_PERMITTED=1" macOSDeploymentTarget="10.14"
                        osxCompatibility="10.14 SDK" osxArchitecture="64BitIntel"/>
-        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="TSoM-BodyandSoulIntro"
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="TSoM-BodyandSoul"
                        defines="JUCE_MODAL_LOOPS_PERMITTED=1" macOSDeploymentTarget="10.14"
                        osxCompatibility="10.14 SDK"/>
       </CONFIGURATIONS>
@@ -43,9 +43,9 @@
     <VS2019 targetFolder="Builds/VisualStudio2019">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" defines="JUCE_MODAL_LOOPS_PERMITTED=1"
-                       targetName="TSoM-BodyandSoulIntro"/>
+                       targetName="TSoM-BodyandSoul"/>
         <CONFIGURATION isDebug="0" name="Release" useRuntimeLibDLL="0" defines="JUCE_MODAL_LOOPS_PERMITTED=1"
-                       targetName="TSoM-BodyandSoulIntro"/>
+                       targetName="TSoM-BodyandSoul"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_gui_extra" path=".\JUCE\modules"/>
