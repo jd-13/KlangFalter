@@ -27,4 +27,4 @@ copy %PROJECT_DIR%\Builds\VisualStudio2019\x64\Release\VST3\TSoM-BodyandSoul.vst
 ECHO "=== Copying IRs ==="
 cd ..
 mkdir -p Resources\IRs
-robocopy %PROJECT_DIR%\IRs\ Resources\IRs\ /e /s
+@REM robocopy %PROJECT_DIR%\IRs\ Resources\IRs\ /e /s
