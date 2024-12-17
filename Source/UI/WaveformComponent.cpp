@@ -81,6 +81,12 @@ void WaveformComponent::paint(Graphics& g)
   if (!_irAgent || !_irAgent->getFile().existsAsFile())
   {
     g.setColour(scaleColour);
+
+    constexpr float NOMINAL_WIDTH {760};
+    juce::Font placeholderFont;
+    placeholderFont.setHeight(placeholderFont.getHeight() * (getTopLevelComponent()->getWidth() / NOMINAL_WIDTH));
+    g.setFont(placeholderFont);
+
     g.drawText("No Impulse Response", 0, 0, width, height, Justification(Justification::centred), false);
     return;
   }
