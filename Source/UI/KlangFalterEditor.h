@@ -112,7 +112,7 @@ private:
     std::unique_ptr<juce::TextButton> _levelMeterOutLabelButton;
     std::unique_ptr<juce::Label> _levelMeterDryLabel;
     std::unique_ptr<juce::Label> _titleLabel;
-    std::unique_ptr<juce::Label> _subtitleLabel;
+    // std::unique_ptr<juce::Label> _subtitleLabel;
     std::unique_ptr<juce::TextButton> _creditsButton;
     std::unique_ptr<juce::TextButton> _resetButton;
 

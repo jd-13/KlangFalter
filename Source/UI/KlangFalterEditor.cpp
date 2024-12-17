@@ -222,7 +222,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _levelMeterDryLabel->setBounds (620, 27, 36, 24);
 
     _titleLabel.reset (new juce::Label ("Title Label",
-                                        TRANS ("Body & Soul:")));
+                                        TRANS ("Body & Soul")));
     addAndMakeVisible (_titleLabel.get());
     _titleLabel->setFont (juce::Font (35.30f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _titleLabel->setJustificationType (juce::Justification::centredLeft);
@@ -233,17 +233,17 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
 
     _titleLabel->setBounds (248, 4, 195, 40);
 
-    _subtitleLabel.reset (new juce::Label ("Subtitle Label",
-                                           TRANS ("Intro")));
-    addAndMakeVisible (_subtitleLabel.get());
-    _subtitleLabel->setFont (juce::Font (35.30f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _subtitleLabel->setJustificationType (juce::Justification::centredLeft);
-    _subtitleLabel->setEditable (false, false, false);
-    _subtitleLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
-    _subtitleLabel->setColour (juce::TextEditor::textColourId, juce::Colour (0xffb0b0b6));
-    _subtitleLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+    // _subtitleLabel.reset (new juce::Label ("Subtitle Label",
+    //                                        TRANS ("Intro")));
+    // addAndMakeVisible (_subtitleLabel.get());
+    // _subtitleLabel->setFont (juce::Font (35.30f, juce::Font::plain).withTypefaceStyle ("Regular"));
+    // _subtitleLabel->setJustificationType (juce::Justification::centredLeft);
+    // _subtitleLabel->setEditable (false, false, false);
+    // _subtitleLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
+    // _subtitleLabel->setColour (juce::TextEditor::textColourId, juce::Colour (0xffb0b0b6));
+    // _subtitleLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    _subtitleLabel->setBounds (432, 4, 79, 40);
+    // _subtitleLabel->setBounds (432, 4, 79, 40);
 
     _creditsButton.reset (new juce::TextButton (juce::String()));
     addAndMakeVisible (_creditsButton.get());
@@ -311,7 +311,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     };
 
     _titleLabel->setColour(juce::Label::textColourId, UIUtils::neutralColour.withAlpha(0.5f));
-    _subtitleLabel->setColour(juce::Label::textColourId, UIUtils::highlightColour);
+    // _subtitleLabel->setColour(juce::Label::textColourId, UIUtils::highlightColour);
 
     auto setButtonColours = [](juce::TextButton* button) {
         button->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, UIUtils::neutralColour);
@@ -440,7 +440,7 @@ KlangFalterEditor::~KlangFalterEditor()
     _levelMeterOutLabelButton = nullptr;
     _levelMeterDryLabel = nullptr;
     _titleLabel = nullptr;
-    _subtitleLabel = nullptr;
+    // _subtitleLabel = nullptr;
     _creditsButton = nullptr;
     _resetButton = nullptr;
 
@@ -510,7 +510,7 @@ void KlangFalterEditor::resized()
     };
 
     setFontHeight(_titleLabel.get(), scaledFloat(35.30f));
-    setFontHeight(_subtitleLabel.get(), scaledFloat(35.30f));
+    // setFontHeight(_subtitleLabel.get(), scaledFloat(35.30f));
 
     juce::Rectangle<int> availableArea = getLocalBounds();
 
@@ -522,9 +522,11 @@ void KlangFalterEditor::resized()
 
         const int titleRowYCentre {availableArea.getWidth() / 2};
         const int titleTextWidth {_titleLabel->getFont().getStringWidth(_titleLabel->getText())};
-        const int titleTextTotalWidth {
-            titleTextWidth + _subtitleLabel->getFont().getStringWidth(_subtitleLabel->getText())
-        };
+        // const int titleTextTotalWidth {
+        //     titleTextWidth + _subtitleLabel->getFont().getStringWidth(_subtitleLabel->getText())
+        // };
+
+        const int titleTextTotalWidth {titleTextWidth};
 
         _titleLabel->setBounds(
             titleRowYCentre - titleTextTotalWidth / 2,
@@ -532,11 +534,11 @@ void KlangFalterEditor::resized()
             titleTextWidth,
             TITLE_TEXT_HEIGHT);
 
-        _subtitleLabel->setBounds(
-            titleRowYCentre - titleTextTotalWidth / 2 + titleTextWidth,
-            scaled(4),
-            titleTextTotalWidth - titleTextWidth,
-            TITLE_TEXT_HEIGHT);
+        // _subtitleLabel->setBounds(
+        //     titleRowYCentre - titleTextTotalWidth / 2 + titleTextWidth,
+        //     scaled(4),
+        //     titleTextTotalWidth - titleTextWidth,
+        //     TITLE_TEXT_HEIGHT);
 
         _creditsButton->setBounds(
             _titleLabel->getX(),
