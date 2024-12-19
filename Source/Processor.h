@@ -38,6 +38,8 @@
 class Processor : public AudioProcessor, public ChangeNotifier
 {
 public:
+  juce::Rectangle<int> uiBounds;
+
   //==============================================================================
   Processor();
   virtual ~Processor();
