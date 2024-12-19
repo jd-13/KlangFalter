@@ -82,4 +82,20 @@ namespace UIUtils {
                                         const juce::Slider::SliderStyle style,
                                         juce::Slider& slider) override;
     };
+
+    class FileTreeLookAndFeel : public juce::LookAndFeel_V2 {
+    public:
+        void drawFileBrowserRow(juce::Graphics& g,
+                                int width,
+                                int height,
+                                const juce::File& file,
+                                const juce::String& filename,
+                                juce::Image* icon,
+                                const juce::String& fileSizeDescription,
+                                const juce::String& fileTimeDescription,
+                                bool isDirectory,
+                                bool isItemSelected,
+                                int itemIndex,
+                                juce::DirectoryContentsDisplayComponent& dcc) override;
+    };
 }
