@@ -94,6 +94,7 @@ XmlElement* SaveState(const File& irDirectory, Processor& processor)
   convolutionElement->setAttribute("stereoWidth", processor.getParameter(Parameters::StereoWidth));
   convolutionElement->setAttribute("reverse", processor.getReverse());
   convolutionElement->setAttribute("irBrowserOpen", processor.getIrBrowserOpen());
+  convolutionElement->setAttribute("uiBounds", processor.uiBounds.toString());
 
   // IRs
   auto irAgents = processor.getAgents();
@@ -148,6 +149,10 @@ bool LoadState(const File& irDirectory, XmlElement& element, Processor& processo
   double stereoWidth = element.getDoubleAttribute("stereoWidth", Parameters::StereoWidth.getDefaultValue());
   bool reverse = element.getBoolAttribute("reverse", false);
   const bool irBrowserOpen = element.getBoolAttribute("irBrowserOpen", false);
+
+  if (element.hasAttribute("uiBounds")) {
+    processor.uiBounds = juce::Rectangle<int>::fromString(element.getStringAttribute("uiBounds"));
+  }
 
   Parameters::EqType eqLoType = Internal::String2EqType(element.getStringAttribute("eqLowType", juce::String()));
   double eqLoCutFreq = element.getDoubleAttribute("eqLowCutFreq", Parameters::EqLowCutFreq.getDefaultValue());

@@ -351,7 +351,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     setLinearSliderColours(_wetSlider.get());
     //[/UserPreSize]
 
-    setSize (760, 340);
+    setSize(_processor.uiBounds.getWidth(), _processor.uiBounds.getHeight());
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -420,6 +420,8 @@ KlangFalterEditor::~KlangFalterEditor()
     _stereoSliderGroup = nullptr;
     _lowEqSliderGroup = nullptr;
     _highEqSliderGroup = nullptr;
+
+    _processor.uiBounds = getBounds();
     //[/Destructor_pre]
 
     _decibelScaleDry = nullptr;

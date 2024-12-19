@@ -31,6 +31,7 @@
 Processor::Processor() :
   AudioProcessor(),
   ChangeNotifier(),
+  uiBounds(0, 0, 760, 340),
   _wetBuffer(1, 0),
   _convolutionBuffer(),
   _parameterSet(),
