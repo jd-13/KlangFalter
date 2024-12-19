@@ -28,7 +28,8 @@ IRBrowserComponent::IRBrowserComponent() :
   _directoryContent(),
   _fileTreeComponent(),
   _infoLabel(),
-  _processor(nullptr)
+  _processor(nullptr),
+  _fileTreeLookAndFeel(new UIUtils::FileTreeLookAndFeel())
 {
 }
 
@@ -45,6 +46,7 @@ IRBrowserComponent::~IRBrowserComponent()
   _directoryContent = nullptr;
   _fileFilter = nullptr;
   _timeSliceThread = nullptr;
+  _fileTreeLookAndFeel = nullptr;
 }
 
 
@@ -78,6 +80,7 @@ void IRBrowserComponent::init(Processor* processor)
   _fileTreeComponent->setColour(juce::TreeView::linesColourId, UIUtils::backgroundColour);
   _fileTreeComponent->setColour(juce::DirectoryContentsDisplayComponent::highlightColourId, UIUtils::highlightColour.withAlpha(0.5f));
   _fileTreeComponent->setColour(juce::DirectoryContentsDisplayComponent::textColourId, UIUtils::backgroundColour);
+  _fileTreeComponent->setLookAndFeel(_fileTreeLookAndFeel.get());
   addAndMakeVisible(_fileTreeComponent.get());
 
   _infoLabel.reset(new juce::Label());

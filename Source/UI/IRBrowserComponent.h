@@ -23,6 +23,7 @@
 
 #include "../Processor.h"
 #include "../Settings.h"
+#include "UIUtils.hpp"
 
 
 class IRBrowserComponent : public juce::Component,
@@ -32,20 +33,20 @@ class IRBrowserComponent : public juce::Component,
 public:
   IRBrowserComponent();
   virtual ~IRBrowserComponent();
-  
+
   virtual void init(Processor* processor);
   virtual void updateLayout();
-  
+
   virtual void paint(juce::Graphics& g);
   virtual void resized();
-  
+
   virtual void selectionChanged();
   virtual void fileClicked(const juce::File &file, const juce::MouseEvent &e);
  	virtual void fileDoubleClicked(const juce::File &file);
  	virtual void browserRootChanged(const juce::File &newRoot);
 
   virtual void changeListenerCallback(juce::ChangeBroadcaster* source);
-  
+
 private:
   bool readAudioFileInfo(const juce::File& file, size_t& channelCount, size_t& sampleCount, double& sampleRate) const;
 
@@ -65,7 +66,8 @@ private:
   std::unique_ptr<juce::FileTreeComponent> _fileTreeComponent;
   std::unique_ptr<juce::Label> _infoLabel;
   Processor* _processor;
-  
+  std::unique_ptr<UIUtils::FileTreeLookAndFeel> _fileTreeLookAndFeel;
+
   IRBrowserComponent(const IRBrowserComponent&);
   IRBrowserComponent& operator=(const IRBrowserComponent&);
 };

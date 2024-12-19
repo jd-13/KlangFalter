@@ -209,4 +209,54 @@ namespace UIUtils {
             g.fillRect(x + width / 2 - WIDTH / 2, y, WIDTH, height);
         }
     }
+
+    // Copied from LookAndFeel_V2 with modifications
+    void FileTreeLookAndFeel::drawFileBrowserRow(juce::Graphics& g,
+                                                 int width,
+                                                 int height,
+                                                 const juce::File& file,
+                                                 const juce::String& filename,
+                                                 juce::Image* icon,
+                                                 const juce::String& fileSizeDescription,
+                                                 const juce::String& fileTimeDescription,
+                                                 bool isDirectory,
+                                                 bool isItemSelected,
+                                                 int itemIndex,
+                                                 juce::DirectoryContentsDisplayComponent& dcc) {
+        auto fileListComp = dynamic_cast<Component*> (&dcc);
+
+        if (isItemSelected)
+            g.fillAll (fileListComp != nullptr ? fileListComp->findColour (DirectoryContentsDisplayComponent::highlightColourId)
+                                            : findColour (DirectoryContentsDisplayComponent::highlightColourId));
+
+        const int x = 32;
+        g.setColour (Colours::black);
+
+        if (icon != nullptr && icon->isValid())
+        {
+            g.drawImageWithin (*icon, 2, 2, x - 4, height - 4,
+                            RectanglePlacement::centred | RectanglePlacement::onlyReduceInSize,
+                            false);
+        }
+        else
+        {
+            if (auto* d = isDirectory ? getDefaultFolderImage()
+                                    : getDefaultDocumentFileImage())
+                d->drawWithin (g, Rectangle<float> (2.0f, 2.0f, x - 4.0f, (float) height - 4.0f),
+                            RectanglePlacement::centred | RectanglePlacement::onlyReduceInSize, 1.0f);
+        }
+
+        if (isItemSelected)
+            g.setColour (fileListComp != nullptr ? fileListComp->findColour (DirectoryContentsDisplayComponent::highlightedTextColourId)
+                                                : findColour (DirectoryContentsDisplayComponent::highlightedTextColourId));
+        else
+            g.setColour (fileListComp != nullptr ? fileListComp->findColour (DirectoryContentsDisplayComponent::textColourId)
+                                                : findColour (DirectoryContentsDisplayComponent::textColourId));
+
+        g.setFont ((float) height * 0.7f);
+
+        g.drawFittedText (filename,
+                            x, 0, width - x, height,
+                            Justification::centredLeft, 1);
+    }
 }
