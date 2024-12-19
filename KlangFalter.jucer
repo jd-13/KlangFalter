@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="IRcjcT" name="Body and Soul" projectType="audioplug" bundleIdentifier="com.thesoundofmerlin.BodyAndSoul"
-              buildVST="0" buildRTAS="0" buildAU="1" pluginName="B&amp;S" pluginDesc="Body and Soul"
-              pluginManufacturer="The Sound of Merlin" pluginManufacturerCode="Tsom"
-              pluginCode="Tbas" pluginChannelConfigs="{1, 1}, {2, 2}, {1, 2}"
+              buildVST="0" buildRTAS="0" buildAU="1" pluginName="Body and Soul"
+              pluginDesc="Body and Soul" pluginManufacturer="The Sound of Merlin"
+              pluginManufacturerCode="Tsom" pluginCode="Tbas" pluginChannelConfigs="{1, 1}, {2, 2}, {1, 2}"
               pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
               pluginSilenceInIsSilenceOut="0" pluginTailLength="0" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="BodyAndSoulAU" pluginAUViewClass="KlangFalterAU_V1"
