@@ -48,6 +48,9 @@ public:
   TimelineUnit getTimelineUnit();
   void setTimelineUnit(TimelineUnit timelineUnit);
 
+  juce::Rectangle<int> getDefaultUIBounds();
+  void setDefaultUIBounds(const juce::Rectangle<int>& bounds);
+
 private:
   juce::ApplicationProperties _properties;
 

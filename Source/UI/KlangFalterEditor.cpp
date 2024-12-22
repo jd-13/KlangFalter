@@ -351,7 +351,8 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     setLinearSliderColours(_wetSlider.get());
     //[/UserPreSize]
 
-    setSize(_processor.uiBounds.getWidth(), _processor.uiBounds.getHeight());
+    const juce::Rectangle<int> bounds = _processor.getUIBounds();
+    setSize(bounds.getWidth(), bounds.getHeight());
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -421,7 +422,7 @@ KlangFalterEditor::~KlangFalterEditor()
     _lowEqSliderGroup = nullptr;
     _highEqSliderGroup = nullptr;
 
-    _processor.uiBounds = getBounds();
+    _processor.setUIBounds(getBounds(), true);
     //[/Destructor_pre]
 
     _decibelScaleDry = nullptr;
