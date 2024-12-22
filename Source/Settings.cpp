@@ -114,3 +114,22 @@ void Settings::setTimelineUnit(TimelineUnit timelineUnit)
   }
 }
 
+juce::Rectangle<int> Settings::getDefaultUIBounds() {
+    juce::PropertiesFile* propertiesFile = _properties.getUserSettings();
+
+    if (propertiesFile && propertiesFile->getValue("DefaultUIBounds").isNotEmpty()) {
+        return juce::Rectangle<int>::fromString(propertiesFile->getValue("DefaultUIBounds"));
+    }
+
+    return juce::Rectangle<int>(0, 0, 760, 340);
+}
+
+void Settings::setDefaultUIBounds(const juce::Rectangle<int>& bounds) {
+    juce::PropertiesFile* propertiesFile = _properties.getUserSettings();
+
+    if (propertiesFile) {
+        propertiesFile->setValue("DefaultUIBounds", bounds.toString());
+        propertiesFile->saveIfNeeded();
+    }
+}
+

@@ -31,7 +31,6 @@
 Processor::Processor() :
   AudioProcessor(),
   ChangeNotifier(),
-  uiBounds(0, 0, 760, 340),
   _wetBuffer(1, 0),
   _convolutionBuffer(),
   _parameterSet(),
@@ -81,6 +80,10 @@ Processor::Processor() :
   _agents.push_back(new IRAgent(*this, 0, 1));
   _agents.push_back(new IRAgent(*this, 1, 0));
   _agents.push_back(new IRAgent(*this, 1, 1));
+
+  // Default the UI size to whatever the size was when any instance was last closed. LoadData() will
+  // override this if we're in a pre-existing instance and there is saved data
+  _uiBounds = _settings.getDefaultUIBounds();
 }
 
 
@@ -863,4 +866,16 @@ void Processor::setIrBrowserOpen(bool val) {
 
 bool Processor::getIrBrowserOpen() const {
   return _irBrowserOpen;
+}
+
+void Processor::setUIBounds(const juce::Rectangle<int>& bounds, bool shouldUpdateInSettings) {
+  _uiBounds = bounds;
+
+  if (shouldUpdateInSettings) {
+    _settings.setDefaultUIBounds(bounds);
+  }
+}
+
+juce::Rectangle<int> Processor::getUIBounds() const {
+  return _uiBounds;
 }

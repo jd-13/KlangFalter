@@ -38,8 +38,6 @@
 class Processor : public AudioProcessor, public ChangeNotifier
 {
 public:
-  juce::Rectangle<int> uiBounds;
-
   //==============================================================================
   Processor();
   virtual ~Processor();
@@ -160,6 +158,9 @@ public:
   void setIrBrowserOpen(bool val);
   bool getIrBrowserOpen() const;
 
+  void setUIBounds(const juce::Rectangle<int>& bounds, bool shouldUpdateInSettings);
+  juce::Rectangle<int> getUIBounds() const;
+
 private:
   juce::AudioSampleBuffer _wetBuffer;
   std::vector<float> _convolutionBuffer;
@@ -168,6 +169,7 @@ private:
   std::vector<LevelMeasurement> _levelMeasurementsWet;
   std::vector<LevelMeasurement> _levelMeasurementsOut;
   Settings _settings;
+  juce::Rectangle<int> _uiBounds;
 
   mutable juce::CriticalSection _convolverMutex;
   IRAgentContainer _agents;
