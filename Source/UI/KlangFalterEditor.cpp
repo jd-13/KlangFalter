@@ -41,6 +41,40 @@ T SnapValue(T val, T snapValue, T sensitivity)
 
 namespace {
     constexpr int IR_BROWSER_AREA_HEIGHT {300};
+
+    juce::String buildVersionString(juce::AudioProcessor::WrapperType pluginFormat) {
+        juce::String versionString = JucePlugin_Name;
+        versionString += " ";
+        versionString += JucePlugin_VersionString;
+
+        // Format
+        versionString += " ";
+        versionString += juce::AudioProcessor::getWrapperTypeDescription(pluginFormat);
+
+        // OS
+        versionString += " ";
+#if _WIN32
+        versionString += "Win";
+#elif __APPLE__
+        versionString += "macOS";
+#elif __linux__
+        versionString += "Linux";
+#else
+    #error "Unknown OS"
+#endif
+
+        // Arch
+        versionString += " ";
+#if defined(__x86_64__) || defined(_M_AMD64)
+        versionString += "x86_64";
+#elif defined(__aarch64__) || defined(_M_ARM64)
+        versionString += "arm64";
+#else
+    #error "Unknown arch"
+#endif
+
+        return versionString;
+    }
 }
 
 
@@ -294,7 +328,9 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _creditsWindowOptions->useNativeTitleBar = false;
 
     _creditsButton->onClick = [&]() {
-        const juce::CharPointer_UTF8 credits(
+        const juce::String versionString = buildVersionString(getAudioProcessor()->wrapperType);
+
+        const juce::String credits(juce::CharPointer_UTF8(
             "Concept and IR design: The Sound of Merlin\n"
             "Programming: White Elephant Audio\n"
             "Support: info@thesoundofmerlin.com\n"
@@ -303,9 +339,10 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
             "\n"
             "This convolution reverb was conceived to be used as a module in White Elephant Audio's plugin host Syndicate but can also be used separately from it.\n"
             "\n"
-            "A special thank you goes to Eirik Gr\xc3\xb8nner from Demningen Studios in Norway for his wonderful suggestions and support.");
+            "A special thank you goes to Eirik Gr\xc3\xb8nner from Demningen Studios in Norway for his wonderful suggestions and support.\n"
+            "\n"));
 
-        _creditsWindowOptions->content.set(new juce::Label("Credits", credits), true);
+        _creditsWindowOptions->content.set(new juce::Label("Credits", credits + versionString), true);
         juce::DialogWindow* window = _creditsWindowOptions->launchAsync();
         window->centreWithSize(500, 300);
     };
