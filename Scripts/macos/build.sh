@@ -11,6 +11,7 @@ wget https://github.com/juce-framework/JUCE/releases/download/$JUCE_VERSION/juce
 unzip $SCRIPT_DIR/../../juce-$JUCE_VERSION-osx.zip
 
 echo "=== Generating projects ==="
+PROJECT_DIR=$SCRIPT_DIR/../..
 JUCE_HOME=$SCRIPT_DIR/../../JUCE
 $JUCE_HOME/Projucer.app/Contents/MacOS/Projucer --resave $PROJECT_DIR/Projects/Intro/BodyandSoulIntro.jucer
 $JUCE_HOME/Projucer.app/Contents/MacOS/Projucer --resave $PROJECT_DIR/Projects/Body/BodyandSoulBody.jucer
