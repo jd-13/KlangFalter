@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="IRcjcT" name="Body and Soul Soul" projectType="audioplug"
+              bundleIdentifier="com.thesoundofmerlin.BodyAndSoulSoul" buildVST="0"
+              buildRTAS="0" buildAU="0" pluginName="B&amp;S Soul" pluginDesc="Body and Soul Soul"
+              pluginManufacturer="The Sound of Merlin" pluginManufacturerCode="Tsom"
+              pluginCode="Tbsl" pluginChannelConfigs="{1, 1}, {2, 2}, {1, 2}"
+              pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
+              pluginSilenceInIsSilenceOut="0" pluginTailLength="0" pluginEditorRequiresKeys="0"
+              pluginAUExportPrefix="BodyAndSoulSoulAU" pluginAUViewClass="KlangFalterAU_V1"
+              pluginRTASCategory="" companyName="The Sound of Merlin" aaxIdentifier="com.thesoundofmerlin.BodyAndSoulSoul"
+              buildAAX="0" buildVST3="1" pluginIsMidiEffectPlugin="0" includeBinaryInAppConfig="1"
+              buildAUv3="0" pluginFormats="buildVST3" projectLineFeed="&#10;"
+              buildStandalone="0" enableIAA="0" defines="JUCE_USE_CUSTOM_PLUGIN_STANDALONE_APP"
+              jucerFormatVersion="1" version="1.0.0" companyWebsite="www.thesoundofmerlin.com"
+              companyEmail="info@thesoundofmerlin.com" pluginVST3Category="Reverb"
+              pluginVSTCategory="kPlugCategEffect">
+  <EXPORTFORMATS>
+    <XCODE_MAC targetFolder="Builds/MacOSX" objCExtraSuffix="C54DO8" extraCompilerFlags=""
+               extraFrameworks="Accelerate" extraDefs="AUDIOFFT_APPLE_ACCELERATE=1">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="TSoM-BodyandSoulSoul"
+                       defines="JUCE_MODAL_LOOPS_PERMITTED=1" macOSDeploymentTarget="10.14"
+                       osxCompatibility="10.14 SDK" osxArchitecture="64BitIntel"/>
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="TSoM-BodyandSoulSoul"
+                       defines="JUCE_MODAL_LOOPS_PERMITTED=1" macOSDeploymentTarget="10.14"
+                       osxCompatibility="10.14 SDK"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_gui_extra" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../JUCE/modules"/>
+      </MODULEPATHS>
+    </XCODE_MAC>
+    <VS2019 targetFolder="Builds/VisualStudio2019">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" defines="JUCE_MODAL_LOOPS_PERMITTED=1"
+                       targetName="TSoM-BodyandSoulSoul"/>
+        <CONFIGURATION isDebug="0" name="Release" useRuntimeLibDLL="0" defines="JUCE_MODAL_LOOPS_PERMITTED=1"
+                       targetName="TSoM-BodyandSoulSoul"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_gui_extra" path="..\..\JUCE\modules"/>
+        <MODULEPATH id="juce_gui_basics" path="..\..\JUCE\modules"/>
+        <MODULEPATH id="juce_graphics" path="..\..\JUCE\modules"/>
+        <MODULEPATH id="juce_events" path="..\..\JUCE\modules"/>
+        <MODULEPATH id="juce_data_structures" path="..\..\JUCE\modules"/>
+        <MODULEPATH id="juce_core" path="..\..\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_utils" path="..\..\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_processors" path="..\..\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="..\..\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_formats" path="..\..\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_devices" path="..\..\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_basics" path="..\..\JUCE\modules"/>
+      </MODULEPATHS>
+    </VS2019>
+  </EXPORTFORMATS>
+  <MAINGROUP id="tWkHhV" name="Body and Soul Soul">
+    <GROUP id="{25281D04-97AD-E16A-DD2E-04A6860714ED}" name="FFTConvolver">
+      <FILE id="aLGk1s" name="Utilities.cpp" compile="1" resource="0" file="../../Source/FFTConvolver/Utilities.cpp"/>
+      <FILE id="ePIVdC" name="Utilities.h" compile="0" resource="0" file="../../Source/FFTConvolver/Utilities.h"/>
+      <FILE id="yg70fm" name="TwoStageFFTConvolver.cpp" compile="1" resource="0"
+            file="../../Source/FFTConvolver/TwoStageFFTConvolver.cpp"/>
+      <FILE id="Z2lYc4" name="TwoStageFFTConvolver.h" compile="0" resource="0"
+            file="../../Source/FFTConvolver/TwoStageFFTConvolver.h"/>
+      <FILE id="Dq7rky" name="AudioFFT.cpp" compile="1" resource="0" file="../../Source/FFTConvolver/AudioFFT.cpp"/>
+      <FILE id="epp4dB" name="AudioFFT.h" compile="0" resource="0" file="../../Source/FFTConvolver/AudioFFT.h"/>
+      <FILE id="wEkTRs" name="FFTConvolver.cpp" compile="1" resource="0"
+            file="../../Source/FFTConvolver/FFTConvolver.cpp"/>
+      <FILE id="iVHbus" name="FFTConvolver.h" compile="0" resource="0" file="../../Source/FFTConvolver/FFTConvolver.h"/>
+    </GROUP>
+    <GROUP id="{AF9AFB86-5BBB-A92F-6447-4B85AD586F22}" name="UI">
+      <GROUP id="{0D39E3F9-DC00-E9BA-D76D-32943BC0F7A5}" name="Resources">
+        <FILE id="akgWjz" name="wea.png" compile="0" resource="1" file="../../Source/UI/Resources/wea.png"/>
+        <FILE id="HSFgs8" name="tom.png" compile="0" resource="1" file="../../Source/UI/Resources/tom.png"/>
+        <FILE id="pIrfrg" name="hifi-lofi.jpg" compile="0" resource="1" file="../../Source/UI/Resources/hifi-lofi.jpg"/>
+      </GROUP>
+      <FILE id="esn7nj" name="CustomLookAndFeel.cpp" compile="1" resource="0"
+            file="../../Source/UI/CustomLookAndFeel.cpp"/>
+      <FILE id="woqAZd" name="CustomLookAndFeel.h" compile="0" resource="0"
+            file="../../Source/UI/CustomLookAndFeel.h"/>
+      <FILE id="hUJ1AF" name="DecibelScale.cpp" compile="1" resource="0"
+            file="../../Source/UI/DecibelScale.cpp"/>
+      <FILE id="R6M8dL" name="DecibelScale.h" compile="0" resource="0" file="../../Source/UI/DecibelScale.h"/>
+      <FILE id="MEN3tl" name="IRBrowserComponent.cpp" compile="1" resource="0"
+            file="../../Source/UI/IRBrowserComponent.cpp"/>
+      <FILE id="enSkEH" name="IRBrowserComponent.h" compile="0" resource="0"
+            file="../../Source/UI/IRBrowserComponent.h"/>
+      <FILE id="DYALQh" name="IRComponent.cpp" compile="1" resource="0" file="../../Source/UI/IRComponent.cpp"/>
+      <FILE id="zpKmUg" name="IRComponent.h" compile="0" resource="0" file="../../Source/UI/IRComponent.h"/>
+      <FILE id="pNhLHO" name="KlangFalterEditor.cpp" compile="1" resource="0"
+            file="../../Source/UI/KlangFalterEditor.cpp"/>
+      <FILE id="NYHkDc" name="KlangFalterEditor.h" compile="0" resource="0"
+            file="../../Source/UI/KlangFalterEditor.h"/>
+      <FILE id="VEaG8F" name="LevelMeter.cpp" compile="1" resource="0" file="../../Source/UI/LevelMeter.cpp"/>
+      <FILE id="zRwaj0" name="LevelMeter.h" compile="0" resource="0" file="../../Source/UI/LevelMeter.h"/>
+      <FILE id="EHhfnf" name="SliderGroupComponents.cpp" compile="1" resource="0"
+            file="../../Source/UI/SliderGroupComponents.cpp"/>
+      <FILE id="fPHWuW" name="SliderGroupComponents.hpp" compile="0" resource="0"
+            file="../../Source/UI/SliderGroupComponents.hpp"/>
+      <FILE id="atIeXr" name="UIUtils.cpp" compile="1" resource="0" file="../../Source/UI/UIUtils.cpp"/>
+      <FILE id="NpWwBu" name="UIUtils.hpp" compile="0" resource="0" file="../../Source/UI/UIUtils.hpp"/>
+      <FILE id="xM5QfR" name="WaveformComponent.cpp" compile="1" resource="0"
+            file="../../Source/UI/WaveformComponent.cpp"/>
+      <FILE id="WU2LwP" name="WaveformComponent.h" compile="0" resource="0"
+            file="../../Source/UI/WaveformComponent.h"/>
+    </GROUP>
+    <FILE id="r6mTsl" name="ChangeNotifier.cpp" compile="1" resource="0"
+          file="../../Source/ChangeNotifier.cpp"/>
+    <FILE id="OXPSzy" name="ChangeNotifier.h" compile="0" resource="0"
+          file="../../Source/ChangeNotifier.h"/>
+    <FILE id="CCplCO" name="Convolver.cpp" compile="1" resource="0" file="../../Source/Convolver.cpp"/>
+    <FILE id="oFPWI7" name="Convolver.h" compile="0" resource="0" file="../../Source/Convolver.h"/>
+    <FILE id="d5bCDW" name="CookbookEq.cpp" compile="1" resource="0" file="../../Source/CookbookEq.cpp"/>
+    <FILE id="d6BKpl" name="CookbookEq.h" compile="0" resource="0" file="../../Source/CookbookEq.h"/>
+    <FILE id="tP4m4I" name="DecibelScaling.h" compile="0" resource="0"
+          file="../../Source/DecibelScaling.h"/>
+    <FILE id="gL5qFG" name="DevelopmentApplication.cpp" compile="1" resource="0"
+          file="../../Source/DevelopmentApplication.cpp"/>
+    <FILE id="dJhcWx" name="Envelope.cpp" compile="1" resource="0" file="../../Source/Envelope.cpp"/>
+    <FILE id="iWDpt2" name="Envelope.h" compile="0" resource="0" file="../../Source/Envelope.h"/>
+    <FILE id="piTFx6" name="IRAgent.cpp" compile="1" resource="0" file="../../Source/IRAgent.cpp"/>
+    <FILE id="SynzbE" name="IRAgent.h" compile="0" resource="0" file="../../Source/IRAgent.h"/>
+    <FILE id="Z6HLyH" name="IRCalculation.cpp" compile="1" resource="0"
+          file="../../Source/IRCalculation.cpp"/>
+    <FILE id="GYyVDS" name="IRCalculation.h" compile="0" resource="0" file="../../Source/IRCalculation.h"/>
+    <FILE id="vF7jUl" name="LevelMeasurement.cpp" compile="1" resource="0"
+          file="../../Source/LevelMeasurement.cpp"/>
+    <FILE id="mYCk2O" name="LevelMeasurement.h" compile="0" resource="0"
+          file="../../Source/LevelMeasurement.h"/>
+    <FILE id="V8OlV6" name="Parameters.cpp" compile="1" resource="0" file="../../Source/Parameters.cpp"/>
+    <FILE id="SxkvhD" name="Parameters.h" compile="0" resource="0" file="../../Source/Parameters.h"/>
+    <FILE id="QInZML" name="ParameterSet.h" compile="0" resource="0" file="../../Source/ParameterSet.h"/>
+    <FILE id="izDfGd" name="Persistence.cpp" compile="1" resource="0" file="../../Source/Persistence.cpp"/>
+    <FILE id="zBljGc" name="Persistence.h" compile="0" resource="0" file="../../Source/Persistence.h"/>
+    <FILE id="xWySQl" name="Processor.cpp" compile="1" resource="0" file="../../Source/Processor.cpp"/>
+    <FILE id="FjlYnw" name="Processor.h" compile="0" resource="0" file="../../Source/Processor.h"/>
+    <FILE id="dxea9X" name="Settings.cpp" compile="1" resource="0" file="../../Source/Settings.cpp"/>
+    <FILE id="OsElLF" name="Settings.h" compile="0" resource="0" file="../../Source/Settings.h"/>
+    <FILE id="pWwoGQ" name="SmoothValue.h" compile="0" resource="0" file="../../Source/SmoothValue.h"/>
+    <FILE id="e4ayW0" name="StereoWidth.cpp" compile="1" resource="0" file="../../Source/StereoWidth.cpp"/>
+    <FILE id="snyExm" name="StereoWidth.h" compile="0" resource="0" file="../../Source/StereoWidth.h"/>
+  </MAINGROUP>
+  <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"
+            useGlobalPath="0"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+  </MODULES>
+  <JUCEOPTIONS JUCE_VST3_CAN_REPLACE_VST2="0" JUCE_WEB_BROWSER="0"/>
+  <LIVE_SETTINGS>
+    <OSX/>
+    <WINDOWS/>
+  </LIVE_SETTINGS>
+</JUCERPROJECT>
