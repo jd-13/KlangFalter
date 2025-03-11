@@ -7,13 +7,16 @@ PROJECT_DIR=$SCRIPT_DIR/..
 
 cd $PROJECT_DIR/Projects
 
+setModules() {
+    sed -i '' -e 's#../../../../../SDKs/JUCE/modules#../../JUCE/modules#g' $1
+}
+
 echo "=== Generating Intro project ==="
 mkdir -p Intro
 PROJECT_FILE_PATH=Intro/BodyandSoulIntro.jucer
 cp Local/BodyandSoulLocal.jucer $PROJECT_FILE_PATH
 
-sed -i '' -e 's#../../../../SDKs/JUCE/modules#JUCE/modules#g' $PROJECT_FILE_PATH
-
+setModules $PROJECT_FILE_PATH
 sed -i '' -e 's#name="Body and Soul Local"#name="Body and Soul Intro"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#bundleIdentifier="com.thesoundofmerlin.BodyAndSoulLocal"#bundleIdentifier="com.thesoundofmerlin.BodyAndSoulIntro"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#pluginName="B\&amp;S Local"#pluginName="B\&amp;S Intro"#g' $PROJECT_FILE_PATH
@@ -28,8 +31,7 @@ mkdir -p Body
 PROJECT_FILE_PATH=Body/BodyandSoulBody.jucer
 cp Local/BodyandSoulLocal.jucer $PROJECT_FILE_PATH
 
-sed -i '' -e 's#../../../../SDKs/JUCE/modules#JUCE/modules#g' $PROJECT_FILE_PATH
-
+setModules $PROJECT_FILE_PATH
 sed -i '' -e 's#name="Body and Soul Local"#name="Body and Soul Body"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#bundleIdentifier="com.thesoundofmerlin.BodyAndSoulLocal"#bundleIdentifier="com.thesoundofmerlin.BodyAndSoulBody"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#pluginName="B\&amp;S Local"#pluginName="B\&amp;S Body"#g' $PROJECT_FILE_PATH
@@ -44,8 +46,7 @@ mkdir -p Soul
 PROJECT_FILE_PATH=Soul/BodyandSoulSoul.jucer
 cp Local/BodyandSoulLocal.jucer $PROJECT_FILE_PATH
 
-sed -i '' -e 's#../../../../SDKs/JUCE/modules#JUCE/modules#g' $PROJECT_FILE_PATH
-
+setModules $PROJECT_FILE_PATH
 sed -i '' -e 's#name="Body and Soul Local"#name="Body and Soul Soul"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#bundleIdentifier="com.thesoundofmerlin.BodyAndSoulLocal"#bundleIdentifier="com.thesoundofmerlin.BodyAndSoulSoul"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#pluginName="B\&amp;S Local"#pluginName="B\&amp;S Soul"#g' $PROJECT_FILE_PATH
@@ -60,8 +61,7 @@ mkdir -p FX
 PROJECT_FILE_PATH=FX/BodyandSoulFX.jucer
 cp Local/BodyandSoulLocal.jucer $PROJECT_FILE_PATH
 
-sed -i '' -e 's#../../../../SDKs/JUCE/modules#JUCE/modules#g' $PROJECT_FILE_PATH
-
+setModules $PROJECT_FILE_PATH
 sed -i '' -e 's#name="Body and Soul Local"#name="Body and Soul FX"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#bundleIdentifier="com.thesoundofmerlin.BodyAndSoulLocal"#bundleIdentifier="com.thesoundofmerlin.BodyAndSoulFX"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#pluginName="B\&amp;S Local"#pluginName="B\&amp;S FX"#g' $PROJECT_FILE_PATH
