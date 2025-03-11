@@ -35,7 +35,7 @@ cp -r $PROJECT_DIR/IRs/Intro/* $SCRIPT_DIR/dist/BodyandSoulIntro/TSoM-BodyandSou
 mkdir -p $SCRIPT_DIR/dist/BodyandSoul
 
 cp -r ~/Library/Audio/Plug-Ins/VST3/TSoM-BodyandSoulBody.vst3 $SCRIPT_DIR/dist/BodyandSoul
-mkdir -p $SCRIPT_DIR/dist/BodyandSoulBody/TSoM-BodyandSoulBody.vst3/Contents/Resources/IRs
+mkdir -p $SCRIPT_DIR/dist/BodyandSoul/TSoM-BodyandSoulBody.vst3/Contents/Resources/IRs
 cp -r $PROJECT_DIR/IRs/Body/* $SCRIPT_DIR/dist/BodyandSoul/TSoM-BodyandSoulBody.vst3/Contents/Resources/IRs
 
 cp -r ~/Library/Audio/Plug-Ins/VST3/TSoM-BodyandSoulSoul.vst3 $SCRIPT_DIR/dist/BodyandSoul
