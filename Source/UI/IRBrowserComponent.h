@@ -31,7 +31,7 @@ class IRBrowserComponent : public juce::Component,
                            public juce::ChangeListener
 {
 public:
-  IRBrowserComponent();
+  IRBrowserComponent(Theme& theme);
   virtual ~IRBrowserComponent();
 
   virtual void init(Processor* processor);

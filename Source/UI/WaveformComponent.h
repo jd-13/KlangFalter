@@ -18,20 +18,19 @@
 #ifndef _WAVEFORMCOMPONENT_H
 #define _WAVEFORMCOMPONENT_H
 
+#include <vector>
 
 #include "JuceHeader.h"
 
 #include "CustomLookAndFeel.h"
 #include "../Envelope.h"
 #include "../IRAgent.h"
-
-#include <vector>
-
+#include "Theme.hpp"
 
 class WaveformComponent : public juce::Component
 {
 public:
-  explicit WaveformComponent();
+  explicit WaveformComponent(Theme& theme);
   virtual ~WaveformComponent();
 
   virtual void paint(juce::Graphics& g);
@@ -62,6 +61,8 @@ private:
   Rectangle<int> _area;
 
   float _beatsPerMinute;
+
+  Theme& _theme;
 
   WaveformComponent(const WaveformComponent&);
   WaveformComponent& operator=(const WaveformComponent&);

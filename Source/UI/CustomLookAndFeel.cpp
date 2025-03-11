@@ -37,12 +37,6 @@ CustomLookAndFeel::CustomLookAndFeel() :
 // ==============================================
 // Waveform
 // ==============================================
-juce::Colour CustomLookAndFeel::getWaveformColour() const
-{
-  return UIUtils::complementaryColour;
-}
-
-
 juce::Colour CustomLookAndFeel::getWaveformBackgroundColour() const
 {
   return juce::Colour(0.0f, 0.0f, 0.0f, 0.0f);

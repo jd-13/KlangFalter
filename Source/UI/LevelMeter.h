@@ -22,24 +22,26 @@
 
 #include "CustomLookAndFeel.h"
 #include "../LevelMeasurement.h"
+#include "Theme.hpp"
 
 class LevelMeter : public juce::Component
 {
 public:
-  LevelMeter();
+  explicit LevelMeter(Theme& theme);
   virtual ~LevelMeter();
-  
+
   virtual void paint(juce::Graphics& g);
   virtual void resized();
-  
+
   void setChannelCount(size_t channelCount);
   void setLevel(size_t channel, float level);
-  
+
 private:
   SharedResourcePointer<CustomLookAndFeel> customLookAndFeel;
   std::vector<float> _levels;
   juce::ColourGradient _colourGradient;
-  
+  Theme& _theme;
+
   LevelMeter(const LevelMeter&);
   LevelMeter& operator=(const LevelMeter&);
 };

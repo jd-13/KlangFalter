@@ -44,7 +44,7 @@ class IRComponent  : public Component,
 {
 public:
     //==============================================================================
-    IRComponent ();
+    explicit IRComponent (Theme& theme);
     ~IRComponent() override;
 
     //==============================================================================

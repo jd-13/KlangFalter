@@ -35,7 +35,6 @@ public:
   juce::Colour getLevelColourClipping() const;
 
   // Waveform
-  juce::Colour getWaveformColour() const;
   juce::Colour getWaveformBackgroundColour() const;
 
   // Envelope

@@ -21,7 +21,7 @@
 #include "../Processor.h"
 
 
-WaveformComponent::WaveformComponent() :
+WaveformComponent::WaveformComponent(Theme& theme) :
   Component(),
   _irAgent(nullptr),
   _maximaDecibels(),
@@ -35,7 +35,8 @@ WaveformComponent::WaveformComponent() :
   _decayShape(0.0),
   _predelayOffsetX(0),
   _area(),
-  _beatsPerMinute(0.0f)
+  _beatsPerMinute(0.0f),
+  _theme(theme)
 {
 }
 
@@ -215,7 +216,7 @@ void WaveformComponent::paint(Graphics& g)
   // Waveform
   const size_t xLen = std::min(static_cast<size_t>(w), _maximaDecibels.size());
   const float bottom = static_cast<float>(_area.getBottom());
-  g.setColour(customLookAndFeel->getWaveformColour());
+  g.setColour(_theme.getComplementaryColour());
   const float lineWidth {std::max(1.0f, std::ceil(UIScaleFactor))}; // Use ceil to prevent gaps between the lines at different UI sizes
   for (size_t x=0; x<xLen; ++x)
   {

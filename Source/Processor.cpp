@@ -514,7 +514,6 @@ IRAgentContainer Processor::getAgents() const
   return _agents;
 }
 
-
 void Processor::clearConvolvers()
 {
   // {
@@ -842,6 +841,15 @@ bool Processor::irAvailable() const
   return false;
 }
 
+std::optional<IR_TYPE> Processor::getIRType() const {
+    for (auto it=_agents.begin(); it!=_agents.end(); ++it) {
+        if ((*it)->getFile().existsAsFile()) {
+            return getTypeForFile((*it)->getFile());
+        }
+    }
+
+    return std::optional<IR_TYPE>();
+}
 
 void Processor::updateConvolvers()
 {

@@ -30,9 +30,9 @@ namespace UIUtils {
         juce::PathStrokeType pStroke(1);
 
         if (button.getToggleState()) {
-            g.setColour(button.findColour(onColour));
+            g.setColour(_getOnColour());
         } else {
-            g.setColour(button.findColour(offColour));
+            g.setColour(_getOffColour());
         }
 
         p.addRoundedRectangle(indent,
@@ -54,9 +54,9 @@ namespace UIUtils {
                                                  bool isMouseOverButton,
                                                  bool isButtonDown) {
         if (textButton.getToggleState()) {
-            g.setColour(textButton.findColour(onColour));
+            g.setColour(_getOnColour());
         } else {
-            g.setColour(textButton.findColour(offColour));
+            g.setColour(_getOffColour());
         }
 
         g.setFont(g.getCurrentFont().withHeight(scaled(textButton.getParentWidth(), 14.0f)));
@@ -111,9 +111,9 @@ namespace UIUtils {
         const int diameter {std::min(area.getWidth(), area.getHeight())};
 
         if (slider.isEnabled()) {
-            g.setColour(highlightColour);
+            g.setColour(_theme.getHighlightColour());
         } else {
-            g.setColour(neutralColour.withAlpha(0.2f));
+            g.setColour(_theme.getNeutralColour().withAlpha(0.2f));
         }
 
         juce::Path p;
@@ -170,7 +170,7 @@ namespace UIUtils {
                                                         juce::Slider& slider) {
         constexpr int THUMB_RADIUS {4};
 
-        g.setColour(slider.findColour(juce::Slider::thumbColourId));
+        g.setColour(_theme.getHighlightColour());
 
         if (style == juce::Slider::LinearHorizontal) {
             // Horizontal thumb
@@ -225,9 +225,9 @@ namespace UIUtils {
                                                  juce::DirectoryContentsDisplayComponent& dcc) {
         auto fileListComp = dynamic_cast<Component*> (&dcc);
 
-        if (isItemSelected)
-            g.fillAll (fileListComp != nullptr ? fileListComp->findColour (DirectoryContentsDisplayComponent::highlightColourId)
-                                            : findColour (DirectoryContentsDisplayComponent::highlightColourId));
+        if (isItemSelected) {
+            g.fillAll (_theme.getHighlightColour().withAlpha(0.5f));
+        }
 
         const int x = 32;
         g.setColour (Colours::black);
@@ -244,6 +244,13 @@ namespace UIUtils {
                                     : getDefaultDocumentFileImage())
                 d->drawWithin (g, Rectangle<float> (2.0f, 2.0f, x - 4.0f, (float) height - 4.0f),
                             RectanglePlacement::centred | RectanglePlacement::onlyReduceInSize, 1.0f);
+        }
+
+        const std::optional<IR_TYPE> irType = getTypeForFile(file);
+        if (irType.has_value()) {
+            const juce::Colour irColour = getColourForType(irType.value());
+            g.setColour(irColour);
+            g.fillRect(0, 0, 6, height);
         }
 
         if (isItemSelected)

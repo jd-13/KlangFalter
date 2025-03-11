@@ -84,10 +84,12 @@ namespace {
 KlangFalterEditor::KlangFalterEditor (Processor& processor)
     : AudioProcessorEditor(&processor),
       _processor(processor),
-      _toggleButtonLookAndFeel(new UIUtils::ToggleButtonLookAndFeel()),
+      _meterButtonsLookAndFeel(new UIUtils::ToggleButtonLookAndFeel([&]() { return _theme.getHighlightColour(); }, [&]() { return _theme.getNeutralColour(); })),
+      _reverseButtonLookAndFeel(new UIUtils::ToggleButtonLookAndFeel([&]() { return _theme.getHighlightColour(); }, [&]() { return _theme.getBackgroundColour(); })),
+      _browserButtonLookAndFeel(new UIUtils::ToggleButtonLookAndFeel([&]() { return _theme.getNeutralColour(); }, [&]() { return _theme.getNeutralColour(); })),
       _simpleButtonLookAndFeel(new UIUtils::SimpleButtonLookAndFeel()),
-      _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()),
-      _linearSliderLookAndFeel(new UIUtils::LinearSliderLookAndFeel()),
+      _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel(_theme)),
+      _linearSliderLookAndFeel(new UIUtils::LinearSliderLookAndFeel(_theme)),
       _constrainer(new juce::ComponentBoundsConstrainer())
 {
     //[Constructor_pre] You can add your own custom stuff here..
@@ -101,12 +103,12 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _irTabComponent.reset (new juce::TabbedComponent (juce::TabbedButtonBar::TabsAtTop));
     addAndMakeVisible (_irTabComponent.get());
     _irTabComponent->setTabBarDepth (0);
-    _irTabComponent->addTab (TRANS ("Placeholder"), juce::Colour (0xffb0b0b6), new IRComponent(), true);
+    _irTabComponent->addTab (TRANS ("Placeholder"), juce::Colour (0xffb0b0b6), new IRComponent(_theme), true);
     _irTabComponent->setCurrentTabIndex (0);
 
     _irTabComponent->setBounds (16, 51, 462, 176);
 
-    _levelMeterDry.reset (new LevelMeter());
+    _levelMeterDry.reset (new LevelMeter(_theme));
     addAndMakeVisible (_levelMeterDry.get());
 
     _levelMeterDry->setBounds (632, 51, 12, 176);
@@ -168,7 +170,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
 
     _browseButton->setBounds (12, 319, 736, 24);
 
-    _irBrowserComponent.reset (new IRBrowserComponent());
+    _irBrowserComponent.reset (new IRBrowserComponent(_theme));
     addAndMakeVisible (_irBrowserComponent.get());
 
     _irBrowserComponent->setBounds (12, 343, 736, 288);
@@ -225,7 +227,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
 
     _reverseButton->setBounds (20, 198, 72, 24);
 
-    _levelMeterOut.reset (new LevelMeter());
+    _levelMeterOut.reset (new LevelMeter(_theme));
     addAndMakeVisible (_levelMeterOut.get());
 
     _levelMeterOut->setBounds (720, 51, 12, 176);
@@ -301,22 +303,22 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
 
 
     //[UserPreSize]
-    _irSliderGroup.reset(new IRSliderGroup(_processor));
+    _irSliderGroup.reset(new IRSliderGroup(_processor, _rotarySliderLookAndFeel));
     addAndMakeVisible(_irSliderGroup.get());
 
-    _attackSliderGroup.reset(new AttackSliderGroup(_processor));
+    _attackSliderGroup.reset(new AttackSliderGroup(_processor, _rotarySliderLookAndFeel));
     addAndMakeVisible(_attackSliderGroup.get());
 
-    _decaySliderGroup.reset(new DecaySliderGroup(_processor));
+    _decaySliderGroup.reset(new DecaySliderGroup(_processor, _rotarySliderLookAndFeel));
     addAndMakeVisible(_decaySliderGroup.get());
 
-    _stereoSliderGroup.reset(new StereoSliderGroup(_processor));
+    _stereoSliderGroup.reset(new StereoSliderGroup(_processor, _rotarySliderLookAndFeel));
     addAndMakeVisible(_stereoSliderGroup.get());
 
-    _lowEqSliderGroup.reset(new LowEqSliderGroup(_processor));
+    _lowEqSliderGroup.reset(new LowEqSliderGroup(_processor, _rotarySliderLookAndFeel));
     addAndMakeVisible(_lowEqSliderGroup.get());
 
-    _highEqSliderGroup.reset(new HighEqSliderGroup(_processor));
+    _highEqSliderGroup.reset(new HighEqSliderGroup(_processor, _rotarySliderLookAndFeel));
     addAndMakeVisible(_highEqSliderGroup.get());
 
     setLookAndFeel(customLookAndFeel);
@@ -348,44 +350,19 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     };
 
     _titleLabel->setColour(juce::Label::textColourId, UIUtils::neutralColour.withAlpha(0.5f));
-    _subtitleLabel->setColour(juce::Label::textColourId, UIUtils::highlightColour);
+    _subtitleLabel->setColour(juce::Label::textColourId, _theme.getHighlightColour());
 
-    auto setButtonColours = [](juce::TextButton* button) {
-        button->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, UIUtils::neutralColour);
-        button->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, UIUtils::highlightColour);
-    };
-
-    _dryButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
-    _wetButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
-    _autogainButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
-    _reverseButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
-    _browseButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
-    _resetButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
-
-    setButtonColours(_dryButton.get());
-    setButtonColours(_wetButton.get());
-    setButtonColours(_autogainButton.get());
-    setButtonColours(_reverseButton.get());
-
-    _reverseButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, UIUtils::backgroundColour);
-    _browseButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, UIUtils::neutralColour);
-    _browseButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, UIUtils::neutralColour);
+    _dryButton->setLookAndFeel(_meterButtonsLookAndFeel.get());
+    _wetButton->setLookAndFeel(_meterButtonsLookAndFeel.get());
+    _autogainButton->setLookAndFeel(_meterButtonsLookAndFeel.get());
+    _reverseButton->setLookAndFeel(_reverseButtonLookAndFeel.get());
+    _browseButton->setLookAndFeel(_browserButtonLookAndFeel.get());
+    _resetButton->setLookAndFeel(_meterButtonsLookAndFeel.get());
 
     _browseButton->setConnectedEdges(juce::Button::ConnectedOnBottom);
 
-    _resetButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, UIUtils::neutralColour);
-    _resetButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, UIUtils::neutralColour);
-
     _drySlider->setLookAndFeel(_linearSliderLookAndFeel.get());
     _wetSlider->setLookAndFeel(_linearSliderLookAndFeel.get());
-
-    auto setLinearSliderColours = [](juce::Slider* slider) {
-        slider->setColour(juce::Slider::thumbColourId, UIUtils::highlightColour);
-        slider->setColour(juce::Slider::trackColourId, UIUtils::neutralColour);
-    };
-
-    setLinearSliderColours(_drySlider.get());
-    setLinearSliderColours(_wetSlider.get());
     //[/UserPreSize]
 
     const juce::Rectangle<int> bounds = _processor.getUIBounds();
@@ -852,7 +829,7 @@ void KlangFalterEditor::updateUI()
           jassert(agent);
           if (agent)
           {
-            IRComponent* irComponent = new IRComponent();
+            IRComponent* irComponent = new IRComponent(_theme);
             irComponent->init(_processor.getAgent(input, output));
             _irTabComponent->addTab(juce::String(static_cast<int>(input+1)) + juce::String("-") + juce::String(static_cast<int>(output+1)),
                                     juce::Colour(0xffb0b0b6),
@@ -864,6 +841,15 @@ void KlangFalterEditor::updateUI()
       }
     }
   }
+
+    const std::optional<IR_TYPE> irType = _processor.getIRType();
+    if (irType.has_value()) {
+        _theme.type = irType.value();
+    }
+
+    _subtitleLabel->setColour(juce::Label::textColourId, _theme.getHighlightColour());
+
+    repaint();
 }
 
 
@@ -943,7 +929,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="KlangFalterEditor" componentName=""
                  parentClasses="public AudioProcessorEditor, public ChangeNotifier::Listener, public ChangeListener, public Timer"
-                 constructorParams="Processor&amp; processor" variableInitialisers="AudioProcessorEditor(&amp;processor),&#10;_processor(processor),&#10;_toggleButtonLookAndFeel(new UIUtils::ToggleButtonLookAndFeel()),&#10;_rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()),&#10;_linearSliderLookAndFeel(new UIUtils::LinearSliderLookAndFeel())"
+                 constructorParams="Processor&amp; processor" variableInitialisers="AudioProcessorEditor(&amp;processor),&#10;_processor(processor),&#10;_meterButtonsLookAndFeel(new UIUtils::ToggleButtonLookAndFeel()),&#10;_rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()),&#10;_linearSliderLookAndFeel(new UIUtils::LinearSliderLookAndFeel())"
                  snapPixels="4" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="760" initialHeight="340">
   <BACKGROUND backgroundColour="ff313131"/>

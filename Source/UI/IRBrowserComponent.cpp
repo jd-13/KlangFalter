@@ -21,7 +21,7 @@
 #include "../Settings.h"
 #include "UIUtils.hpp"
 
-IRBrowserComponent::IRBrowserComponent() :
+IRBrowserComponent::IRBrowserComponent(Theme& theme) :
   juce::Component(),
   _timeSliceThread(),
   _fileFilter(),
@@ -29,7 +29,7 @@ IRBrowserComponent::IRBrowserComponent() :
   _fileTreeComponent(),
   _infoLabel(),
   _processor(nullptr),
-  _fileTreeLookAndFeel(new UIUtils::FileTreeLookAndFeel())
+  _fileTreeLookAndFeel(new UIUtils::FileTreeLookAndFeel(theme))
 {
 }
 
@@ -78,7 +78,6 @@ void IRBrowserComponent::init(Processor* processor)
   _fileTreeComponent->addListener(this);
   _fileTreeComponent->setColour(juce::TreeView::backgroundColourId, UIUtils::neutralColour);
   _fileTreeComponent->setColour(juce::TreeView::linesColourId, UIUtils::backgroundColour);
-  _fileTreeComponent->setColour(juce::DirectoryContentsDisplayComponent::highlightColourId, UIUtils::highlightColour.withAlpha(0.5f));
   _fileTreeComponent->setColour(juce::DirectoryContentsDisplayComponent::textColourId, UIUtils::backgroundColour);
   _fileTreeComponent->setLookAndFeel(_fileTreeLookAndFeel.get());
   addAndMakeVisible(_fileTreeComponent.get());

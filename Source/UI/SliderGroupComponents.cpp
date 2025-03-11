@@ -45,9 +45,9 @@ namespace {
     constexpr int LABEL_FONT_SIZE {11};
 }
 
-IRSliderGroup::IRSliderGroup(Processor& processor) :
+IRSliderGroup::IRSliderGroup(Processor& processor, std::shared_ptr<UIUtils::RotarySliderLookAndFeel> rotarySliderLookAndFeel) :
         _processor(processor),
-        _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()) {
+        _rotarySliderLookAndFeel(rotarySliderLookAndFeel) {
     _impulseResponseHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Impulse Response")));
     addAndMakeVisible(_impulseResponseHeaderLabel.get());
     _impulseResponseHeaderLabel->setFont(juce::Font(15.00f, juce::Font::plain).withTypefaceStyle("Regular"));
@@ -269,9 +269,9 @@ void IRSliderGroup::onUpdate(bool enableSliders) {
     _stretchLabel->setText(String(static_cast<int>(100.0*tune)) + String("%"), juce::sendNotification);
 }
 
-AttackSliderGroup::AttackSliderGroup(Processor& processor) :
+AttackSliderGroup::AttackSliderGroup(Processor& processor, std::shared_ptr<UIUtils::RotarySliderLookAndFeel> rotarySliderLookAndFeel) :
         _processor(processor),
-        _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()) {
+        _rotarySliderLookAndFeel(rotarySliderLookAndFeel) {
     _attackHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Attack")));
     addAndMakeVisible(_attackHeaderLabel.get());
     _attackHeaderLabel->setFont(juce::Font(15.00f, juce::Font::plain).withTypefaceStyle("Regular"));
@@ -394,9 +394,9 @@ void AttackSliderGroup::onUpdate(bool enableSliders) {
     _attackShapeLabel->setText((attackShape < 0.0001) ? juce::String("Neutral") : juce::String(attackShape, 2), juce::sendNotification);
 }
 
-DecaySliderGroup::DecaySliderGroup(Processor& processor) :
+DecaySliderGroup::DecaySliderGroup(Processor& processor, std::shared_ptr<UIUtils::RotarySliderLookAndFeel> rotarySliderLookAndFeel) :
         _processor(processor),
-        _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()) {
+        _rotarySliderLookAndFeel(rotarySliderLookAndFeel) {
     _decayHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Decay")));
     addAndMakeVisible(_decayHeaderLabel.get());
     _decayHeaderLabel->setFont(juce::Font(15.00f, juce::Font::plain).withTypefaceStyle("Regular"));
@@ -470,9 +470,9 @@ void DecaySliderGroup::onUpdate(bool enableSliders) {
     _decayShapeLabel->setText((decayShape < 0.0001) ? juce::String("Neutral") : juce::String(decayShape, 2), juce::sendNotification);
 }
 
-StereoSliderGroup::StereoSliderGroup(Processor& processor) :
+StereoSliderGroup::StereoSliderGroup(Processor& processor, std::shared_ptr<UIUtils::RotarySliderLookAndFeel> rotarySliderLookAndFeel) :
         _processor(processor),
-        _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()) {
+        _rotarySliderLookAndFeel(rotarySliderLookAndFeel) {
     _stereoHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Stereo")));
     addAndMakeVisible(_stereoHeaderLabel.get());
     _stereoHeaderLabel->setFont(juce::Font(15.00f, juce::Font::plain).withTypefaceStyle("Regular"));
@@ -546,9 +546,9 @@ void StereoSliderGroup::onUpdate(bool enableSliders, int numOutputChannels) {
     _widthLabel->setText((::fabs(1.0f-stereoWidth) < 0.001) ? juce::String("Neutral") : juce::String(stereoWidth, 2), juce::sendNotification);
 }
 
-LowEqSliderGroup::LowEqSliderGroup(Processor& processor) :
+LowEqSliderGroup::LowEqSliderGroup(Processor& processor, std::shared_ptr<UIUtils::RotarySliderLookAndFeel> rotarySliderLookAndFeel) :
         _processor(processor),
-        _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()),
+        _rotarySliderLookAndFeel(rotarySliderLookAndFeel),
         _simpleButtonLookAndFeel(new UIUtils::SimpleButtonLookAndFeel()) {
     _lowEqButton.reset(new juce::TextButton(juce::String()));
     addAndMakeVisible(_lowEqButton.get());
@@ -732,9 +732,9 @@ void LowEqSliderGroup::onUpdate(bool enableSliders) {
     _loGainSlider->setValue(shelfGainDb, juce::dontSendNotification);
 }
 
-HighEqSliderGroup::HighEqSliderGroup(Processor& processor) :
+HighEqSliderGroup::HighEqSliderGroup(Processor& processor, std::shared_ptr<UIUtils::RotarySliderLookAndFeel> rotarySliderLookAndFeel) :
         _processor(processor),
-        _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()),
+        _rotarySliderLookAndFeel(rotarySliderLookAndFeel),
         _simpleButtonLookAndFeel(new UIUtils::SimpleButtonLookAndFeel()) {
     _highEqButton.reset(new juce::TextButton(juce::String()));
     addAndMakeVisible(_highEqButton.get());

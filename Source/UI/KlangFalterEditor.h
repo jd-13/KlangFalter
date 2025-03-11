@@ -30,6 +30,7 @@
 #include "../Processor.h"
 #include "UIUtils.hpp"
 #include "SliderGroupComponents.hpp"
+#include "Theme.hpp"
 //[/Headers]
 
 
@@ -71,10 +72,13 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+    Theme _theme;
     SharedResourcePointer<CustomLookAndFeel> customLookAndFeel;
-    std::unique_ptr<UIUtils::ToggleButtonLookAndFeel> _toggleButtonLookAndFeel;
+    std::unique_ptr<UIUtils::ToggleButtonLookAndFeel> _meterButtonsLookAndFeel;
+    std::unique_ptr<UIUtils::ToggleButtonLookAndFeel> _reverseButtonLookAndFeel;
+    std::unique_ptr<UIUtils::ToggleButtonLookAndFeel> _browserButtonLookAndFeel;
     std::unique_ptr<UIUtils::SimpleButtonLookAndFeel> _simpleButtonLookAndFeel;
-    std::unique_ptr<UIUtils::RotarySliderLookAndFeel> _rotarySliderLookAndFeel;
+    std::shared_ptr<UIUtils::RotarySliderLookAndFeel> _rotarySliderLookAndFeel;
     std::unique_ptr<UIUtils::LinearSliderLookAndFeel> _linearSliderLookAndFeel;
     Processor& _processor;
     juce::Component::SafePointer<juce::DialogWindow> _settingsDialogWindow;

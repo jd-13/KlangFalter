@@ -7,7 +7,7 @@
 
 class IRSliderGroup : public juce::Component {
 public:
-    IRSliderGroup(Processor& processor);
+    IRSliderGroup(Processor& processor, std::shared_ptr<UIUtils::RotarySliderLookAndFeel> rotarySliderLookAndFeel);
     virtual ~IRSliderGroup();
 
     void resized() override;
@@ -17,7 +17,7 @@ public:
 private:
     Processor& _processor;
 
-    std::unique_ptr<UIUtils::RotarySliderLookAndFeel> _rotarySliderLookAndFeel;
+    std::shared_ptr<UIUtils::RotarySliderLookAndFeel> _rotarySliderLookAndFeel;
 
     std::unique_ptr<juce::Label> _impulseResponseHeaderLabel;
 
@@ -40,7 +40,7 @@ private:
 
 class AttackSliderGroup : public juce::Component {
 public:
-    AttackSliderGroup(Processor& processor);
+    AttackSliderGroup(Processor& processor, std::shared_ptr<UIUtils::RotarySliderLookAndFeel> rotarySliderLookAndFeel);
     virtual ~AttackSliderGroup();
 
     void resized() override;
@@ -50,7 +50,7 @@ public:
 private:
     Processor& _processor;
 
-    std::unique_ptr<UIUtils::RotarySliderLookAndFeel> _rotarySliderLookAndFeel;
+    std::shared_ptr<UIUtils::RotarySliderLookAndFeel> _rotarySliderLookAndFeel;
 
     std::unique_ptr<juce::Label> _attackHeaderLabel;
 
@@ -65,7 +65,7 @@ private:
 
 class DecaySliderGroup : public juce::Component {
 public:
-    DecaySliderGroup(Processor& processor);
+    DecaySliderGroup(Processor& processor, std::shared_ptr<UIUtils::RotarySliderLookAndFeel> rotarySliderLookAndFeel);
     virtual ~DecaySliderGroup();
 
     void resized() override;
@@ -75,7 +75,7 @@ public:
 private:
     Processor& _processor;
 
-    std::unique_ptr<UIUtils::RotarySliderLookAndFeel> _rotarySliderLookAndFeel;
+    std::shared_ptr<UIUtils::RotarySliderLookAndFeel> _rotarySliderLookAndFeel;
 
     std::unique_ptr<juce::Label> _decayHeaderLabel;
 
@@ -86,7 +86,7 @@ private:
 
 class StereoSliderGroup : public juce::Component {
 public:
-    StereoSliderGroup(Processor& processor);
+    StereoSliderGroup(Processor& processor, std::shared_ptr<UIUtils::RotarySliderLookAndFeel> rotarySliderLookAndFeel);
     virtual ~StereoSliderGroup();
 
     void resized() override;
@@ -96,7 +96,7 @@ public:
 private:
     Processor& _processor;
 
-    std::unique_ptr<UIUtils::RotarySliderLookAndFeel> _rotarySliderLookAndFeel;
+    std::shared_ptr<UIUtils::RotarySliderLookAndFeel> _rotarySliderLookAndFeel;
 
     std::unique_ptr<juce::Label> _stereoHeaderLabel;
 
@@ -107,7 +107,7 @@ private:
 
 class LowEqSliderGroup : public juce::Component {
 public:
-    LowEqSliderGroup(Processor& processor);
+    LowEqSliderGroup(Processor& processor, std::shared_ptr<UIUtils::RotarySliderLookAndFeel> rotarySliderLookAndFeel);
     virtual ~LowEqSliderGroup();
 
     void resized() override;
@@ -117,7 +117,7 @@ public:
 private:
     Processor& _processor;
 
-    std::unique_ptr<UIUtils::RotarySliderLookAndFeel> _rotarySliderLookAndFeel;
+    std::shared_ptr<UIUtils::RotarySliderLookAndFeel> _rotarySliderLookAndFeel;
     std::unique_ptr<UIUtils::SimpleButtonLookAndFeel> _simpleButtonLookAndFeel;
 
     std::unique_ptr<juce::TextButton> _lowEqButton;
@@ -137,7 +137,7 @@ private:
 
 class HighEqSliderGroup : public juce::Component {
 public:
-    HighEqSliderGroup(Processor& processor);
+    HighEqSliderGroup(Processor& processor, std::shared_ptr<UIUtils::RotarySliderLookAndFeel> rotarySliderLookAndFeel);
     virtual ~HighEqSliderGroup();
 
     void resized() override;
@@ -147,7 +147,7 @@ public:
 private:
     Processor& _processor;
 
-    std::unique_ptr<UIUtils::RotarySliderLookAndFeel> _rotarySliderLookAndFeel;
+    std::shared_ptr<UIUtils::RotarySliderLookAndFeel> _rotarySliderLookAndFeel;
     std::unique_ptr<UIUtils::SimpleButtonLookAndFeel> _simpleButtonLookAndFeel;
 
     std::unique_ptr<juce::TextButton> _highEqButton;

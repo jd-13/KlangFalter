@@ -29,13 +29,13 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-IRComponent::IRComponent () : _simpleButtonLookAndFeel(new UIUtils::SimpleButtonLookAndFeel())
+IRComponent::IRComponent (Theme& theme) : _simpleButtonLookAndFeel(new UIUtils::SimpleButtonLookAndFeel())
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
     setName ("IRComponent");
-    _waveformComponent.reset (new WaveformComponent());
+    _waveformComponent.reset (new WaveformComponent(theme));
     addAndMakeVisible (_waveformComponent.get());
     _waveformComponent->setName ("WaveformComponent");
 

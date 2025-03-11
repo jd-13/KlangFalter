@@ -18,6 +18,9 @@
 #ifndef _PROCESSOR_H
 #define _PROCESSOR_H
 
+#include <map>
+#include <vector>
+
 #include "JuceHeader.h"
 
 #include "ChangeNotifier.h"
@@ -27,10 +30,7 @@
 #include "Settings.h"
 #include "SmoothValue.h"
 #include "StereoWidth.h"
-
-#include <map>
-#include <vector>
-
+#include "IRType.hpp"
 
 //==============================================================================
 /**
@@ -131,6 +131,7 @@ public:
   double getIRDuration() const;
   double getMaxFileDuration() const;
   bool irAvailable() const;
+  std::optional<IR_TYPE> getIRType() const;
 
   void setIRBegin(double irBegin);
   double getIRBegin() const;
