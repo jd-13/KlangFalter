@@ -25,25 +25,36 @@ cd %PROJECT_DIR%\Projects\FX\Builds\VisualStudio2019
 msbuild "Body and Soul FX.sln" /p:Configuration=Release /p:Platform=x64 || exit /b
 
 ECHO "=== Making Release folder ==="
-cd %SCRIPT_DIR%..\..\
-mkdir -p Release\TSoM-BodyandSoulIntro.vst3\Contents\x86_64-win
-mkdir -p Release\TSoM-BodyandSoulBody.vst3\Contents\x86_64-win
-mkdir -p Release\TSoM-BodyandSoulSoul.vst3\Contents\x86_64-win
-mkdir -p Release\TSoM-BodyandSoulFX.vst3\Contents\x86_64-win
+cd %PROJECT_DIR%
+mkdir -p dist\BodyandSoulIntro\TSoM-BodyandSoulIntro.vst3\Contents\x86_64-win  || exit /b
+mkdir -p dist\BodyandSoul\TSoM-BodyandSoulBody.vst3\Contents\x86_64-win || exit /b
+mkdir -p dist\BodyandSoul\TSoM-BodyandSoulSoul.vst3\Contents\x86_64-win || exit /b
+mkdir -p dist\BodyandSoul\TSoM-BodyandSoulFX.vst3\Contents\x86_64-win || exit /b
 
-cd Release\TSoM-BodyandSoulIntro.vst3\Contents\x86_64-win
+cd dist\BodyandSoulIntro\TSoM-BodyandSoulIntro.vst3\Contents\x86_64-win
 copy %PROJECT_DIR%\Projects\Intro\Builds\VisualStudio2019\x64\Release\VST3\TSoM-BodyandSoulIntro.vst3\Contents\x86_64-win\TSoM-BodyandSoulIntro.vst3 || exit /b
+cd ..
+mkdir -p Resources\IRs
+robocopy %PROJECT_DIR%\IRs\Intro Resources\IRs\ /e /s
+cd %PROJECT_DIR%
 
-cd Release\TSoM-BodyandSoulBody.vst3\Contents\x86_64-win
+cd dist\BodyandSoul\TSoM-BodyandSoulBody.vst3\Contents\x86_64-win
 copy %PROJECT_DIR%\Projects\Body\Builds\VisualStudio2019\x64\Release\VST3\TSoM-BodyandSoulBody.vst3\Contents\x86_64-win\TSoM-BodyandSoulBody.vst3 || exit /b
+cd ..
+mkdir -p Resources\IRs
+robocopy %PROJECT_DIR%\IRs\Body Resources\IRs\ /e /s
+cd %PROJECT_DIR%
 
-cd Release\TSoM-BodyandSoulSoul.vst3\Contents\x86_64-win
+cd dist\BodyandSoul\TSoM-BodyandSoulSoul.vst3\Contents\x86_64-win
 copy %PROJECT_DIR%\Projects\Soul\Builds\VisualStudio2019\x64\Release\VST3\TSoM-BodyandSoulSoul.vst3\Contents\x86_64-win\TSoM-BodyandSoulSoul.vst3 || exit /b
+cd ..
+mkdir -p Resources\IRs
+robocopy %PROJECT_DIR%\IRs\Soul Resources\IRs\ /e /s
+cd %PROJECT_DIR%
 
-cd Release\TSoM-BodyandSoulFX.vst3\Contents\x86_64-win
+cd dist\BodyandSoul\TSoM-BodyandSoulFX.vst3\Contents\x86_64-win
 copy %PROJECT_DIR%\Projects\FX\Builds\VisualStudio2019\x64\Release\VST3\TSoM-BodyandSoulFX.vst3\Contents\x86_64-win\TSoM-BodyandSoulFX.vst3 || exit /b
-
-@REM ECHO "=== Copying IRs ==="
-@REM cd ..
-@REM mkdir -p Resources\IRs
-@REM robocopy %PROJECT_DIR%\IRs\ Resources\IRs\ /e /s
+cd ..
+mkdir -p Resources\IRs
+robocopy %PROJECT_DIR%\IRs\FX Resources\IRs\ /e /s
+cd %PROJECT_DIR%

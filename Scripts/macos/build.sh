@@ -27,15 +27,21 @@ xcodebuild -project "$PROJECT_DIR/Projects/FX/Builds/MacOSX/Body and Soul FX.xco
 
 echo "=== Collecting artefacts ==="
 mkdir -p $SCRIPT_DIR/dist/BodyandSoulIntro
+
 cp -r ~/Library/Audio/Plug-Ins/VST3/TSoM-BodyandSoulIntro.vst3 $SCRIPT_DIR/dist/BodyandSoulIntro
+mkdir -p $SCRIPT_DIR/dist/BodyandSoulIntro/TSoM-BodyandSoulIntro.vst3/Contents/Resources/IRs
+cp -r $PROJECT_DIR/IRs/Intro/* $SCRIPT_DIR/dist/BodyandSoulIntro/TSoM-BodyandSoulIntro.vst3/Contents/Resources/IRs
 
 mkdir -p $SCRIPT_DIR/dist/BodyandSoul
-cp -r ~/Library/Audio/Plug-Ins/VST3/TSoM-BodyandSoulBody.vst3 $SCRIPT_DIR/dist/BodyandSoul
-cp -r ~/Library/Audio/Plug-Ins/VST3/TSoM-BodyandSoulSoul.vst3 $SCRIPT_DIR/dist/BodyandSoul
-cp -r ~/Library/Audio/Plug-Ins/VST3/TSoM-BodyandSoulFX.vst3 $SCRIPT_DIR/dist/BodyandSoul
 
-# echo "=== Copying IRs ==="
-# mkdir -p $SCRIPT_DIR/dist/TSoM-BodyandSoulIntro.vst3/Contents/Resources/IRs
-# cp -r $PROJECT_DIR/IRs/* $SCRIPT_DIR/dist/TSoM-BodyandSoulIntro.vst3/Contents/Resources/IRs
-# mkdir -p $SCRIPT_DIR/dist/TSoM-BodyandSoulIntro.component/Contents/Resources/IRs
-# cp -r $PROJECT_DIR/IRs/* $SCRIPT_DIR/dist/TSoM-BodyandSoulIntro.component/Contents/Resources/IRs
+cp -r ~/Library/Audio/Plug-Ins/VST3/TSoM-BodyandSoulBody.vst3 $SCRIPT_DIR/dist/BodyandSoul
+mkdir -p $SCRIPT_DIR/dist/BodyandSoulBody/TSoM-BodyandSoulBody.vst3/Contents/Resources/IRs
+cp -r $PROJECT_DIR/IRs/Body/* $SCRIPT_DIR/dist/BodyandSoul/TSoM-BodyandSoulBody.vst3/Contents/Resources/IRs
+
+cp -r ~/Library/Audio/Plug-Ins/VST3/TSoM-BodyandSoulSoul.vst3 $SCRIPT_DIR/dist/BodyandSoul
+mkdir -p $SCRIPT_DIR/dist/BodyandSoul/TSoM-BodyandSoulSoul.vst3/Contents/Resources/IRs
+cp -r $PROJECT_DIR/IRs/Soul/* $SCRIPT_DIR/dist/BodyandSoul/TSoM-BodyandSoulSoul.vst3/Contents/Resources/IRs
+
+cp -r ~/Library/Audio/Plug-Ins/VST3/TSoM-BodyandSoulFX.vst3 $SCRIPT_DIR/dist/BodyandSoul
+mkdir -p $SCRIPT_DIR/dist/BodyandSoul/TSoM-BodyandSoulFX.vst3/Contents/Resources/IRs
+cp -r $PROJECT_DIR/IRs/FX/* $SCRIPT_DIR/dist/BodyandSoul/TSoM-BodyandSoulFX.vst3/Contents/Resources/IRs
