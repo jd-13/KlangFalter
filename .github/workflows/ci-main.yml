@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   CheckProjects:
-    runs-on: ubuntu-latest
+    runs-on: macos-14
 
     steps:
       - uses: actions/checkout@v2
@@ -12,7 +12,7 @@ jobs:
         run: Scripts/check-projects.sh
 
   BuildMacOS:
-    runs-on: macos-13
+    runs-on: macos-14
     needs: CheckProjects
 
     steps:
