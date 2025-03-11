@@ -3,8 +3,17 @@ name: CI Main
 on: [push, pull_request]
 
 jobs:
+  CheckProjects:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: CheckProjects
+        run: Scripts/check-projects.sh
+
   BuildMacOS:
     runs-on: macos-13
+    needs: CheckProjects
 
     steps:
       - uses: actions/checkout@v2
@@ -24,6 +33,7 @@ jobs:
 
   BuildWindows:
     runs-on: windows-2019
+    needs: CheckProjects
 
     steps:
       - uses: actions/checkout@v2
