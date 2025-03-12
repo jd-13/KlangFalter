@@ -45,7 +45,7 @@ namespace {
     constexpr int LABEL_FONT_SIZE {11};
 }
 
-IRSliderGroup::IRSliderGroup(Processor& processor, UIUtils::Theme& theme) :
+IRSliderGroup::IRSliderGroup(Processor& processor, UIUtils::Theme theme) :
         _processor(processor),
         _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()) {
     _rotarySliderLookAndFeel->theme = theme;
@@ -253,7 +253,7 @@ void IRSliderGroup::onUpdate(bool enableSliders) {
     _stretchLabel->setText(String(static_cast<int>(100.0*tune)) + String("%"), juce::sendNotification);
 }
 
-AttackSliderGroup::AttackSliderGroup(Processor& processor, UIUtils::Theme& theme) :
+AttackSliderGroup::AttackSliderGroup(Processor& processor, UIUtils::Theme theme) :
         _processor(processor),
         _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()) {
     _rotarySliderLookAndFeel->theme = theme;
@@ -370,7 +370,7 @@ void AttackSliderGroup::onUpdate(bool enableSliders) {
     _attackShapeLabel->setText((attackShape < 0.0001) ? juce::String("Neutral") : juce::String(attackShape, 2), juce::sendNotification);
 }
 
-DecaySliderGroup::DecaySliderGroup(Processor& processor, UIUtils::Theme& theme) :
+DecaySliderGroup::DecaySliderGroup(Processor& processor, UIUtils::Theme theme) :
         _processor(processor),
         _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()) {
     _rotarySliderLookAndFeel->theme = theme;
@@ -448,7 +448,7 @@ void DecaySliderGroup::onUpdate(bool enableSliders) {
     _decayShapeLabel->setText((decayShape < 0.0001) ? juce::String("Neutral") : juce::String(decayShape, 2), juce::sendNotification);
 }
 
-StereoSliderGroup::StereoSliderGroup(Processor& processor, UIUtils::Theme& theme) :
+StereoSliderGroup::StereoSliderGroup(Processor& processor, UIUtils::Theme theme) :
         _processor(processor),
         _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()) {
     _rotarySliderLookAndFeel->theme = theme;
@@ -520,7 +520,7 @@ void StereoSliderGroup::onUpdate(bool enableSliders, int numOutputChannels) {
     _widthLabel->setText((::fabs(1.0f-stereoWidth) < 0.001) ? juce::String("Neutral") : juce::String(stereoWidth, 2), juce::sendNotification);
 }
 
-LowEqSliderGroup::LowEqSliderGroup(Processor& processor, UIUtils::Theme& theme) :
+LowEqSliderGroup::LowEqSliderGroup(Processor& processor, UIUtils::Theme theme) :
         _processor(processor),
         _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()),
         _simpleButtonLookAndFeel(new UIUtils::SimpleButtonLookAndFeel()) {
@@ -696,7 +696,7 @@ void LowEqSliderGroup::onUpdate(bool enableSliders) {
     _loGainSlider->setValue(shelfGainDb, juce::dontSendNotification);
 }
 
-HighEqSliderGroup::HighEqSliderGroup(Processor& processor, UIUtils::Theme& theme) :
+HighEqSliderGroup::HighEqSliderGroup(Processor& processor, UIUtils::Theme theme) :
         _processor(processor),
         _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()),
         _simpleButtonLookAndFeel(new UIUtils::SimpleButtonLookAndFeel()) {
