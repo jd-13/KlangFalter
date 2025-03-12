@@ -20,11 +20,12 @@
 #include "../DecibelScaling.h"
 
 
-LevelMeter::LevelMeter() :
+LevelMeter::LevelMeter(UIUtils::Theme theme) :
   Component(),
   _levels(),
   _colourGradient()
 {
+  customLookAndFeel->theme = theme;
 }
 
 
@@ -54,7 +55,7 @@ void LevelMeter::paint(Graphics& g)
       g.setColour(Colours::black);
       g.fillRect(x, 0, levelStripWidth-1, h-levelHeight);
     }
-  }  
+  }
 }
 
 
@@ -65,7 +66,7 @@ void LevelMeter::resized()
   const double scalePosMinus40Db = static_cast<double>(DecibelScaling::Db2Scale(-40.0f));
   _colourGradient = ColourGradient(customLookAndFeel->getLevelColourClipping(), 0.0f, 0.0f,
                                    customLookAndFeel->getLevelColourMinusInfDb(), 0.0f, h-1.0f,
-                                   false);  
+                                   false);
   _colourGradient.addColour(0.999999 - scalePosZeroDb, customLookAndFeel->getLevelColourClipping());
   _colourGradient.addColour(1.000000 - scalePosZeroDb, customLookAndFeel->getLevelColourZeroDb());
   _colourGradient.addColour(1.000000 - scalePosMinus40Db, customLookAndFeel->getLevelColourMinus40Db());

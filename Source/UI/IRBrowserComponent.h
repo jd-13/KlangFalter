@@ -34,7 +34,7 @@ public:
   IRBrowserComponent();
   virtual ~IRBrowserComponent();
 
-  virtual void init(Processor* processor);
+  virtual void init(Processor* processor, UIUtils::Theme theme);
   virtual void updateLayout();
 
   virtual void paint(juce::Graphics& g);
@@ -67,6 +67,7 @@ private:
   std::unique_ptr<juce::Label> _infoLabel;
   Processor* _processor;
   std::unique_ptr<UIUtils::FileTreeLookAndFeel> _fileTreeLookAndFeel;
+  UIUtils::Theme _theme;
 
   IRBrowserComponent(const IRBrowserComponent&);
   IRBrowserComponent& operator=(const IRBrowserComponent&);

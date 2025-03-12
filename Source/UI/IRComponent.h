@@ -44,7 +44,7 @@ class IRComponent  : public Component,
 {
 public:
     //==============================================================================
-    IRComponent ();
+    IRComponent (UIUtils::Theme theme);
     ~IRComponent() override;
 
     //==============================================================================

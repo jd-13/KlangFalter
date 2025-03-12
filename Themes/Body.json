@@ -1,0 +1,11 @@
+{
+    "productName": "Body",
+
+    "background": "0xff313131",
+    "neutral": "0xffb0b0b6",
+    "highlight": "0xfffcf64e",
+    "complementary": "0xff645e9d",
+
+    "waveformContainerBackground": "0xffb0b0b6",
+    "waveformContainerNeutral": "0xff313131"
+}

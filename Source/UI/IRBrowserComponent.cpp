@@ -50,9 +50,11 @@ IRBrowserComponent::~IRBrowserComponent()
 }
 
 
-void IRBrowserComponent::init(Processor* processor)
+void IRBrowserComponent::init(Processor* processor, UIUtils::Theme theme)
 {
   _processor = processor;
+  _theme = theme;
+
   Settings* settings = _processor ? &(_processor->getSettings()) : nullptr;
   if (settings)
   {
@@ -76,16 +78,16 @@ void IRBrowserComponent::init(Processor* processor)
 
   _fileTreeComponent.reset(new juce::FileTreeComponent(*_directoryContent));
   _fileTreeComponent->addListener(this);
-  _fileTreeComponent->setColour(juce::TreeView::backgroundColourId, UIUtils::neutralColour);
-  _fileTreeComponent->setColour(juce::TreeView::linesColourId, UIUtils::backgroundColour);
-  _fileTreeComponent->setColour(juce::DirectoryContentsDisplayComponent::highlightColourId, UIUtils::highlightColour.withAlpha(0.5f));
-  _fileTreeComponent->setColour(juce::DirectoryContentsDisplayComponent::textColourId, UIUtils::backgroundColour);
+  _fileTreeComponent->setColour(juce::TreeView::backgroundColourId, _theme.neutral);
+  _fileTreeComponent->setColour(juce::TreeView::linesColourId, _theme.background);
+  _fileTreeComponent->setColour(juce::DirectoryContentsDisplayComponent::highlightColourId, _theme.highlight.withAlpha(0.5f));
+  _fileTreeComponent->setColour(juce::DirectoryContentsDisplayComponent::textColourId, _theme.background);
   _fileTreeComponent->setLookAndFeel(_fileTreeLookAndFeel.get());
   addAndMakeVisible(_fileTreeComponent.get());
 
   _infoLabel.reset(new juce::Label());
-  _infoLabel->setColour(juce::Label::backgroundColourId, UIUtils::neutralColour);
-  _infoLabel->setColour(juce::Label::textColourId, UIUtils::backgroundColour);
+  _infoLabel->setColour(juce::Label::backgroundColourId, _theme.neutral);
+  _infoLabel->setColour(juce::Label::textColourId, _theme.background);
   addAndMakeVisible(_infoLabel.get());
 
   updateLayout();
@@ -132,7 +134,7 @@ void IRBrowserComponent::paint(juce::Graphics& g)
     const int width = getWidth();
     const int height = getHeight();
 
-    g.setColour(UIUtils::neutralColour);
+    g.setColour(_theme.neutral);
     g.fillRect(0.0f, 0.0f, static_cast<float>(width), static_cast<float>(height));
 
     g.setColour(juce::Colours::grey);

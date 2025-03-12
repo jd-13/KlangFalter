@@ -14,6 +14,57 @@ namespace {
 }
 
 namespace UIUtils {
+    Theme LoadTheme() {
+        Theme theme;
+
+        juce::File coloursFile(juce::File::getSpecialLocation(juce::File::currentExecutableFile).getParentDirectory().getSiblingFile("Resources").getChildFile("theme.json"));
+        if (!coloursFile.exists()) {
+            return theme;
+        }
+
+        juce::FileInputStream input(coloursFile);
+        if (!input.openedOk()) {
+            return theme;
+        }
+
+        const juce::var json = juce::JSON::parse(input.readEntireStreamAsString());
+        if (!json.isObject()) {
+            return theme;
+        }
+
+        auto loadString = [](const juce::var& json, const juce::String& propertyName) -> juce::String {
+            if (json.hasProperty(propertyName)) {
+                const juce::var& property = json.getProperty(propertyName, juce::var());
+                if (property.isString()) {
+                    return property.toString();
+                }
+            }
+
+            return juce::String();
+        };
+
+        auto loadColour = [](const juce::var& json, const juce::String& colourName) -> juce::Colour {
+            if (json.hasProperty(colourName)) {
+                const juce::var& colour = json.getProperty(colourName, juce::var());
+                if (colour.isString()) {
+                    return juce::Colour::fromString(colour.toString());
+                }
+            }
+
+            return juce::Colour();
+        };
+
+        theme.productName = loadString(json, "productName");
+        theme.background = loadColour(json, "background");
+        theme.neutral = loadColour(json, "neutral");
+        theme.highlight = loadColour(json, "highlight");
+        theme.complementary = loadColour(json, "complementary");
+        theme.waveformContainerBackground = loadColour(json, "waveformContainerBackground");
+        theme.waveformContainerNeutral = loadColour(json, "waveformContainerNeutral");
+
+        return theme;
+    }
+
     void ToggleButtonLookAndFeel::drawButtonBackground(juce::Graphics& g,
                                                        juce::Button& button,
                                                        const juce::Colour& backgroundColour,
@@ -111,9 +162,9 @@ namespace UIUtils {
         const int diameter {std::min(area.getWidth(), area.getHeight())};
 
         if (slider.isEnabled()) {
-            g.setColour(highlightColour);
+            g.setColour(theme.highlight);
         } else {
-            g.setColour(neutralColour.withAlpha(0.2f));
+            g.setColour(theme.neutral.withAlpha(0.2f));
         }
 
         juce::Path p;

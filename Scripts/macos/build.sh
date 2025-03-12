@@ -31,17 +31,21 @@ mkdir -p $SCRIPT_DIR/dist/BodyandSoulIntro
 cp -r ~/Library/Audio/Plug-Ins/VST3/TSoM-BodyandSoulIntro.vst3 $SCRIPT_DIR/dist/BodyandSoulIntro
 mkdir -p $SCRIPT_DIR/dist/BodyandSoulIntro/TSoM-BodyandSoulIntro.vst3/Contents/Resources/IRs
 cp -r $PROJECT_DIR/IRs/Intro/* $SCRIPT_DIR/dist/BodyandSoulIntro/TSoM-BodyandSoulIntro.vst3/Contents/Resources/IRs
+cp $PROJECT_DIR/Themes/Intro.json $SCRIPT_DIR/dist/BodyandSoulIntro/TSoM-BodyandSoulIntro.vst3/Contents/Resources/theme.json
 
 mkdir -p $SCRIPT_DIR/dist/BodyandSoul
 
 cp -r ~/Library/Audio/Plug-Ins/VST3/TSoM-BodyandSoulBody.vst3 $SCRIPT_DIR/dist/BodyandSoul
 mkdir -p $SCRIPT_DIR/dist/BodyandSoul/TSoM-BodyandSoulBody.vst3/Contents/Resources/IRs
 cp -r $PROJECT_DIR/IRs/Body/* $SCRIPT_DIR/dist/BodyandSoul/TSoM-BodyandSoulBody.vst3/Contents/Resources/IRs
+cp $PROJECT_DIR/Themes/Body.json $SCRIPT_DIR/dist/BodyandSoul/TSoM-BodyandSoulBody.vst3/Contents/Resources/theme.json
 
 cp -r ~/Library/Audio/Plug-Ins/VST3/TSoM-BodyandSoulSoul.vst3 $SCRIPT_DIR/dist/BodyandSoul
 mkdir -p $SCRIPT_DIR/dist/BodyandSoul/TSoM-BodyandSoulSoul.vst3/Contents/Resources/IRs
 cp -r $PROJECT_DIR/IRs/Soul/* $SCRIPT_DIR/dist/BodyandSoul/TSoM-BodyandSoulSoul.vst3/Contents/Resources/IRs
+cp $PROJECT_DIR/Themes/Soul.json $SCRIPT_DIR/dist/BodyandSoul/TSoM-BodyandSoulSoul.vst3/Contents/Resources/theme.json
 
 cp -r ~/Library/Audio/Plug-Ins/VST3/TSoM-BodyandSoulFX.vst3 $SCRIPT_DIR/dist/BodyandSoul
 mkdir -p $SCRIPT_DIR/dist/BodyandSoul/TSoM-BodyandSoulFX.vst3/Contents/Resources/IRs
 cp -r $PROJECT_DIR/IRs/FX/* $SCRIPT_DIR/dist/BodyandSoul/TSoM-BodyandSoulFX.vst3/Contents/Resources/IRs
+cp $PROJECT_DIR/Themes/FX.json $SCRIPT_DIR/dist/BodyandSoul/TSoM-BodyandSoulFX.vst3/Contents/Resources/theme.json

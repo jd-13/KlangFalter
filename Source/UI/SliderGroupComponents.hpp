@@ -7,7 +7,7 @@
 
 class IRSliderGroup : public juce::Component {
 public:
-    IRSliderGroup(Processor& processor);
+    IRSliderGroup(Processor& processor, UIUtils::Theme theme);
     virtual ~IRSliderGroup();
 
     void resized() override;
@@ -40,7 +40,7 @@ private:
 
 class AttackSliderGroup : public juce::Component {
 public:
-    AttackSliderGroup(Processor& processor);
+    AttackSliderGroup(Processor& processor, UIUtils::Theme theme);
     virtual ~AttackSliderGroup();
 
     void resized() override;
@@ -65,7 +65,7 @@ private:
 
 class DecaySliderGroup : public juce::Component {
 public:
-    DecaySliderGroup(Processor& processor);
+    DecaySliderGroup(Processor& processor, UIUtils::Theme theme);
     virtual ~DecaySliderGroup();
 
     void resized() override;
@@ -86,7 +86,7 @@ private:
 
 class StereoSliderGroup : public juce::Component {
 public:
-    StereoSliderGroup(Processor& processor);
+    StereoSliderGroup(Processor& processor, UIUtils::Theme theme);
     virtual ~StereoSliderGroup();
 
     void resized() override;
@@ -107,7 +107,7 @@ private:
 
 class LowEqSliderGroup : public juce::Component {
 public:
-    LowEqSliderGroup(Processor& processor);
+    LowEqSliderGroup(Processor& processor, UIUtils::Theme theme);
     virtual ~LowEqSliderGroup();
 
     void resized() override;
@@ -137,7 +137,7 @@ private:
 
 class HighEqSliderGroup : public juce::Component {
 public:
-    HighEqSliderGroup(Processor& processor);
+    HighEqSliderGroup(Processor& processor, UIUtils::Theme theme);
     virtual ~HighEqSliderGroup();
 
     void resized() override;
