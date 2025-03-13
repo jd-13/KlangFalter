@@ -11,7 +11,7 @@ set PROJECT_DIR=%SCRIPT_DIR%..\..
 %JUCE_HOME%\Projucer --resave %PROJECT_DIR%\Projects\Intro\BodyandSoulIntro.jucer
 %JUCE_HOME%\Projucer --resave %PROJECT_DIR%\Projects\Body\BodyandSoulBody.jucer
 %JUCE_HOME%\Projucer --resave %PROJECT_DIR%\Projects\Soul\BodyandSoulSoul.jucer
-%JUCE_HOME%\Projucer --resave %PROJECT_DIR%\Projects\FX\BodyandSoulFX.jucer
+@REM %JUCE_HOME%\Projucer --resave %PROJECT_DIR%\Projects\FX\BodyandSoulFX.jucer
 
 ECHO "=== Starting builds ==="
 msbuild -version
@@ -21,15 +21,15 @@ cd %PROJECT_DIR%\Projects\Body\Builds\VisualStudio2019
 msbuild "Body and Soul Body.sln" /p:Configuration=Release /p:Platform=x64 || exit /b
 cd %PROJECT_DIR%\Projects\Soul\Builds\VisualStudio2019
 msbuild "Body and Soul Soul.sln" /p:Configuration=Release /p:Platform=x64 || exit /b
-cd %PROJECT_DIR%\Projects\FX\Builds\VisualStudio2019
-msbuild "Body and Soul FX.sln" /p:Configuration=Release /p:Platform=x64 || exit /b
+@REM cd %PROJECT_DIR%\Projects\FX\Builds\VisualStudio2019
+@REM msbuild "Body and Soul FX.sln" /p:Configuration=Release /p:Platform=x64 || exit /b
 
 ECHO "=== Making Release folder ==="
 cd %PROJECT_DIR%
 mkdir dist\BodyandSoulIntro\TSoM-BodyandSoulIntro.vst3\Contents\x86_64-win  || exit /b
 mkdir dist\BodyandSoul\TSoM-BodyandSoulBody.vst3\Contents\x86_64-win || exit /b
 mkdir dist\BodyandSoul\TSoM-BodyandSoulSoul.vst3\Contents\x86_64-win || exit /b
-mkdir dist\BodyandSoul\TSoM-BodyandSoulFX.vst3\Contents\x86_64-win || exit /b
+@REM mkdir dist\BodyandSoul\TSoM-BodyandSoulFX.vst3\Contents\x86_64-win || exit /b
 
 cd dist\BodyandSoulIntro\TSoM-BodyandSoulIntro.vst3\Contents\x86_64-win
 copy %PROJECT_DIR%\Projects\Intro\Builds\VisualStudio2019\x64\Release\VST3\TSoM-BodyandSoulIntro.vst3\Contents\x86_64-win\TSoM-BodyandSoulIntro.vst3 || exit /b
@@ -61,12 +61,12 @@ copy %PROJECT_DIR%\Themes\Soul.json || exit /b
 ren Soul.json theme.json
 cd %PROJECT_DIR%
 
-cd dist\BodyandSoul\TSoM-BodyandSoulFX.vst3\Contents\x86_64-win
-copy %PROJECT_DIR%\Projects\FX\Builds\VisualStudio2019\x64\Release\VST3\TSoM-BodyandSoulFX.vst3\Contents\x86_64-win\TSoM-BodyandSoulFX.vst3 || exit /b
-cd ..
-mkdir Resources\IRs || exit /b
-robocopy %PROJECT_DIR%\IRs\FX Resources\IRs\ /e /s
-cd Resources
-copy %PROJECT_DIR%\Themes\FX.json || exit /b
-ren FX.json theme.json
-cd %PROJECT_DIR%
+@REM cd dist\BodyandSoul\TSoM-BodyandSoulFX.vst3\Contents\x86_64-win
+@REM copy %PROJECT_DIR%\Projects\FX\Builds\VisualStudio2019\x64\Release\VST3\TSoM-BodyandSoulFX.vst3\Contents\x86_64-win\TSoM-BodyandSoulFX.vst3 || exit /b
+@REM cd ..
+@REM mkdir Resources\IRs || exit /b
+@REM robocopy %PROJECT_DIR%\IRs\FX Resources\IRs\ /e /s
+@REM cd Resources
+@REM copy %PROJECT_DIR%\Themes\FX.json || exit /b
+@REM ren FX.json theme.json
+@REM cd %PROJECT_DIR%
