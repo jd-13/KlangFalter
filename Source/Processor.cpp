@@ -29,7 +29,8 @@
 
 //==============================================================================
 Processor::Processor() :
-  AudioProcessor(),
+  AudioProcessor(BusesProperties().withInput("Input", juce::AudioChannelSet::stereo(), true)
+                                  .withOutput("Output", juce::AudioChannelSet::stereo(), true)),
   ChangeNotifier(),
   _wetBuffer(1, 0),
   _convolutionBuffer(),
@@ -265,6 +266,21 @@ void Processor::releaseResources()
   notifyAboutChange();
 }
 
+bool Processor::isBusesLayoutSupported (const BusesLayout& layout) const {
+  const bool isMonoInMonoOut {
+    layout.getMainInputChannelSet().size() == 1 && layout.getMainOutputChannelSet().size() == 1
+  };
+
+  const bool isMonoInStereoOut {
+    layout.getMainInputChannelSet().size() == 1 && layout.getMainOutputChannelSet().size() == 2
+  };
+
+  const bool isStereoInStereoOut {
+    layout.getMainInputChannelSet().size() == 2 && layout.getMainOutputChannelSet().size() == 2
+  };
+
+  return (isMonoInMonoOut || isMonoInStereoOut || isStereoInStereoOut) && !layout.getMainInputChannelSet().isDisabled();
+}
 
 void Processor::processBlock(AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
 {

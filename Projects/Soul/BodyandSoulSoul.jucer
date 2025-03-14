@@ -4,8 +4,7 @@
               bundleIdentifier="com.thesoundofmerlin.BodyAndSoulSoul" buildVST="0"
               buildRTAS="0" buildAU="0" pluginName="B&amp;S Soul" pluginDesc="Body and Soul Soul"
               pluginManufacturer="The Sound of Merlin" pluginManufacturerCode="Tsom"
-              pluginCode="Tbsl" pluginChannelConfigs="{1, 1}, {2, 2}, {1, 2}"
-              pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
+              pluginCode="Tbsl" pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
               pluginSilenceInIsSilenceOut="0" pluginTailLength="0" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="BodyAndSoulSoulAU" pluginAUViewClass="KlangFalterAU_V1"
               pluginRTASCategory="" companyName="The Sound of Merlin" aaxIdentifier="com.thesoundofmerlin.BodyAndSoulSoul"
@@ -44,7 +43,7 @@
     <VS2019 targetFolder="Builds/VisualStudio2019">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" defines="JUCE_MODAL_LOOPS_PERMITTED=1"
-                       targetName="TSoM-BodyandSoulSoul"/>
+                       targetName="TSoM-BodyandSoulSoul" useRuntimeLibDLL="0"/>
         <CONFIGURATION isDebug="0" name="Release" useRuntimeLibDLL="0" defines="JUCE_MODAL_LOOPS_PERMITTED=1"
                        targetName="TSoM-BodyandSoulSoul"/>
       </CONFIGURATIONS>

@@ -46,6 +46,8 @@ public:
   void prepareToPlay(double sampleRate, int samplesPerBlock);
   void releaseResources();
 
+  bool isBusesLayoutSupported(const BusesLayout& layout) const override;
+
   void processBlock(juce::AudioSampleBuffer& buffer, MidiBuffer& midiMessages);
 
   //==============================================================================
