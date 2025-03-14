@@ -11,6 +11,11 @@ setModules() {
     sed -i '' -e 's#../../../../../SDKs/JUCE/modules#../../JUCE/modules#g' $1
 }
 
+setCMakePaths() {
+    sed -i '' -e 's#PATH_TO_JUCE /Users/jack/SDKs/JUCE#PATH_TO_JUCE ../../JUCE/modules#g' $1
+    sed -i '' -e 's#PATH_TO_CLAP_EXTENSIONS /Users/jack/GithubProjects/third-party/clap-juce-extensions#PATH_TO_JUCE ../../clap-juce-extensions#g' $1
+}
+
 echo "=== Generating Intro project ==="
 mkdir -p Intro
 PROJECT_FILE_PATH=Intro/BodyandSoulIntro.jucer
@@ -25,6 +30,14 @@ sed -i '' -e 's#pluginCode="Tbsb"#pluginCode="Tbsi"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#pluginAUExportPrefix="BodyAndSoulLocalAU"#pluginAUExportPrefix="BodyAndSoulIntroAU"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#aaxIdentifier="com.thesoundofmerlin.BodyAndSoulLocal"#aaxIdentifier="com.thesoundofmerlin.BodyAndSoulIntro"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#targetName="TSoM-BodyandSoulLocal"#targetName="TSoM-BodyandSoulIntro"#g' $PROJECT_FILE_PATH
+
+CMAKE_FILE_PATH=Intro/CMakeLists.txt
+cp Local/CMakeLists.txt $CMAKE_FILE_PATH
+
+setCMakePaths $CMAKE_FILE_PATH
+sed -i '' -e 's#BodyandSoulLocal#BodyandSoulIntro#g' $CMAKE_FILE_PATH
+sed -i '' -e 's#Body and Soul Local#Body and Soul Intro#g' $CMAKE_FILE_PATH
+sed -i '' -e 's#PLUGIN_CODE Tbsl#PLUGIN_CODE Tbsi#g' $CMAKE_FILE_PATH
 
 echo "=== Generating Body project ==="
 mkdir -p Body
@@ -41,6 +54,14 @@ sed -i '' -e 's#pluginAUExportPrefix="BodyAndSoulLocalAU"#pluginAUExportPrefix="
 sed -i '' -e 's#aaxIdentifier="com.thesoundofmerlin.BodyAndSoulLocal"#aaxIdentifier="com.thesoundofmerlin.BodyAndSoulBody"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#targetName="TSoM-BodyandSoulLocal"#targetName="TSoM-BodyandSoulBody"#g' $PROJECT_FILE_PATH
 
+CMAKE_FILE_PATH=Body/CMakeLists.txt
+cp Local/CMakeLists.txt $CMAKE_FILE_PATH
+
+setCMakePaths $CMAKE_FILE_PATH
+sed -i '' -e 's#BodyandSoulLocal#BodyandSoulBody#g' $CMAKE_FILE_PATH
+sed -i '' -e 's#Body and Soul Local#Body and Soul Body#g' $CMAKE_FILE_PATH
+sed -i '' -e 's#PLUGIN_CODE Tbsl#PLUGIN_CODE Tbsb#g' $CMAKE_FILE_PATH
+
 echo "=== Generating Soul project ==="
 mkdir -p Soul
 PROJECT_FILE_PATH=Soul/BodyandSoulSoul.jucer
@@ -56,6 +77,15 @@ sed -i '' -e 's#pluginAUExportPrefix="BodyAndSoulLocalAU"#pluginAUExportPrefix="
 sed -i '' -e 's#aaxIdentifier="com.thesoundofmerlin.BodyAndSoulLocal"#aaxIdentifier="com.thesoundofmerlin.BodyAndSoulSoul"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#targetName="TSoM-BodyandSoulLocal"#targetName="TSoM-BodyandSoulSoul"#g' $PROJECT_FILE_PATH
 
+
+CMAKE_FILE_PATH=Soul/CMakeLists.txt
+cp Local/CMakeLists.txt $CMAKE_FILE_PATH
+
+setCMakePaths $CMAKE_FILE_PATH
+sed -i '' -e 's#BodyandSoulLocal#BodyandSoulSoul#g' $CMAKE_FILE_PATH
+sed -i '' -e 's#Body and Soul Local#Body and Soul Soul#g' $CMAKE_FILE_PATH
+sed -i '' -e 's#PLUGIN_CODE Tbsl#PLUGIN_CODE Tbss#g' $CMAKE_FILE_PATH
+
 echo "=== Generating FX project ==="
 mkdir -p FX
 PROJECT_FILE_PATH=FX/BodyandSoulFX.jucer
@@ -70,3 +100,11 @@ sed -i '' -e 's#pluginCode="Tbsb"#pluginCode="Tbsf"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#pluginAUExportPrefix="BodyAndSoulLocalAU"#pluginAUExportPrefix="BodyAndSoulFXAU"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#aaxIdentifier="com.thesoundofmerlin.BodyAndSoulLocal"#aaxIdentifier="com.thesoundofmerlin.BodyAndSoulFX"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#targetName="TSoM-BodyandSoulLocal"#targetName="TSoM-BodyandSoulFX"#g' $PROJECT_FILE_PATH
+
+CMAKE_FILE_PATH=FX/CMakeLists.txt
+cp Local/CMakeLists.txt $CMAKE_FILE_PATH
+
+setCMakePaths $CMAKE_FILE_PATH
+sed -i '' -e 's#BodyandSoulLocal#BodyandSoulFX#g' $CMAKE_FILE_PATH
+sed -i '' -e 's#Body and Soul Local#Body and Soul FX#g' $CMAKE_FILE_PATH
+sed -i '' -e 's#PLUGIN_CODE Tbsl#PLUGIN_CODE Tbsf#g' $CMAKE_FILE_PATH

@@ -41,6 +41,11 @@ jobs:
           repository: jd-13/body-and-soul-fx-irs
           token: ${{ secrets.IRS_SECRET }}
           path: IRs/FX
+      - name: Checkout CLAP JUCE extensions
+        uses: actions/checkout@v4
+        with:
+          repository: free-audio/clap-juce-extensions
+          path: clap-juce-extensions
       - name: RunBuild
         run: Scripts/macos/build.sh
       - uses: actions/upload-artifact@v4
@@ -81,6 +86,11 @@ jobs:
           path: IRs/FX
       - name: SetupMSBuild
         uses: microsoft/setup-msbuild@v1.0.2
+      - name: Checkout CLAP JUCE extensions
+        uses: actions/checkout@v4
+        with:
+          repository: free-audio/clap-juce-extensions
+          path: clap-juce-extensions
       - name: RunBuild
         shell: cmd
         run: Scripts\windows\build.bat

@@ -18,34 +18,56 @@ $JUCE_HOME/Projucer.app/Contents/MacOS/Projucer --resave $PROJECT_DIR/Projects/B
 $JUCE_HOME/Projucer.app/Contents/MacOS/Projucer --resave $PROJECT_DIR/Projects/Soul/BodyandSoulSoul.jucer
 # $JUCE_HOME/Projucer.app/Contents/MacOS/Projucer --resave $PROJECT_DIR/Projects/FX/BodyandSoulFX.jucer
 
-echo "=== Starting builds ==="
+echo "=== Starting VST builds ==="
 xcodebuild -version
 xcodebuild -project "$PROJECT_DIR/Projects/Intro/Builds/MacOSX/Body and Soul Intro.xcodeproj" -scheme "Body and Soul Intro - All" -configuration Release
 xcodebuild -project "$PROJECT_DIR/Projects/Body/Builds/MacOSX/Body and Soul Body.xcodeproj" -scheme "Body and Soul Body - All" -configuration Release
 xcodebuild -project "$PROJECT_DIR/Projects/Soul/Builds/MacOSX/Body and Soul Soul.xcodeproj" -scheme "Body and Soul Soul - All" -configuration Release
 # xcodebuild -project "$PROJECT_DIR/Projects/FX/Builds/MacOSX/Body and Soul FX.xcodeproj" -scheme "Body and Soul FX - All" -configuration Release
 
-echo "=== Collecting artefacts ==="
-mkdir -p $SCRIPT_DIR/dist/BodyandSoulIntro
+echo "=== Starting CLAP builds ==="
+buildClap() {
+     cmake -Bbuild-clap -GXcode -DCMAKE_BUILD_TYPE=Release
+     cmake --build build-clap --config Release
+}
 
-cp -r ~/Library/Audio/Plug-Ins/VST3/TSoM-BodyandSoulIntro.vst3 $SCRIPT_DIR/dist/BodyandSoulIntro
-mkdir -p $SCRIPT_DIR/dist/BodyandSoulIntro/TSoM-BodyandSoulIntro.vst3/Contents/Resources/IRs
-cp -r $PROJECT_DIR/IRs/Intro/* $SCRIPT_DIR/dist/BodyandSoulIntro/TSoM-BodyandSoulIntro.vst3/Contents/Resources/IRs
-cp $PROJECT_DIR/Themes/Intro.json $SCRIPT_DIR/dist/BodyandSoulIntro/TSoM-BodyandSoulIntro.vst3/Contents/Resources/theme.json
+cd $PROJECT_DIR/Projects/Intro && buildClap
+cd $PROJECT_DIR/Projects/Body && buildClap
+cd $PROJECT_DIR/Projects/Soul && buildClap
+cd $PROJECT_DIR
+
+echo "=== Collecting artefacts ==="
+collectVST {
+     OUTPUT_DIR=$1
+     VARIANT=$2
+     PLUGIN_NAME=TSoM-BodyandSoul$VARIANT.vst3
+
+     cp -r ~/Library/Audio/Plug-Ins/VST3/$PLUGIN_NAME $OUTPUT_DIR
+     mkdir -p $OUTPUT_DIR/$PLUGIN_NAME/Contents/Resources/IRs
+     cp -r $PROJECT_DIR/IRs/$VARIANT/* $OUTPUT_DIR/$PLUGIN_NAME/Contents/Resources/IRs
+     cp $PROJECT_DIR/Themes/$VARIANT.json $OUTPUT_DIR/$PLUGIN_NAME/Contents/Resources/theme.json
+}
+
+collectCLAP {
+     OUTPUT_DIR=$1
+     VARIANT=$2
+     PLUGIN_NAME=TSoM-BodyandSoul$VARIANT.clap
+
+     cp -r $PROJECT_DIR/Projects/$VARIANT/build-clap/TSoM-BodyandSoul${VARIANT}_artefacts/Release/$PLUGIN_NAME $OUTPUT_DIR
+     mkdir -p $OUTPUT_DIR/$PLUGIN_NAME/Contents/Resources/IRs
+     cp -r $PROJECT_DIR/IRs/$VARIANT/* $OUTPUT_DIR/$PLUGIN_NAME/Contents/Resources/IRs
+     cp $PROJECT_DIR/Themes/$VARIANT.json $OUTPUT_DIR/$PLUGIN_NAME/Contents/Resources/theme.json
+}
+
+mkdir -p $SCRIPT_DIR/dist/BodyandSoulIntro
+collectVST $SCRIPT_DIR/dist/BodyandSoulIntro Intro
+collectCLAP $SCRIPT_DIR/dist/BodyandSoulIntro Intro
 
 mkdir -p $SCRIPT_DIR/dist/BodyandSoul
+collectVST $SCRIPT_DIR/dist/BodyandSoul Body
+collectCLAP $SCRIPT_DIR/dist/BodyandSoul Body
+collectVST $SCRIPT_DIR/dist/BodyandSoul Soul
+collectCLAP $SCRIPT_DIR/dist/BodyandSoul Soul
+# collectVST $SCRIPT_DIR/dist/BodyandSoul FX
+# collectCLAP $SCRIPT_DIR/dist/BodyandSoul FX
 
-cp -r ~/Library/Audio/Plug-Ins/VST3/TSoM-BodyandSoulBody.vst3 $SCRIPT_DIR/dist/BodyandSoul
-mkdir -p $SCRIPT_DIR/dist/BodyandSoul/TSoM-BodyandSoulBody.vst3/Contents/Resources/IRs
-cp -r $PROJECT_DIR/IRs/Body/* $SCRIPT_DIR/dist/BodyandSoul/TSoM-BodyandSoulBody.vst3/Contents/Resources/IRs
-cp $PROJECT_DIR/Themes/Body.json $SCRIPT_DIR/dist/BodyandSoul/TSoM-BodyandSoulBody.vst3/Contents/Resources/theme.json
-
-cp -r ~/Library/Audio/Plug-Ins/VST3/TSoM-BodyandSoulSoul.vst3 $SCRIPT_DIR/dist/BodyandSoul
-mkdir -p $SCRIPT_DIR/dist/BodyandSoul/TSoM-BodyandSoulSoul.vst3/Contents/Resources/IRs
-cp -r $PROJECT_DIR/IRs/Soul/* $SCRIPT_DIR/dist/BodyandSoul/TSoM-BodyandSoulSoul.vst3/Contents/Resources/IRs
-cp $PROJECT_DIR/Themes/Soul.json $SCRIPT_DIR/dist/BodyandSoul/TSoM-BodyandSoulSoul.vst3/Contents/Resources/theme.json
-
-# cp -r ~/Library/Audio/Plug-Ins/VST3/TSoM-BodyandSoulFX.vst3 $SCRIPT_DIR/dist/BodyandSoul
-# mkdir -p $SCRIPT_DIR/dist/BodyandSoul/TSoM-BodyandSoulFX.vst3/Contents/Resources/IRs
-# cp -r $PROJECT_DIR/IRs/FX/* $SCRIPT_DIR/dist/BodyandSoul/TSoM-BodyandSoulFX.vst3/Contents/Resources/IRs
-# cp $PROJECT_DIR/Themes/FX.json $SCRIPT_DIR/dist/BodyandSoul/TSoM-BodyandSoulFX.vst3/Contents/Resources/theme.json
