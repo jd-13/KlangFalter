@@ -46,6 +46,7 @@ jobs:
         with:
           repository: free-audio/clap-juce-extensions
           path: clap-juce-extensions
+          submodules: 'recursive'
       - name: RunBuild
         run: Scripts/macos/build.sh
       - uses: actions/upload-artifact@v4
@@ -91,6 +92,7 @@ jobs:
         with:
           repository: free-audio/clap-juce-extensions
           path: clap-juce-extensions
+          submodules: 'recursive'
       - name: RunBuild
         shell: cmd
         run: Scripts\windows\build.bat
