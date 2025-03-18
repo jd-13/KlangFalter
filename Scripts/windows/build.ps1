@@ -75,7 +75,7 @@ function CollectCLAP {
 
     # Copy the binary
     New-Item -ItemType Directory -Force -Path "$outputDir\$pluginName/Contents/x86_64-win"
-    Copy-Item "$PROJECT_DIR\Projects\$variant\build-clap\TSoM-BodyandSoul${VARIANT}_artefacts\Release\$pluginName\Contents\x86_64-win\$pluginName" "$outputDir\$pluginName\Contents\x86_64-win"
+    Copy-Item "$PROJECT_DIR\Projects\$variant\build-clap\TSoM-BodyandSoul${VARIANT}_artefacts\Release\$pluginName\Contents\x86_64-win\TSoM-BodyandSoul$variant" "$outputDir\$pluginName\Contents\x86_64-win"
 
     # Copy the resources
     New-Item -ItemType Directory -Force -Path "$outputDir\$pluginName\Contents\Resources\IRs"
