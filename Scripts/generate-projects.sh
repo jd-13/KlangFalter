@@ -12,7 +12,7 @@ setModules() {
 }
 
 setCMakePaths() {
-    sed -i '' -e 's#PATH_TO_JUCE /Users/jack/SDKs/JUCE#PATH_TO_JUCE ../../JUCE/modules#g' $1
+    sed -i '' -e 's#PATH_TO_JUCE /Users/jack/SDKs/JUCE#PATH_TO_JUCE ../../JUCE#g' $1
     sed -i '' -e 's#PATH_TO_CLAP_EXTENSIONS /Users/jack/GithubProjects/third-party/clap-juce-extensions#PATH_TO_CLAP_EXTENSIONS ../../clap-juce-extensions#g' $1
 }
 

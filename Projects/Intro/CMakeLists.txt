@@ -19,7 +19,7 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Release>:Release>" CACHE
 
 project(BodyandSoulIntro VERSION 1.0.0)
 
-set(PATH_TO_JUCE ../../JUCE/modules)
+set(PATH_TO_JUCE ../../JUCE)
 set(PATH_TO_CLAP_EXTENSIONS ../../clap-juce-extensions)
 
 # define the exporter types used in your Projucer configuration
