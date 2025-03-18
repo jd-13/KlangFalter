@@ -37,7 +37,7 @@ cd $PROJECT_DIR/Projects/Soul && buildClap
 cd $PROJECT_DIR
 
 echo "=== Collecting artefacts ==="
-collectVST {
+collectVST() {
      OUTPUT_DIR=$1
      VARIANT=$2
      PLUGIN_NAME=TSoM-BodyandSoul$VARIANT.vst3
@@ -48,7 +48,7 @@ collectVST {
      cp $PROJECT_DIR/Themes/$VARIANT.json $OUTPUT_DIR/$PLUGIN_NAME/Contents/Resources/theme.json
 }
 
-collectCLAP {
+collectCLAP() {
      OUTPUT_DIR=$1
      VARIANT=$2
      PLUGIN_NAME=TSoM-BodyandSoul$VARIANT.clap
