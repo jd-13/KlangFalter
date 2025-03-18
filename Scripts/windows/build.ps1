@@ -73,14 +73,17 @@ function CollectCLAP {
 
     $pluginName = "TSoM-BodyandSoul$variant.clap"
 
-    # Copy the binary
-    New-Item -ItemType Directory -Force -Path "$outputDir\$pluginName/Contents/x86_64-win"
-    Copy-Item "$PROJECT_DIR\Projects\$variant\build-clap\TSoM-BodyandSoul${VARIANT}_artefacts\Release\$pluginName\Contents\x86_64-win\TSoM-BodyandSoul$variant" "$outputDir\$pluginName\Contents\x86_64-win"
+    # # Copy the binary
+    # New-Item -ItemType Directory -Force -Path "$outputDir\$pluginName/Contents/x86_64-win"
+    # Copy-Item "$PROJECT_DIR\Projects\$variant\build-clap\TSoM-BodyandSoul${VARIANT}_artefacts\Release\$pluginName\Contents\x86_64-win\TSoM-BodyandSoul$variant" "$outputDir\$pluginName\Contents\x86_64-win"
 
-    # Copy the resources
-    New-Item -ItemType Directory -Force -Path "$outputDir\$pluginName\Contents\Resources\IRs"
-    Copy-Item -Recurse "$PROJECT_DIR\IRs\$variant" "$outputDir\$pluginName\Contents\Resources\IRs"
-    Copy-Item "$PROJECT_DIR\Themes\$variant.json" "$outputDir\$pluginName\Contents\Resources\theme.json"
+    # # Copy the resources
+    # New-Item -ItemType Directory -Force -Path "$outputDir\$pluginName\Contents\Resources\IRs"
+    # Copy-Item -Recurse "$PROJECT_DIR\IRs\$variant" "$outputDir\$pluginName\Contents\Resources\IRs"
+    # Copy-Item "$PROJECT_DIR\Themes\$variant.json" "$outputDir\$pluginName\Contents\Resources\theme.json"
+
+    # For now, just copy from the arefacts so we can see what it looks like
+    Copy-Item -Recurse "$PROJECT_DIR\Projects\$variant\build-clap\TSoM-BodyandSoul${VARIANT}_artefacts\Release\$pluginName" "$outputDir\$pluginName"
 }
 
 CollectVST "dist\BodyandSoulIntro" "Intro"
