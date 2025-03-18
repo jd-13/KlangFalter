@@ -34,15 +34,15 @@ msbuild "Body and Soul Soul.sln" /p:Configuration=Release /p:Platform=x64
 # cd "$PROJECT_DIR\Projects\FX\Builds\VisualStudio2019"
 # msbuild "Body and Soul FX.sln" /p:Configuration=Release /p:Platform=x64
 
-Write-Output "=== Starting CLAP builds ==="
-function BuildCLAP {
-    cmake -Bbuild-clap -GXcode -DCMAKE_BUILD_TYPE=Release
-    cmake --build build-clap --config Release
-}
+# Write-Output "=== Starting CLAP builds ==="
+# function BuildCLAP {
+#     cmake -Bbuild-clap -GXcode -DCMAKE_BUILD_TYPE=Release
+#     cmake --build build-clap --config Release
+# }
 
-cd "$PROJECT_DIR\Projects\Intro" && BuildCLAP
-cd "$PROJECT_DIR\Projects\Body" && BuildCLAP
-cd "$PROJECT_DIR\Projects\Soul" && BuildCLAP
+# cd "$PROJECT_DIR\Projects\Intro" && BuildCLAP
+# cd "$PROJECT_DIR\Projects\Body" && BuildCLAP
+# cd "$PROJECT_DIR\Projects\Soul" && BuildCLAP
 
 Write-Output "=== Collecting artefacts ==="
 cd "$PROJECT_DIR"
@@ -83,15 +83,15 @@ function CollectCLAP {
     # Copy-Item "$PROJECT_DIR\Themes\$variant.json" "$outputDir\$pluginName\Contents\Resources\theme.json"
 
     # For now, just copy from the arefacts so we can see what it looks like
-    Copy-Item -Recurse "$PROJECT_DIR\Projects\$variant\build-clap\TSoM-BodyandSoul${VARIANT}_artefacts\Release\$pluginName" "$outputDir\$pluginName"
+    # Copy-Item -Recurse "$PROJECT_DIR\Projects\$variant\build-clap\TSoM-BodyandSoul${VARIANT}_artefacts\Release\$pluginName" "$outputDir\$pluginName"
 }
 
 CollectVST "dist\BodyandSoulIntro" "Intro"
-CollectCLAP "dist\BodyandSoulIntro" "Intro"
+# CollectCLAP "dist\BodyandSoulIntro" "Intro"
 CollectVST "dist\BodyandSoul" "Body"
-CollectCLAP "dist\BodyandSoul" "Body"
+# CollectCLAP "dist\BodyandSoul" "Body"
 CollectVST "dist\BodyandSoul" "Soul"
-CollectCLAP "dist\BodyandSoul" "Soul"
+# CollectCLAP "dist\BodyandSoul" "Soul"
 # CollectVST "dist\BodyandSoul" "FX"
 
 
