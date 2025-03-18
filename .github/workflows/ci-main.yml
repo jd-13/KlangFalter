@@ -94,8 +94,8 @@ jobs:
           path: clap-juce-extensions
           submodules: 'recursive'
       - name: RunBuild
-        shell: cmd
-        run: Scripts\windows\build.bat
+        shell: pwsh
+        run: .\Scripts\windows\build.ps1
       - uses: actions/upload-artifact@v4
         if: ${{ success() }}
         with:
