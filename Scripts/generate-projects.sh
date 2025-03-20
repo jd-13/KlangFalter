@@ -26,7 +26,7 @@ sed -i '' -e 's#name="Body and Soul Local"#name="Body and Soul Intro"#g' $PROJEC
 sed -i '' -e 's#bundleIdentifier="com.thesoundofmerlin.BodyAndSoulLocal"#bundleIdentifier="com.thesoundofmerlin.BodyAndSoulIntro"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#pluginName="B\&amp;S Local"#pluginName="B\&amp;S Intro"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#pluginDesc="Body and Soul Local"#pluginDesc="Body and Soul Intro"#g' $PROJECT_FILE_PATH
-sed -i '' -e 's#pluginCode="Tbsb"#pluginCode="Tbsi"#g' $PROJECT_FILE_PATH
+sed -i '' -e 's#pluginCode="Tbsl"#pluginCode="Tbsi"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#pluginAUExportPrefix="BodyAndSoulLocalAU"#pluginAUExportPrefix="BodyAndSoulIntroAU"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#aaxIdentifier="com.thesoundofmerlin.BodyAndSoulLocal"#aaxIdentifier="com.thesoundofmerlin.BodyAndSoulIntro"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#targetName="TSoM-BodyandSoulLocal"#targetName="TSoM-BodyandSoulIntro"#g' $PROJECT_FILE_PATH
@@ -49,7 +49,7 @@ sed -i '' -e 's#name="Body and Soul Local"#name="Body and Soul Body"#g' $PROJECT
 sed -i '' -e 's#bundleIdentifier="com.thesoundofmerlin.BodyAndSoulLocal"#bundleIdentifier="com.thesoundofmerlin.BodyAndSoulBody"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#pluginName="B\&amp;S Local"#pluginName="B\&amp;S Body"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#pluginDesc="Body and Soul Local"#pluginDesc="Body and Soul Body"#g' $PROJECT_FILE_PATH
-sed -i '' -e 's#pluginCode="Tbsb"#pluginCode="Tbsb"#g' $PROJECT_FILE_PATH
+sed -i '' -e 's#pluginCode="Tbsl"#pluginCode="Tbsb"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#pluginAUExportPrefix="BodyAndSoulLocalAU"#pluginAUExportPrefix="BodyAndSoulBodyAU"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#aaxIdentifier="com.thesoundofmerlin.BodyAndSoulLocal"#aaxIdentifier="com.thesoundofmerlin.BodyAndSoulBody"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#targetName="TSoM-BodyandSoulLocal"#targetName="TSoM-BodyandSoulBody"#g' $PROJECT_FILE_PATH
@@ -72,7 +72,7 @@ sed -i '' -e 's#name="Body and Soul Local"#name="Body and Soul Soul"#g' $PROJECT
 sed -i '' -e 's#bundleIdentifier="com.thesoundofmerlin.BodyAndSoulLocal"#bundleIdentifier="com.thesoundofmerlin.BodyAndSoulSoul"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#pluginName="B\&amp;S Local"#pluginName="B\&amp;S Soul"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#pluginDesc="Body and Soul Local"#pluginDesc="Body and Soul Soul"#g' $PROJECT_FILE_PATH
-sed -i '' -e 's#pluginCode="Tbsb"#pluginCode="Tbss"#g' $PROJECT_FILE_PATH
+sed -i '' -e 's#pluginCode="Tbsl"#pluginCode="Tbss"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#pluginAUExportPrefix="BodyAndSoulLocalAU"#pluginAUExportPrefix="BodyAndSoulSoulAU"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#aaxIdentifier="com.thesoundofmerlin.BodyAndSoulLocal"#aaxIdentifier="com.thesoundofmerlin.BodyAndSoulSoul"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#targetName="TSoM-BodyandSoulLocal"#targetName="TSoM-BodyandSoulSoul"#g' $PROJECT_FILE_PATH
@@ -96,7 +96,7 @@ sed -i '' -e 's#name="Body and Soul Local"#name="Body and Soul FX"#g' $PROJECT_F
 sed -i '' -e 's#bundleIdentifier="com.thesoundofmerlin.BodyAndSoulLocal"#bundleIdentifier="com.thesoundofmerlin.BodyAndSoulFX"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#pluginName="B\&amp;S Local"#pluginName="B\&amp;S FX"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#pluginDesc="Body and Soul Local"#pluginDesc="Body and Soul FX"#g' $PROJECT_FILE_PATH
-sed -i '' -e 's#pluginCode="Tbsb"#pluginCode="Tbsf"#g' $PROJECT_FILE_PATH
+sed -i '' -e 's#pluginCode="Tbsl"#pluginCode="Tbsf"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#pluginAUExportPrefix="BodyAndSoulLocalAU"#pluginAUExportPrefix="BodyAndSoulFXAU"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#aaxIdentifier="com.thesoundofmerlin.BodyAndSoulLocal"#aaxIdentifier="com.thesoundofmerlin.BodyAndSoulFX"#g' $PROJECT_FILE_PATH
 sed -i '' -e 's#targetName="TSoM-BodyandSoulLocal"#targetName="TSoM-BodyandSoulFX"#g' $PROJECT_FILE_PATH

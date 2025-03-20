@@ -4,7 +4,7 @@
               bundleIdentifier="com.thesoundofmerlin.BodyAndSoulFX" buildVST="0"
               buildRTAS="0" buildAU="0" pluginName="B&amp;S FX" pluginDesc="Body and Soul FX"
               pluginManufacturer="The Sound of Merlin" pluginManufacturerCode="Tsom"
-              pluginCode="Tbsl" pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
+              pluginCode="Tbsf" pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
               pluginSilenceInIsSilenceOut="0" pluginTailLength="0" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="BodyAndSoulFXAU" pluginAUViewClass="KlangFalterAU_V1"
               pluginRTASCategory="" companyName="The Sound of Merlin" aaxIdentifier="com.thesoundofmerlin.BodyAndSoulFX"
