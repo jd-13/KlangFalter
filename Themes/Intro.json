@@ -6,10 +6,10 @@
         "neutral": "0xffb0b0b6",
         "highlight": "0xfffcf64e",
 
-        "subtitle": "0xff645e9d",
-        "meters": "0xff645e9d",
-        "waveform": "0xff645e9d",
-        "irBrowserHighlight": "0xff645e9d",
+        "subtitle": "0xff7f8c62",
+        "meters": "0xff7f8c62",
+        "waveform": "0xff7f8c62",
+        "irBrowserHighlight": "0xff7f8c62",
 
         "waveformContainerBackground": "0xffb0b0b6",
         "waveformContainerNeutral": "0xff313131"
