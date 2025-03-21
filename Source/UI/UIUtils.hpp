@@ -9,9 +9,12 @@ namespace UIUtils {
         juce::Colour background;
         juce::Colour neutral;
         juce::Colour highlight;
-        juce::Colour complementary;
         juce::Colour waveformContainerBackground;
         juce::Colour waveformContainerNeutral;
+        juce::Colour subtitle;
+        juce::Colour meters;
+        juce::Colour waveform;
+        juce::Colour irBrowserHighlight;
     };
 
     Theme LoadTheme();

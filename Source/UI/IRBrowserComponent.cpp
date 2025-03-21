@@ -80,7 +80,7 @@ void IRBrowserComponent::init(Processor* processor, UIUtils::Theme theme)
   _fileTreeComponent->addListener(this);
   _fileTreeComponent->setColour(juce::TreeView::backgroundColourId, _theme.neutral);
   _fileTreeComponent->setColour(juce::TreeView::linesColourId, _theme.background);
-  _fileTreeComponent->setColour(juce::DirectoryContentsDisplayComponent::highlightColourId, _theme.highlight.withAlpha(0.5f));
+  _fileTreeComponent->setColour(juce::DirectoryContentsDisplayComponent::highlightColourId, _theme.irBrowserHighlight.withAlpha(0.5f));
   _fileTreeComponent->setColour(juce::DirectoryContentsDisplayComponent::textColourId, _theme.background);
   _fileTreeComponent->setLookAndFeel(_fileTreeLookAndFeel.get());
   addAndMakeVisible(_fileTreeComponent.get());

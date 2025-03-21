@@ -38,7 +38,7 @@ CustomLookAndFeel::CustomLookAndFeel() :
 // ==============================================
 juce::Colour CustomLookAndFeel::getWaveformColour() const
 {
-  return theme.complementary;
+  return theme.waveform;
 }
 
 
@@ -90,19 +90,19 @@ juce::Colour CustomLookAndFeel::getWaveformScaleColour() const
 
 juce::Colour CustomLookAndFeel::getLevelColourMinusInfDb() const
 {
-  return theme.complementary;
+  return theme.meters;
 }
 
 
 juce::Colour CustomLookAndFeel::getLevelColourMinus40Db() const
 {
-  return theme.complementary;
+  return theme.meters;
 }
 
 
 juce::Colour CustomLookAndFeel::getLevelColourZeroDb() const
 {
-  return theme.complementary;
+  return theme.meters;
 }
 
 

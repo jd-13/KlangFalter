@@ -55,12 +55,21 @@ namespace UIUtils {
         };
 
         theme.productName = loadString(json, "productName");
-        theme.background = loadColour(json, "background");
-        theme.neutral = loadColour(json, "neutral");
-        theme.highlight = loadColour(json, "highlight");
-        theme.complementary = loadColour(json, "complementary");
-        theme.waveformContainerBackground = loadColour(json, "waveformContainerBackground");
-        theme.waveformContainerNeutral = loadColour(json, "waveformContainerNeutral");
+
+        if (json.hasProperty("colours")) {
+            const juce::var& colours = json.getProperty("colours", juce::var());
+            if (colours.isObject()) {
+                theme.background = loadColour(colours, "background");
+                theme.neutral = loadColour(colours, "neutral");
+                theme.highlight = loadColour(colours, "highlight");
+                theme.waveformContainerBackground = loadColour(colours, "waveformContainerBackground");
+                theme.waveformContainerNeutral = loadColour(colours, "waveformContainerNeutral");
+                theme.subtitle = loadColour(colours, "subtitle");
+                theme.meters = loadColour(colours, "meters");
+                theme.waveform = loadColour(colours, "waveform");
+                theme.irBrowserHighlight = loadColour(colours, "irBrowserHighlight");
+            }
+        }
 
         return theme;
     }

@@ -347,7 +347,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     };
 
     _titleLabel->setColour(juce::Label::textColourId, _theme.neutral.withAlpha(0.5f));
-    _subtitleLabel->setColour(juce::Label::textColourId, _theme.highlight);
+    _subtitleLabel->setColour(juce::Label::textColourId, _theme.subtitle);
     _subtitleLabel->setText(_theme.productName, juce::dontSendNotification);
 
     auto setButtonColours = [&](juce::TextButton* button) {

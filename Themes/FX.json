@@ -1,11 +1,17 @@
 {
     "productName": "FX",
 
-    "background": "0xff313131",
-    "neutral": "0xffb0b0b6",
-    "highlight": "0xfffcf64e",
-    "complementary": "0xff645e9d",
+    "colours": {
+        "background": "0xff313131",
+        "neutral": "0xffb0b0b6",
+        "highlight": "0xfffcf64e",
 
-    "waveformContainerBackground": "0xffb0b0b6",
-    "waveformContainerNeutral": "0xff313131"
+        "subtitle": "0xff645e9d",
+        "meters": "0xff645e9d",
+        "waveform": "0xff645e9d",
+        "irBrowserHighlight": "0xff645e9d",
+
+        "waveformContainerBackground": "0xffb0b0b6",
+        "waveformContainerNeutral": "0xff313131"
+    }
 }
