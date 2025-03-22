@@ -61,7 +61,7 @@ function CollectVST {
 
     # Copy the resources
     New-Item -ItemType Directory -Force -Path "$outputDir\$pluginName\Contents\Resources\IRs"
-    Copy-Item -Recurse "$PROJECT_DIR\IRs\$variant" "$outputDir\$pluginName\Contents\Resources\IRs"
+    Copy-Item -Recurse "$PROJECT_DIR\IRs\$variant\*" "$outputDir\$pluginName\Contents\Resources\IRs"
     Copy-Item "$PROJECT_DIR\Themes\$variant.json" "$outputDir\$pluginName\Contents\Resources\theme.json"
 }
 
