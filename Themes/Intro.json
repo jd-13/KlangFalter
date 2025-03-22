@@ -4,11 +4,11 @@
     "colours": {
         "background": "0xff313131",
         "neutral": "0xffb0b0b6",
-        "highlight": "0xfffcf64e",
+        "highlight": "0xffe3cb46",
 
-        "subtitle": "0xff7f8c62",
-        "meters": "0xff7f8c62",
-        "waveform": "0xff7f8c62",
+        "subtitle": "0xff8c9872",
+        "meters": "0xff727e58",
+        "waveform": "0xff67714f",
         "irBrowserHighlight": "0xff7f8c62",
 
         "waveformContainerBackground": "0xffb0b0b6",
