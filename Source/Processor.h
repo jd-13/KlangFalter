@@ -160,6 +160,8 @@ public:
   void setIrBrowserOpen(bool val);
   bool getIrBrowserOpen() const;
 
+  void selectIR(const juce::File& file);
+
   void setUIBounds(const juce::Rectangle<int>& bounds, bool shouldUpdateInSettings);
   juce::Rectangle<int> getUIBounds() const;
 
