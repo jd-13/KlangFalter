@@ -133,6 +133,8 @@
     <FILE id="Z6HLyH" name="IRCalculation.cpp" compile="1" resource="0"
           file="../../Source/IRCalculation.cpp"/>
     <FILE id="GYyVDS" name="IRCalculation.h" compile="0" resource="0" file="../../Source/IRCalculation.h"/>
+    <FILE id="lrAg9k" name="IRFileUtils.cpp" compile="1" resource="0" file="../../Source/IRFileUtils.cpp"/>
+    <FILE id="AgCivp" name="IRFileUtils.hpp" compile="0" resource="0" file="../../Source/IRFileUtils.hpp"/>
     <FILE id="vF7jUl" name="LevelMeasurement.cpp" compile="1" resource="0"
           file="../../Source/LevelMeasurement.cpp"/>
     <FILE id="mYCk2O" name="LevelMeasurement.h" compile="0" resource="0"
