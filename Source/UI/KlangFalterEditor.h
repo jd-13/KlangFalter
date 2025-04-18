@@ -87,6 +87,7 @@ private:
     std::unique_ptr<LowEqSliderGroup> _lowEqSliderGroup;
     std::unique_ptr<HighEqSliderGroup> _highEqSliderGroup;
     std::unique_ptr<juce::ComponentBoundsConstrainer> _constrainer;
+    UIUtils::Theme _theme;
 
     void _updateIRBrowserOpen(bool isOpen);
     int scaled(float value) const;

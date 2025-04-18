@@ -1,0 +1,17 @@
+{
+    "productName": "Soul",
+
+    "colours": {
+        "background": "0xff313131",
+        "neutral": "0xffb0b0b6",
+        "highlight": "0xffe3cb46",
+
+        "subtitle": "0xff837eb1",
+        "meters": "0xff645e9d",
+        "waveform": "0xff645e9d",
+        "irBrowserHighlight": "0xff645e9d",
+
+        "waveformContainerBackground": "0xffb0b0b6",
+        "waveformContainerNeutral": "0xff313131"
+    }
+}

@@ -34,7 +34,7 @@ public:
   IRBrowserComponent();
   virtual ~IRBrowserComponent();
 
-  virtual void init(Processor* processor);
+  virtual void init(Processor* processor, UIUtils::Theme theme);
   virtual void updateLayout();
 
   virtual void paint(juce::Graphics& g);
@@ -48,18 +48,6 @@ public:
   virtual void changeListenerCallback(juce::ChangeBroadcaster* source);
 
 private:
-  bool readAudioFileInfo(const juce::File& file, size_t& channelCount, size_t& sampleCount, double& sampleRate) const;
-
-  typedef std::vector<std::pair<juce::File, size_t> > TrueStereoPairs;
-  TrueStereoPairs findTrueStereoPairs(const juce::File& file, size_t sampleCount, double sampleRate) const;
-  juce::File checkMatchingTrueStereoFile(const juce::String& fileNameBody,
-                                         const juce::String& fileNameExt,
-                                         const juce::File& directory,
-                                         const juce::String& pattern,
-                                         const juce::String& replacement,
-                                         const size_t sampleCount,
-                                         const double sampleRate) const;
-
   std::unique_ptr<juce::TimeSliceThread> _timeSliceThread;
   std::unique_ptr<juce::FileFilter> _fileFilter;
   std::unique_ptr<juce::DirectoryContentsList> _directoryContent;
@@ -67,6 +55,7 @@ private:
   std::unique_ptr<juce::Label> _infoLabel;
   Processor* _processor;
   std::unique_ptr<UIUtils::FileTreeLookAndFeel> _fileTreeLookAndFeel;
+  UIUtils::Theme _theme;
 
   IRBrowserComponent(const IRBrowserComponent&);
   IRBrowserComponent& operator=(const IRBrowserComponent&);

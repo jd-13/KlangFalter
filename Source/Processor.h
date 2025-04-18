@@ -46,6 +46,8 @@ public:
   void prepareToPlay(double sampleRate, int samplesPerBlock);
   void releaseResources();
 
+  bool isBusesLayoutSupported(const BusesLayout& layout) const override;
+
   void processBlock(juce::AudioSampleBuffer& buffer, MidiBuffer& midiMessages);
 
   //==============================================================================
@@ -157,6 +159,8 @@ public:
 
   void setIrBrowserOpen(bool val);
   bool getIrBrowserOpen() const;
+
+  void selectIR(const juce::File& file);
 
   void setUIBounds(const juce::Rectangle<int>& bounds, bool shouldUpdateInSettings);
   juce::Rectangle<int> getUIBounds() const;

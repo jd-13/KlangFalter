@@ -3,43 +3,101 @@ name: CI Main
 on: [push, pull_request]
 
 jobs:
-  BuildMacOS:
-    runs-on: macos-13
+  CheckProjects:
+    runs-on: macos-14
 
     steps:
       - uses: actions/checkout@v2
-      - name: Checkout IRs
+      - name: CheckProjects
+        run: Scripts/check-projects.sh
+
+  BuildMacOS:
+    runs-on: macos-14
+    needs: CheckProjects
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Checkout Intro IRs
         uses: actions/checkout@v4
         with:
           repository: jd-13/body-and-soul-intro-irs
-          token: ${{ secrets.INTRO_IRS_SECRET }}
-          path: IRs
+          token: ${{ secrets.IRS_SECRET }}
+          path: IRs/Intro
+      - name: Checkout Body IRs
+        uses: actions/checkout@v4
+        with:
+          repository: jd-13/body-and-soul-body-irs
+          token: ${{ secrets.IRS_SECRET }}
+          path: IRs/Body
+      - name: Checkout Soul IRs
+        uses: actions/checkout@v4
+        with:
+          repository: jd-13/body-and-soul-soul-irs
+          token: ${{ secrets.IRS_SECRET }}
+          path: IRs/Soul
+      - name: Checkout FX IRs
+        uses: actions/checkout@v4
+        with:
+          repository: jd-13/body-and-soul-fx-irs
+          token: ${{ secrets.IRS_SECRET }}
+          path: IRs/FX
+      - name: Checkout CLAP JUCE extensions
+        uses: actions/checkout@v4
+        with:
+          repository: free-audio/clap-juce-extensions
+          path: clap-juce-extensions
+          submodules: 'recursive'
       - name: RunBuild
         run: Scripts/macos/build.sh
       - uses: actions/upload-artifact@v4
         if: ${{ success() }}
         with:
-          name: BodyandSoulIntro-macOS
+          name: BodyandSoul-macOS
           path: Scripts/macos/dist
 
   BuildWindows:
     runs-on: windows-2019
+    needs: CheckProjects
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Checkout IRs
+      - uses: actions/checkout@v4
+      - name: Checkout Intro IRs
         uses: actions/checkout@v4
         with:
           repository: jd-13/body-and-soul-intro-irs
-          token: ${{ secrets.INTRO_IRS_SECRET }}
-          path: IRs
+          token: ${{ secrets.IRS_SECRET }}
+          path: IRs/Intro
+      - name: Checkout Body IRs
+        uses: actions/checkout@v4
+        with:
+          repository: jd-13/body-and-soul-body-irs
+          token: ${{ secrets.IRS_SECRET }}
+          path: IRs/Body
+      - name: Checkout Soul IRs
+        uses: actions/checkout@v4
+        with:
+          repository: jd-13/body-and-soul-soul-irs
+          token: ${{ secrets.IRS_SECRET }}
+          path: IRs/Soul
+      - name: Checkout FX IRs
+        uses: actions/checkout@v4
+        with:
+          repository: jd-13/body-and-soul-fx-irs
+          token: ${{ secrets.IRS_SECRET }}
+          path: IRs/FX
       - name: SetupMSBuild
         uses: microsoft/setup-msbuild@v1.0.2
+      - name: Checkout CLAP JUCE extensions
+        uses: actions/checkout@v4
+        with:
+          repository: free-audio/clap-juce-extensions
+          path: clap-juce-extensions
+          submodules: 'recursive'
       - name: RunBuild
-        shell: cmd
-        run: Scripts\windows\build.bat
+        shell: pwsh
+        run: .\Scripts\windows\build.ps1
       - uses: actions/upload-artifact@v4
         if: ${{ success() }}
         with:
-          name: BodyandSoulIntro-windows
-          path: Release
+          name: BodyandSoul-windows
+          path: dist

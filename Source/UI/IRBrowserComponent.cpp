@@ -20,6 +20,7 @@
 #include "../IRAgent.h"
 #include "../Settings.h"
 #include "UIUtils.hpp"
+#include "../IRFileUtils.hpp"
 
 IRBrowserComponent::IRBrowserComponent() :
   juce::Component(),
@@ -50,9 +51,11 @@ IRBrowserComponent::~IRBrowserComponent()
 }
 
 
-void IRBrowserComponent::init(Processor* processor)
+void IRBrowserComponent::init(Processor* processor, UIUtils::Theme theme)
 {
   _processor = processor;
+  _theme = theme;
+
   Settings* settings = _processor ? &(_processor->getSettings()) : nullptr;
   if (settings)
   {
@@ -76,16 +79,16 @@ void IRBrowserComponent::init(Processor* processor)
 
   _fileTreeComponent.reset(new juce::FileTreeComponent(*_directoryContent));
   _fileTreeComponent->addListener(this);
-  _fileTreeComponent->setColour(juce::TreeView::backgroundColourId, UIUtils::neutralColour);
-  _fileTreeComponent->setColour(juce::TreeView::linesColourId, UIUtils::backgroundColour);
-  _fileTreeComponent->setColour(juce::DirectoryContentsDisplayComponent::highlightColourId, UIUtils::highlightColour.withAlpha(0.5f));
-  _fileTreeComponent->setColour(juce::DirectoryContentsDisplayComponent::textColourId, UIUtils::backgroundColour);
+  _fileTreeComponent->setColour(juce::TreeView::backgroundColourId, _theme.neutral);
+  _fileTreeComponent->setColour(juce::TreeView::linesColourId, _theme.background);
+  _fileTreeComponent->setColour(juce::DirectoryContentsDisplayComponent::highlightColourId, _theme.irBrowserHighlight.withAlpha(0.5f));
+  _fileTreeComponent->setColour(juce::DirectoryContentsDisplayComponent::textColourId, _theme.background);
   _fileTreeComponent->setLookAndFeel(_fileTreeLookAndFeel.get());
   addAndMakeVisible(_fileTreeComponent.get());
 
   _infoLabel.reset(new juce::Label());
-  _infoLabel->setColour(juce::Label::backgroundColourId, UIUtils::neutralColour);
-  _infoLabel->setColour(juce::Label::textColourId, UIUtils::backgroundColour);
+  _infoLabel->setColour(juce::Label::backgroundColourId, _theme.neutral);
+  _infoLabel->setColour(juce::Label::textColourId, _theme.background);
   addAndMakeVisible(_infoLabel.get());
 
   updateLayout();
@@ -132,7 +135,7 @@ void IRBrowserComponent::paint(juce::Graphics& g)
     const int width = getWidth();
     const int height = getHeight();
 
-    g.setColour(UIUtils::neutralColour);
+    g.setColour(_theme.neutral);
     g.fillRect(0.0f, 0.0f, static_cast<float>(width), static_cast<float>(height));
 
     g.setColour(juce::Colours::grey);
@@ -209,84 +212,8 @@ void IRBrowserComponent::fileClicked(const File&, const MouseEvent&)
 
 void IRBrowserComponent::fileDoubleClicked(const File &file)
 {
-  if (!_processor || file.isDirectory())
-  {
-    return;
-  }
-
-  size_t channelCount = 0;
-  size_t sampleCount = 0;
-  double sampleRate = 0.0;
-  if (!readAudioFileInfo(file, channelCount, sampleCount, sampleRate))
-  {
-    return;
-  }
-
-  IRAgent* agent00 = _processor->getAgent(0, 0);
-  IRAgent* agent01 = _processor->getAgent(0, 1);
-  IRAgent* agent10 = _processor->getAgent(1, 0);
-  IRAgent* agent11 = _processor->getAgent(1, 1);
-
-  const int inputChannels = _processor->getTotalNumInputChannels();
-  const int outputChannels = _processor->getTotalNumOutputChannels();
-
-  if (inputChannels == 1 && outputChannels == 1)
-  {
-    if (channelCount >= 1)
-    {
-      _processor->clearConvolvers();
-      agent00->setFile(file, 0);
-    }
-  }
-  else if (inputChannels == 1 && outputChannels == 2)
-  {
-    if (channelCount == 1)
-    {
-      _processor->clearConvolvers();
-      agent00->setFile(file, 0);
-      agent01->setFile(file, 0);
-    }
-    else if (channelCount >= 2)
-    {
-      _processor->clearConvolvers();
-      agent00->setFile(file, 0);
-      agent01->setFile(file, 1);
-    }
-  }
-  else if (inputChannels == 2 && outputChannels == 2)
-  {
-    if (channelCount == 1)
-    {
-      _processor->clearConvolvers();
-      agent00->setFile(file, 0);
-      agent11->setFile(file, 0);
-    }
-    else if (channelCount == 2)
-    {
-      TrueStereoPairs trueStereoPairs = findTrueStereoPairs(file, sampleCount, sampleRate);
-      if (trueStereoPairs.size() == 4)
-      {
-        _processor->clearConvolvers();
-        agent00->setFile(trueStereoPairs[0].first, trueStereoPairs[0].second);
-        agent01->setFile(trueStereoPairs[1].first, trueStereoPairs[1].second);
-        agent10->setFile(trueStereoPairs[2].first, trueStereoPairs[2].second);
-        agent11->setFile(trueStereoPairs[3].first, trueStereoPairs[3].second);
-      }
-      else
-      {
-        _processor->clearConvolvers();
-        agent00->setFile(file, 0);
-        agent11->setFile(file, 1);
-      }
-    }
-    else if (channelCount >= 4)
-    {
-      _processor->clearConvolvers();
-      agent00->setFile(file, 0);
-      agent01->setFile(file, 1);
-      agent10->setFile(file, 2);
-      agent11->setFile(file, 3);
-    }
+  if (_processor != nullptr) {
+    _processor->selectIR(file);
   }
 }
 
@@ -302,145 +229,4 @@ void IRBrowserComponent::changeListenerCallback(juce::ChangeBroadcaster*)
   {
     _directoryContent->setDirectory(_processor->getSettings().getImpulseResponseDirectory(), true, true);
   }
-}
-
-
-bool IRBrowserComponent::readAudioFileInfo(const juce::File& file, size_t& channelCount, size_t& sampleCount, double& sampleRate) const
-{
-  juce::AudioFormatManager formatManager;
-  formatManager.registerBasicFormats();
-  std::unique_ptr<juce::AudioFormatReader> reader(formatManager.createReaderFor(file));
-  if (reader)
-  {
-    channelCount = static_cast<size_t>(reader->numChannels);
-    sampleCount = static_cast<size_t>(reader->lengthInSamples);
-    sampleRate = reader->sampleRate;
-    return true;
-  }
-  channelCount = 0;
-  sampleCount = 0;
-  sampleRate = 0.0;
-  return false;
-}
-
-
-IRBrowserComponent::TrueStereoPairs IRBrowserComponent::findTrueStereoPairs(const juce::File& file, size_t sampleCount, double sampleRate) const
-{
-  if (!file.existsAsFile() || file.isDirectory())
-  {
-    return TrueStereoPairs();
-  }
-
-  const juce::File directory = file.getParentDirectory();
-  if (!file.existsAsFile() || file.isDirectory())
-  {
-    return TrueStereoPairs();
-  }
-
-  const juce::String fileNameBody = file.getFileNameWithoutExtension();
-  const juce::String fileNameExt = file.getFileExtension();
-
-  // Left => Right
-  static std::vector<std::pair<juce::String, juce::String> > pairsLeft;
-  if (pairsLeft.empty())
-  {
-    pairsLeft.push_back(std::make_pair(juce::String("L"),    juce::String("R")));
-    pairsLeft.push_back(std::make_pair(juce::String("l"),    juce::String("r")));
-    pairsLeft.push_back(std::make_pair(juce::String("Left"), juce::String("Right")));
-    pairsLeft.push_back(std::make_pair(juce::String("left"), juce::String("right")));
-    pairsLeft.push_back(std::make_pair(juce::String("LEFT"), juce::String("RIGHT")));
-  }
-  for (size_t i=0; i<pairsLeft.size(); ++i)
-  {
-    const juce::File matchingFile = checkMatchingTrueStereoFile(fileNameBody,
-                                                                fileNameExt,
-                                                                directory,
-                                                                pairsLeft[i].first,
-                                                                pairsLeft[i].second,
-                                                                sampleCount,
-                                                                sampleRate);
-    if (matchingFile.existsAsFile())
-    {
-      TrueStereoPairs trueStereoPairs;
-      trueStereoPairs.push_back(std::make_pair(file, 0));
-      trueStereoPairs.push_back(std::make_pair(file, 1));
-      trueStereoPairs.push_back(std::make_pair(matchingFile, 0));
-      trueStereoPairs.push_back(std::make_pair(matchingFile, 1));
-      return trueStereoPairs;
-    }
-  }
-
-  static std::vector<std::pair<juce::String, juce::String> > pairsRight;
-  if (pairsRight.empty())
-  {
-    pairsRight.push_back(std::make_pair(juce::String("R"),     juce::String("L")));
-    pairsRight.push_back(std::make_pair(juce::String("r"),     juce::String("l")));
-    pairsRight.push_back(std::make_pair(juce::String("Right"), juce::String("Left")));
-    pairsRight.push_back(std::make_pair(juce::String("right"), juce::String("left")));
-    pairsRight.push_back(std::make_pair(juce::String("RIGHT"), juce::String("LEFT")));
-  }
-  for (size_t i=0; i<pairsRight.size(); ++i)
-  {
-    const juce::File matchingFile = checkMatchingTrueStereoFile(fileNameBody,
-                                                                fileNameExt,
-                                                                directory,
-                                                                pairsRight[i].first,
-                                                                pairsRight[i].second,
-                                                                sampleCount,
-                                                                sampleRate);
-    if (matchingFile.existsAsFile())
-    {
-      TrueStereoPairs trueStereoPairs;
-      trueStereoPairs.push_back(std::make_pair(matchingFile, 0));
-      trueStereoPairs.push_back(std::make_pair(matchingFile, 1));
-      trueStereoPairs.push_back(std::make_pair(file, 0));
-      trueStereoPairs.push_back(std::make_pair(file, 1));
-      return trueStereoPairs;
-    }
-  }
-
-  return TrueStereoPairs();
-}
-
-
-
-juce::File IRBrowserComponent::checkMatchingTrueStereoFile(const juce::String& fileNameBody,
-                                                           const juce::String& fileNameExt,
-                                                           const juce::File& directory,
-                                                           const juce::String& pattern,
-                                                           const juce::String& replacement,
-                                                           const size_t sampleCount,
-                                                           const double sampleRate) const
-{
-  std::vector<juce::String> candidateNames;
-  if (fileNameBody.startsWith(pattern))
-  {
-    candidateNames.push_back(replacement + fileNameBody.substring(pattern.length(), fileNameBody.length()) + fileNameExt);
-  }
-  if (fileNameBody.endsWith(pattern))
-  {
-    candidateNames.push_back(fileNameBody.substring(0, fileNameBody.length()-pattern.length()) + replacement + fileNameExt);
-  }
-
-  for (size_t i=0; i<candidateNames.size(); ++i)
-  {
-    const juce::String& candidateName = candidateNames[i];
-    if (directory.getNumberOfChildFiles(juce::File::findFiles|juce::File::ignoreHiddenFiles, candidateName) == 1)
-    {
-      const juce::File candidateFile = directory.getChildFile(candidateName);
-      size_t candidateChannelCount = 0;
-      size_t candidateSampleCount = 0;
-      double candidateSampleRate = 0.0;
-      const bool fileInfoSuccess = readAudioFileInfo(candidateFile, candidateChannelCount, candidateSampleCount, candidateSampleRate);
-      if (fileInfoSuccess &&
-          candidateChannelCount == 2 &&
-          candidateSampleCount == sampleCount &&
-          ::fabs(candidateSampleRate - sampleRate) < 0.000001)
-      {
-        return candidateFile;
-      }
-    }
-  }
-
-  return juce::File();
 }

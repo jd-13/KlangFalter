@@ -45,26 +45,24 @@ namespace {
     constexpr int LABEL_FONT_SIZE {11};
 }
 
-IRSliderGroup::IRSliderGroup(Processor& processor) :
+IRSliderGroup::IRSliderGroup(Processor& processor, UIUtils::Theme theme) :
         _processor(processor),
         _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()) {
+    _rotarySliderLookAndFeel->theme = theme;
+
     _impulseResponseHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Impulse Response")));
     addAndMakeVisible(_impulseResponseHeaderLabel.get());
     _impulseResponseHeaderLabel->setFont(juce::Font(15.00f, juce::Font::plain).withTypefaceStyle("Regular"));
     _impulseResponseHeaderLabel->setJustificationType(juce::Justification::centred);
     _impulseResponseHeaderLabel->setEditable(false, false, false);
-    _impulseResponseHeaderLabel->setColour(juce::Label::textColourId, juce::Colour (0xffb0b0b6));
-    _impulseResponseHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colour (0xffb0b0b6));
-    _impulseResponseHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+    _impulseResponseHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
 
     _predelayHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Gap")));
     addAndMakeVisible(_predelayHeaderLabel.get());
     _predelayHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
     _predelayHeaderLabel->setJustificationType(juce::Justification::centred);
     _predelayHeaderLabel->setEditable(false, false, false);
-    _predelayHeaderLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
-    _predelayHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
-    _predelayHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+    _predelayHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
 
     _predelaySlider.reset(new juce::Slider (juce::String()));
     addAndMakeVisible(_predelaySlider.get());
@@ -84,18 +82,14 @@ IRSliderGroup::IRSliderGroup(Processor& processor) :
     _predelayLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
     _predelayLabel->setJustificationType(juce::Justification::centred);
     _predelayLabel->setEditable(false, false, false);
-    _predelayLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
-    _predelayLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
-    _predelayLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+    _predelayLabel->setColour(juce::Label::textColourId, theme.neutral);
 
     _beginHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Begin")));
     addAndMakeVisible(_beginHeaderLabel.get());
     _beginHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _beginHeaderLabel->setJustificationType(juce::Justification::centred);
     _beginHeaderLabel->setEditable(false, false, false);
-    _beginHeaderLabel->setColour(juce::Label::textColourId, juce::Colour (0xffb0b0b6));
-    _beginHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
-    _beginHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+    _beginHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
 
     _beginSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_beginSlider.get());
@@ -116,18 +110,14 @@ IRSliderGroup::IRSliderGroup(Processor& processor) :
     _beginLabel->setFont(juce::Font (11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
     _beginLabel->setJustificationType(juce::Justification::centred);
     _beginLabel->setEditable(false, false, false);
-    _beginLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
-    _beginLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
-    _beginLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+    _beginLabel->setColour(juce::Label::textColourId, theme.neutral);
 
     _endHeaderLabel.reset(new juce::Label(juce::String(), TRANS("End")));
     addAndMakeVisible(_endHeaderLabel.get());
     _endHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
     _endHeaderLabel->setJustificationType(juce::Justification::centred);
     _endHeaderLabel->setEditable(false, false, false);
-    _endHeaderLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
-    _endHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
-    _endHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+    _endHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
 
     _endSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_endSlider.get());
@@ -147,18 +137,14 @@ IRSliderGroup::IRSliderGroup(Processor& processor) :
     _endLabel->setFont(juce::Font (11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
     _endLabel->setJustificationType(juce::Justification::centred);
     _endLabel->setEditable(false, false, false);
-    _endLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
-    _endLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
-    _endLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+    _endLabel->setColour(juce::Label::textColourId, theme.neutral);
 
     _stretchHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Tune")));
     addAndMakeVisible(_stretchHeaderLabel.get());
     _stretchHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
     _stretchHeaderLabel->setJustificationType(juce::Justification::centred);
     _stretchHeaderLabel->setEditable(false, false, false);
-    _stretchHeaderLabel->setColour(juce::Label::textColourId, juce::Colour (0xffb0b0b6));
-    _stretchHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
-    _stretchHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+    _stretchHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
 
     _stretchSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_stretchSlider.get());
@@ -185,9 +171,7 @@ IRSliderGroup::IRSliderGroup(Processor& processor) :
     _stretchLabel->setFont(juce::Font (11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
     _stretchLabel->setJustificationType(juce::Justification::centred);
     _stretchLabel->setEditable(false, false, false);
-    _stretchLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
-    _stretchLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
-    _stretchLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+    _stretchLabel->setColour(juce::Label::textColourId, theme.neutral);
 }
 
 IRSliderGroup::~IRSliderGroup() {
@@ -269,26 +253,24 @@ void IRSliderGroup::onUpdate(bool enableSliders) {
     _stretchLabel->setText(String(static_cast<int>(100.0*tune)) + String("%"), juce::sendNotification);
 }
 
-AttackSliderGroup::AttackSliderGroup(Processor& processor) :
+AttackSliderGroup::AttackSliderGroup(Processor& processor, UIUtils::Theme theme) :
         _processor(processor),
         _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()) {
+    _rotarySliderLookAndFeel->theme = theme;
+
     _attackHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Attack")));
     addAndMakeVisible(_attackHeaderLabel.get());
     _attackHeaderLabel->setFont(juce::Font(15.00f, juce::Font::plain).withTypefaceStyle("Regular"));
     _attackHeaderLabel->setJustificationType(juce::Justification::centred);
     _attackHeaderLabel->setEditable(false, false, false);
-    _attackHeaderLabel->setColour(juce::Label::textColourId, juce::Colour (0xffb0b0b6));
-    _attackHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colour (0xffb0b0b6));
-    _attackHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+    _attackHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
 
     _attackLengthHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Length")));
     addAndMakeVisible(_attackLengthHeaderLabel.get());
     _attackLengthHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
     _attackLengthHeaderLabel->setJustificationType(juce::Justification::centred);
     _attackLengthHeaderLabel->setEditable(false, false, false);
-    _attackLengthHeaderLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
-    _attackLengthHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
-    _attackLengthHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+    _attackLengthHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
 
     _attackLengthSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_attackLengthSlider.get());
@@ -309,18 +291,14 @@ AttackSliderGroup::AttackSliderGroup(Processor& processor) :
     _attackLengthLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     _attackLengthLabel->setJustificationType (juce::Justification::centred);
     _attackLengthLabel->setEditable (false, false, false);
-    _attackLengthLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
-    _attackLengthLabel->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    _attackLengthLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+    _attackLengthLabel->setColour(juce::Label::textColourId, theme.neutral);
 
     _attackShapeHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Shape")));
     addAndMakeVisible(_attackShapeHeaderLabel.get());
     _attackShapeHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
     _attackShapeHeaderLabel->setJustificationType(juce::Justification::centred);
     _attackShapeHeaderLabel->setEditable(false, false, false);
-    _attackShapeHeaderLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
-    _attackShapeHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
-    _attackShapeHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+    _attackShapeHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
 
     _attackShapeSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_attackShapeSlider.get());
@@ -341,9 +319,7 @@ AttackSliderGroup::AttackSliderGroup(Processor& processor) :
     _attackShapeLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
     _attackShapeLabel->setJustificationType(juce::Justification::centred);
     _attackShapeLabel->setEditable(false, false, false);
-    _attackShapeLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
-    _attackShapeLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
-    _attackShapeLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+    _attackShapeLabel->setColour(juce::Label::textColourId, theme.neutral);
 }
 
 AttackSliderGroup::~AttackSliderGroup() {
@@ -394,9 +370,11 @@ void AttackSliderGroup::onUpdate(bool enableSliders) {
     _attackShapeLabel->setText((attackShape < 0.0001) ? juce::String("Neutral") : juce::String(attackShape, 2), juce::sendNotification);
 }
 
-DecaySliderGroup::DecaySliderGroup(Processor& processor) :
+DecaySliderGroup::DecaySliderGroup(Processor& processor, UIUtils::Theme theme) :
         _processor(processor),
         _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()) {
+    _rotarySliderLookAndFeel->theme = theme;
+
     _decayHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Decay")));
     addAndMakeVisible(_decayHeaderLabel.get());
     _decayHeaderLabel->setFont(juce::Font(15.00f, juce::Font::plain).withTypefaceStyle("Regular"));
@@ -470,26 +448,24 @@ void DecaySliderGroup::onUpdate(bool enableSliders) {
     _decayShapeLabel->setText((decayShape < 0.0001) ? juce::String("Neutral") : juce::String(decayShape, 2), juce::sendNotification);
 }
 
-StereoSliderGroup::StereoSliderGroup(Processor& processor) :
+StereoSliderGroup::StereoSliderGroup(Processor& processor, UIUtils::Theme theme) :
         _processor(processor),
         _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()) {
+    _rotarySliderLookAndFeel->theme = theme;
+
     _stereoHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Stereo")));
     addAndMakeVisible(_stereoHeaderLabel.get());
     _stereoHeaderLabel->setFont(juce::Font(15.00f, juce::Font::plain).withTypefaceStyle("Regular"));
     _stereoHeaderLabel->setJustificationType(juce::Justification::centred);
     _stereoHeaderLabel->setEditable(false, false, false);
-    _stereoHeaderLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
-    _stereoHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colour(0xffb0b0b6));
-    _stereoHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+    _stereoHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
 
     _widthHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Width")));
     addAndMakeVisible(_widthHeaderLabel.get());
     _widthHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
     _widthHeaderLabel->setJustificationType(juce::Justification::centred);
     _widthHeaderLabel->setEditable(false, false, false);
-    _widthHeaderLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
-    _widthHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
-    _widthHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+    _widthHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
 
     _widthSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_widthSlider.get());
@@ -510,9 +486,7 @@ StereoSliderGroup::StereoSliderGroup(Processor& processor) :
     _widthLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
     _widthLabel->setJustificationType(juce::Justification::centred);
     _widthLabel->setEditable(false, false, false);
-    _widthLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
-    _widthLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
-    _widthLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+    _widthLabel->setColour(juce::Label::textColourId, theme.neutral);
 }
 
 StereoSliderGroup::~StereoSliderGroup() {
@@ -546,18 +520,20 @@ void StereoSliderGroup::onUpdate(bool enableSliders, int numOutputChannels) {
     _widthLabel->setText((::fabs(1.0f-stereoWidth) < 0.001) ? juce::String("Neutral") : juce::String(stereoWidth, 2), juce::sendNotification);
 }
 
-LowEqSliderGroup::LowEqSliderGroup(Processor& processor) :
+LowEqSliderGroup::LowEqSliderGroup(Processor& processor, UIUtils::Theme theme) :
         _processor(processor),
         _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()),
         _simpleButtonLookAndFeel(new UIUtils::SimpleButtonLookAndFeel()) {
+    _rotarySliderLookAndFeel->theme = theme;
+
     _lowEqButton.reset(new juce::TextButton(juce::String()));
     addAndMakeVisible(_lowEqButton.get());
     _lowEqButton->setButtonText(TRANS("Low Cut"));
     _lowEqButton->setConnectedEdges(juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
     _lowEqButton->setColour(juce::TextButton::buttonColourId, juce::Colour(0x00bbbbff));
     _lowEqButton->setColour(juce::TextButton::buttonOnColourId, juce::Colour(0x002c2cff));
-    _lowEqButton->setColour(juce::TextButton::textColourOffId, juce::Colour(0xffb0b0b6));
-    _lowEqButton->setColour(juce::TextButton::textColourOnId, juce::Colour(0xffb0b0b6));
+    _lowEqButton->setColour(juce::TextButton::textColourOffId, theme.neutral);
+    _lowEqButton->setColour(juce::TextButton::textColourOnId, theme.neutral);
     _lowEqButton->onClick = [this] {
         const Parameters::EqType lowEqType = static_cast<Parameters::EqType>(_processor.getParameter(Parameters::EqLowType));
         _processor.setParameterNotifyingHost(Parameters::EqLowType, static_cast<int>((lowEqType == Parameters::Cut) ? Parameters::Shelf : Parameters::Cut));
@@ -569,9 +545,7 @@ LowEqSliderGroup::LowEqSliderGroup(Processor& processor) :
     _lowCutFreqHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
     _lowCutFreqHeaderLabel->setJustificationType(juce::Justification::centred);
     _lowCutFreqHeaderLabel->setEditable(false, false, false);
-    _lowCutFreqHeaderLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
-    _lowCutFreqHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
-    _lowCutFreqHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+    _lowCutFreqHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
 
     _lowCutFreqSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_lowCutFreqSlider.get());
@@ -593,18 +567,14 @@ LowEqSliderGroup::LowEqSliderGroup(Processor& processor) :
     _lowCutFreqLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
     _lowCutFreqLabel->setJustificationType(juce::Justification::centred);
     _lowCutFreqLabel->setEditable(false, false, false);
-    _lowCutFreqLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
-    _lowCutFreqLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
-    _lowCutFreqLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+    _lowCutFreqLabel->setColour(juce::Label::textColourId, theme.neutral);
 
     _loFreqHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Freq")));
     addAndMakeVisible(_loFreqHeaderLabel.get());
     _loFreqHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
     _loFreqHeaderLabel->setJustificationType(juce::Justification::centred);
     _loFreqHeaderLabel->setEditable(false, false, false);
-    _loFreqHeaderLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
-    _loFreqHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
-    _loFreqHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+    _loFreqHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
 
     _loFreqSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_loFreqSlider.get());
@@ -626,18 +596,14 @@ LowEqSliderGroup::LowEqSliderGroup(Processor& processor) :
     _loFreqLabel->setFont(juce::Font (11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
     _loFreqLabel->setJustificationType(juce::Justification::centred);
     _loFreqLabel->setEditable(false, false, false);
-    _loFreqLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
-    _loFreqLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
-    _loFreqLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+    _loFreqLabel->setColour(juce::Label::textColourId, theme.neutral);
 
     _loGainHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Gain")));
     addAndMakeVisible(_loGainHeaderLabel.get());
     _loGainHeaderLabel->setFont(juce::Font (11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
     _loGainHeaderLabel->setJustificationType(juce::Justification::centred);
     _loGainHeaderLabel->setEditable(false, false, false);
-    _loGainHeaderLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
-    _loGainHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
-    _loGainHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+    _loGainHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
 
     _loGainSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_loGainSlider.get());
@@ -658,9 +624,7 @@ LowEqSliderGroup::LowEqSliderGroup(Processor& processor) :
     _loGainLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
     _loGainLabel->setJustificationType(juce::Justification::centred);
     _loGainLabel->setEditable(false, false, false);
-    _loGainLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
-    _loGainLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
-    _loGainLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+    _loGainLabel->setColour(juce::Label::textColourId, theme.neutral);
 }
 
 LowEqSliderGroup::~LowEqSliderGroup() {
@@ -732,18 +696,20 @@ void LowEqSliderGroup::onUpdate(bool enableSliders) {
     _loGainSlider->setValue(shelfGainDb, juce::dontSendNotification);
 }
 
-HighEqSliderGroup::HighEqSliderGroup(Processor& processor) :
+HighEqSliderGroup::HighEqSliderGroup(Processor& processor, UIUtils::Theme theme) :
         _processor(processor),
         _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()),
         _simpleButtonLookAndFeel(new UIUtils::SimpleButtonLookAndFeel()) {
+    _rotarySliderLookAndFeel->theme = theme;
+
     _highEqButton.reset(new juce::TextButton(juce::String()));
     addAndMakeVisible(_highEqButton.get());
     _highEqButton->setButtonText(TRANS("High Cut"));
     _highEqButton->setConnectedEdges(juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
     _highEqButton->setColour(juce::TextButton::buttonColourId, juce::Colour(0x00bbbbff));
     _highEqButton->setColour(juce::TextButton::buttonOnColourId, juce::Colour(0x002c2cff));
-    _highEqButton->setColour(juce::TextButton::textColourOffId, juce::Colour(0xffb0b0b6));
-    _highEqButton->setColour(juce::TextButton::textColourOnId, juce::Colour(0xffb0b0b6));
+    _highEqButton->setColour(juce::TextButton::textColourOffId, theme.neutral);
+    _highEqButton->setColour(juce::TextButton::textColourOnId, theme.neutral);
     _highEqButton->onClick = [this] {
         const Parameters::EqType highEqType = static_cast<Parameters::EqType>(_processor.getParameter(Parameters::EqHighType));
         _processor.setParameterNotifyingHost(Parameters::EqHighType, static_cast<int>((highEqType == Parameters::Cut) ? Parameters::Shelf : Parameters::Cut));
@@ -755,9 +721,7 @@ HighEqSliderGroup::HighEqSliderGroup(Processor& processor) :
     _highCutFreqHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
     _highCutFreqHeaderLabel->setJustificationType(juce::Justification::centred);
     _highCutFreqHeaderLabel->setEditable(false, false, false);
-    _highCutFreqHeaderLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
-    _highCutFreqHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
-    _highCutFreqHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+    _highCutFreqHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
 
     _highCutFreqSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_highCutFreqSlider.get());
@@ -779,18 +743,14 @@ HighEqSliderGroup::HighEqSliderGroup(Processor& processor) :
     _highCutFreqLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
     _highCutFreqLabel->setJustificationType(juce::Justification::centred);
     _highCutFreqLabel->setEditable(false, false, false);
-    _highCutFreqLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
-    _highCutFreqLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
-    _highCutFreqLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+    _highCutFreqLabel->setColour(juce::Label::textColourId, theme.neutral);
 
     _hiFreqHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Freq")));
     addAndMakeVisible(_hiFreqHeaderLabel.get());
     _hiFreqHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
     _hiFreqHeaderLabel->setJustificationType(juce::Justification::centred);
     _hiFreqHeaderLabel->setEditable(false, false, false);
-    _hiFreqHeaderLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
-    _hiFreqHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
-    _hiFreqHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+    _hiFreqHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
 
     _hiFreqSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_hiFreqSlider.get());
@@ -812,18 +772,14 @@ HighEqSliderGroup::HighEqSliderGroup(Processor& processor) :
     _hiFreqLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
     _hiFreqLabel->setJustificationType(juce::Justification::centred);
     _hiFreqLabel->setEditable(false, false, false);
-    _hiFreqLabel->setColour(juce::Label::textColourId, juce::Colour (0xffb0b0b6));
-    _hiFreqLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
-    _hiFreqLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+    _hiFreqLabel->setColour(juce::Label::textColourId, theme.neutral);
 
     _hiGainHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Gain")));
     addAndMakeVisible(_hiGainHeaderLabel.get());
     _hiGainHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
     _hiGainHeaderLabel->setJustificationType(juce::Justification::centred);
     _hiGainHeaderLabel->setEditable(false, false, false);
-    _hiGainHeaderLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
-    _hiGainHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
-    _hiGainHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+    _hiGainHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
 
     _hiGainSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_hiGainSlider.get());
@@ -844,9 +800,7 @@ HighEqSliderGroup::HighEqSliderGroup(Processor& processor) :
     _hiGainLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
     _hiGainLabel->setJustificationType(juce::Justification::centred);
     _hiGainLabel->setEditable(false, false, false);
-    _hiGainLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
-    _hiGainLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
-    _hiGainLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+    _hiGainLabel->setColour(juce::Label::textColourId, theme.neutral);
 }
 
 HighEqSliderGroup::~HighEqSliderGroup() {

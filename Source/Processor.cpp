@@ -17,19 +17,39 @@
 
 #include "Processor.h"
 
+#include <algorithm>
+
 #include "IRAgent.h"
 #include "IRCalculation.h"
 #include "Parameters.h"
 #include "Persistence.h"
 #include "Settings.h"
 #include "UI/KlangFalterEditor.h"
+#include "IRFileUtils.hpp"
 
-#include <algorithm>
+namespace {
+    std::optional<juce::File> getDefaultIRFile(juce::File irFolder) {
+      // List the child files of the IR folder, select the alphabetically first file
+      juce::Array<juce::File> files =
+          irFolder.findChildFiles(juce::File::TypesOfFileToFind::findFiles, false, "*.wav", juce::File::FollowSymlinks::no);
 
+      if (files.size() > 0) {
+          // Sort the files by name
+          std::sort(files.begin(), files.end(), [](const juce::File& a, const juce::File& b) {
+              return a.getFileName().compareNatural(b.getFileName()) < 0;
+          });
+
+          return std::optional<juce::File>(files[0]);
+      }
+
+      return std::nullopt;
+  }
+}
 
 //==============================================================================
 Processor::Processor() :
-  AudioProcessor(),
+  AudioProcessor(BusesProperties().withInput("Input", juce::AudioChannelSet::stereo(), true)
+                                  .withOutput("Output", juce::AudioChannelSet::stereo(), true)),
   ChangeNotifier(),
   _wetBuffer(1, 0),
   _convolutionBuffer(),
@@ -84,6 +104,11 @@ Processor::Processor() :
   // Default the UI size to whatever the size was when any instance was last closed. LoadData() will
   // override this if we're in a pre-existing instance and there is saved data
   _uiBounds = _settings.getDefaultUIBounds();
+
+  // Open the default IR
+  if (std::optional<juce::File> defaultIRFile = getDefaultIRFile(_settings.getImpulseResponseDirectory())) {
+    selectIR(defaultIRFile.value());
+  }
 }
 
 
@@ -265,6 +290,21 @@ void Processor::releaseResources()
   notifyAboutChange();
 }
 
+bool Processor::isBusesLayoutSupported (const BusesLayout& layout) const {
+  const bool isMonoInMonoOut {
+    layout.getMainInputChannelSet().size() == 1 && layout.getMainOutputChannelSet().size() == 1
+  };
+
+  const bool isMonoInStereoOut {
+    layout.getMainInputChannelSet().size() == 1 && layout.getMainOutputChannelSet().size() == 2
+  };
+
+  const bool isStereoInStereoOut {
+    layout.getMainInputChannelSet().size() == 2 && layout.getMainOutputChannelSet().size() == 2
+  };
+
+  return (isMonoInMonoOut || isMonoInStereoOut || isStereoInStereoOut) && !layout.getMainInputChannelSet().isDisabled();
+}
 
 void Processor::processBlock(AudioSampleBuffer& buffer, MidiBuffer& /*midiMessages*/)
 {
@@ -866,6 +906,87 @@ void Processor::setIrBrowserOpen(bool val) {
 
 bool Processor::getIrBrowserOpen() const {
   return _irBrowserOpen;
+}
+
+void Processor::selectIR(const juce::File& file) {
+  if (file.isDirectory()) {
+    return;
+  }
+
+  size_t channelCount = 0;
+  size_t sampleCount = 0;
+  double sampleRate = 0.0;
+  if (!readAudioFileInfo(file, channelCount, sampleCount, sampleRate))
+  {
+    return;
+  }
+
+  IRAgent* agent00 = getAgent(0, 0);
+  IRAgent* agent01 = getAgent(0, 1);
+  IRAgent* agent10 = getAgent(1, 0);
+  IRAgent* agent11 = getAgent(1, 1);
+
+  const int inputChannels = getTotalNumInputChannels();
+  const int outputChannels = getTotalNumOutputChannels();
+
+  if (inputChannels == 1 && outputChannels == 1)
+  {
+    if (channelCount >= 1)
+    {
+      clearConvolvers();
+      agent00->setFile(file, 0);
+    }
+  }
+  else if (inputChannels == 1 && outputChannels == 2)
+  {
+    if (channelCount == 1)
+    {
+      clearConvolvers();
+      agent00->setFile(file, 0);
+      agent01->setFile(file, 0);
+    }
+    else if (channelCount >= 2)
+    {
+      clearConvolvers();
+      agent00->setFile(file, 0);
+      agent01->setFile(file, 1);
+    }
+  }
+  else if (inputChannels == 2 && outputChannels == 2)
+  {
+    if (channelCount == 1)
+    {
+      clearConvolvers();
+      agent00->setFile(file, 0);
+      agent11->setFile(file, 0);
+    }
+    else if (channelCount == 2)
+    {
+      TrueStereoPairs trueStereoPairs = findTrueStereoPairs(file, sampleCount, sampleRate);
+      if (trueStereoPairs.size() == 4)
+      {
+        clearConvolvers();
+        agent00->setFile(trueStereoPairs[0].first, trueStereoPairs[0].second);
+        agent01->setFile(trueStereoPairs[1].first, trueStereoPairs[1].second);
+        agent10->setFile(trueStereoPairs[2].first, trueStereoPairs[2].second);
+        agent11->setFile(trueStereoPairs[3].first, trueStereoPairs[3].second);
+      }
+      else
+      {
+        clearConvolvers();
+        agent00->setFile(file, 0);
+        agent11->setFile(file, 1);
+      }
+    }
+    else if (channelCount >= 4)
+    {
+      clearConvolvers();
+      agent00->setFile(file, 0);
+      agent01->setFile(file, 1);
+      agent10->setFile(file, 2);
+      agent11->setFile(file, 3);
+    }
+  }
 }
 
 void Processor::setUIBounds(const juce::Rectangle<int>& bounds, bool shouldUpdateInSettings) {

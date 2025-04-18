@@ -31,7 +31,7 @@
 class WaveformComponent : public juce::Component
 {
 public:
-  explicit WaveformComponent();
+  explicit WaveformComponent(UIUtils::Theme theme);
   virtual ~WaveformComponent();
 
   virtual void paint(juce::Graphics& g);
