@@ -169,9 +169,9 @@ private:
   juce::AudioSampleBuffer _wetBuffer;
   std::vector<float> _convolutionBuffer;
   ParameterSet _parameterSet;
-  std::vector<LevelMeasurement> _levelMeasurementsDry;
-  std::vector<LevelMeasurement> _levelMeasurementsWet;
-  std::vector<LevelMeasurement> _levelMeasurementsOut;
+  std::array<LevelMeasurement, 2> _levelMeasurementsDry;
+  std::array<LevelMeasurement, 2> _levelMeasurementsWet;
+  std::array<LevelMeasurement, 2> _levelMeasurementsOut;
   Settings _settings;
   juce::Rectangle<int> _uiBounds;
 
