@@ -48,6 +48,17 @@ collectVST() {
      cp $PROJECT_DIR/Themes/$VARIANT.json $OUTPUT_DIR/$PLUGIN_NAME/Contents/Resources/theme.json
 }
 
+collectAU() {
+     OUTPUT_DIR=$1
+     VARIANT=$2
+     PLUGIN_NAME=TSoM-BodyandSoul$VARIANT.component
+
+     cp -r ~/Library/Audio/Plug-Ins/Components/$PLUGIN_NAME $OUTPUT_DIR
+     mkdir -p $OUTPUT_DIR/$PLUGIN_NAME/Contents/Resources/IRs
+     cp -r $PROJECT_DIR/IRs/$VARIANT/* $OUTPUT_DIR/$PLUGIN_NAME/Contents/Resources/IRs
+     cp $PROJECT_DIR/Themes/$VARIANT.json $OUTPUT_DIR/$PLUGIN_NAME/Contents/Resources/theme.json
+}
+
 collectCLAP() {
      OUTPUT_DIR=$1
      VARIANT=$2
@@ -61,13 +72,18 @@ collectCLAP() {
 
 mkdir -p $SCRIPT_DIR/dist/BodyandSoulIntro
 collectVST $SCRIPT_DIR/dist/BodyandSoulIntro Intro
+collectAU $SCRIPT_DIR/dist/BodyandSoulIntro Intro
 collectCLAP $SCRIPT_DIR/dist/BodyandSoulIntro Intro
 
 mkdir -p $SCRIPT_DIR/dist/BodyandSoul
 collectVST $SCRIPT_DIR/dist/BodyandSoul Body
+collectAU $SCRIPT_DIR/dist/BodyandSoul Body
 collectCLAP $SCRIPT_DIR/dist/BodyandSoul Body
+
 collectVST $SCRIPT_DIR/dist/BodyandSoul Soul
+collectAU $SCRIPT_DIR/dist/BodyandSoul Soul
 collectCLAP $SCRIPT_DIR/dist/BodyandSoul Soul
+
 # collectVST $SCRIPT_DIR/dist/BodyandSoul FX
 # collectCLAP $SCRIPT_DIR/dist/BodyandSoul FX
 
