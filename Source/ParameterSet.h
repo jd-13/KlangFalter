@@ -30,37 +30,37 @@ class ParameterDescriptor
 {
 public:
   virtual ~ParameterDescriptor()
-  {    
+  {
   }
-  
+
   int getIndex() const
   {
     return _index;
   }
-  
+
   const juce::String& getName() const
   {
     return _name;
   }
-  
+
   const juce::String& getUnit() const
   {
     return _unit;
   }
-  
+
   enum AutomationStatus
   {
     Automatable,
     NotAutomatable
   };
-  
+
   AutomationStatus getAutomationStatus() const
   {
     return _automationStatus;
   }
-  
+
   virtual juce::String formatFromNormalized(float normalized) const = 0;
-  
+
 protected:
   ParameterDescriptor(int index,
                       const juce::String& name,
@@ -72,7 +72,7 @@ protected:
     _automationStatus(automationStatus)
   {
   }
-  
+
 private:
   const int _index;
   const juce::String _name;
@@ -97,28 +97,28 @@ class TypedParameterDescriptor : public ParameterDescriptor
 {
 public:
   typedef T ValueType;
-  
+
   virtual float convertToNormalized(ValueType val) const = 0;
-  
+
   virtual ValueType convertFromNormalized(float normalized) const = 0;
-  
+
   virtual ValueType constraintValue(ValueType val) const = 0;
-  
+
   ValueType getDefaultValue() const
   {
     return _defaultValue;
   }
-  
+
   ValueType getMinValue() const
   {
     return _minValue;
   }
-  
+
   ValueType getMaxValue() const
   {
     return _maxValue;
   }
-  
+
 protected:
   TypedParameterDescriptor(int index,
                            const juce::String& name,
@@ -133,7 +133,7 @@ protected:
     _maxValue(maxValue)
   {
   }
-  
+
 private:
   const T _defaultValue;
   const T _minValue;
@@ -155,28 +155,28 @@ public:
                           const juce::String& name,
                           const juce::String& unit,
                           ParameterDescriptor::AutomationStatus automationStatus,
-                          bool defaultValue,                
+                          bool defaultValue,
                           bool minValue = false,
                           bool maxValue = true) :
     TypedParameterDescriptor<bool>(index, name, unit, automationStatus, defaultValue, minValue, maxValue)
   {
   }
-   
+
   virtual float convertToNormalized(bool val) const
   {
     return (val ? 1.0f : 0.0f);
   }
-      
+
   virtual bool convertFromNormalized(float normalized) const
   {
     return (normalized >= 0.5f);
   }
-  
+
   virtual bool constraintValue(bool val) const
   {
     return val;
   }
-  
+
   virtual juce::String formatFromNormalized(float normalized) const
   {
     return (convertFromNormalized(normalized) ? juce::String("True") : juce::String("False"));
@@ -204,7 +204,7 @@ public:
   {
     jassert(minValue <= maxValue);
   }
-  
+
   virtual float convertToNormalized(float val) const
   {
     const float minValue = getMinValue();
@@ -219,12 +219,12 @@ public:
     const float maxValue = getMaxValue();
     return minValue + normalized * (maxValue-minValue);
   }
-  
+
   virtual float constraintValue(float val) const
   {
     return std::min(getMaxValue(), std::max(getMinValue(), val));
   }
-  
+
   virtual juce::String formatFromNormalized(float normalized) const
   {
     return juce::String(convertFromNormalized(normalized), 2);
@@ -253,7 +253,7 @@ public:
   {
     jassert(minValue <= maxValue);
   }
-  
+
   virtual float convertToNormalized(int val) const
   {
     const int minValue = getMinValue();
@@ -273,7 +273,7 @@ public:
   {
     return std::min(getMaxValue(), std::max(getMinValue(), val));
   }
-  
+
   virtual juce::String formatFromNormalized(float normalized) const
   {
     return juce::String(convertFromNormalized(normalized));
@@ -295,57 +295,65 @@ public:
     _parameters()
   {
   }
-  
+
   template<typename T>
   void registerParameter(const TypedParameterDescriptor<T>& parameter)
   {
-    _parameters[parameter.getIndex()] = std::make_pair(&parameter, parameter.convertToNormalized(parameter.constraintValue(parameter.getDefaultValue())));
+    if (parameter.getAutomationStatus() == ParameterDescriptor::Automatable)
+    {
+      _parameters[parameter.getIndex()] = std::make_pair(&parameter, parameter.convertToNormalized(parameter.constraintValue(parameter.getDefaultValue())));
+    }
+    else
+    {
+      _privateParameters[parameter.getIndex()] = std::make_pair(&parameter, parameter.convertToNormalized(parameter.constraintValue(parameter.getDefaultValue())));
+    }
   }
-  
+
   template<typename T>
   T getParameter(const TypedParameterDescriptor<T>& parameter) const
   {
     return parameter.convertFromNormalized(_parameters.find(parameter.getIndex())->second.second.load());
   }
-  
+
   template<typename T>
   bool setParameter(const TypedParameterDescriptor<T>& parameter, T val)
   {
     return setNormalizedParameter(parameter.getIndex(), parameter.convertToNormalized(parameter.constraintValue(val)));
   }
-  
+
   float getNormalizedParameter(int index) const
   {
     return _parameters.find(index)->second.second.load();
   }
-  
+
   bool setNormalizedParameter(int index, float normalizedVal)
   {
     ParameterMap::iterator it = _parameters.find(index);
     const float normalizedValOld = it->second.second.exchange(normalizedVal);
     return (::fabs(normalizedVal - normalizedValOld) > 0.00001f);
   }
-  
+
   juce::String getFormattedParameterValue(int index) const
   {
     ParameterMap::const_iterator it = _parameters.find(index);
     return it->second.first->formatFromNormalized(it->second.second.load());
   }
-  
+
   const ParameterDescriptor& getParameterDescriptor(int index) const
   {
     return *(_parameters.find(index)->second.first);
   }
-  
+
   size_t getParameterCount() const
   {
     return _parameters.size();
   }
-  
-private:  
+
+private:
   typedef std::map<int, std::pair<const ParameterDescriptor*, std::atomic<float> > > ParameterMap;
   ParameterMap _parameters;
-  
+  ParameterMap _privateParameters;
+
   // Prevent uncontrolled usage
   ParameterSet(const ParameterSet&);
   ParameterSet& operator=(const ParameterSet&);
