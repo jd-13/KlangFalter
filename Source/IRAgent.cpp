@@ -36,21 +36,21 @@ public:
     _pos(0)
   {
   }
-  
+
   virtual void prepareToPlay(int samplesPerBlockExpected, double sampleRate)
   {
     (void) samplesPerBlockExpected;
     (void) sampleRate;
     _pos = 0;
   }
-  
+
   virtual void releaseResources()
   {
     _buffer = nullptr;
     _len = 0;
     _pos = 0;
   }
-  
+
   virtual void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill)
   {
     AudioSampleBuffer* destBuffer = bufferToFill.buffer;
@@ -77,12 +77,12 @@ public:
     }
     _pos += len;
   }
-  
+
 private:
   float* _buffer;
   size_t _len;
   size_t _pos;
-  
+
   ReferencingAudioSource(const ReferencingAudioSource&);
   ReferencingAudioSource& operator=(const ReferencingAudioSource&);
 };
@@ -141,7 +141,7 @@ void IRAgent::initialize()
 {
   const float eqSampleRate = static_cast<float>(_processor.getSampleRate());
   const size_t eqBlockSize = _processor.getConvolverHeadBlockSize();
-  
+
   const int eqLowType = _processor.getParameter(Parameters::EqLowType);
   if (eqLowType == Parameters::Cut)
   {
@@ -167,7 +167,7 @@ void IRAgent::initialize()
     _eqHi.setFreq(_processor.getParameter(Parameters::EqHighShelfFreq));
     _eqHi.setGain(_processor.getParameter(Parameters::EqHighShelfDecibels));
   }
-  
+
   _eqLo.prepareToPlay(eqSampleRate, eqBlockSize);
   _eqHi.prepareToPlay(eqSampleRate, eqBlockSize);
 }
@@ -307,7 +307,7 @@ Convolver* IRAgent::getConvolver()
 {
   return _convolver.get();
 }
-                  
+
 
 void IRAgent::setConvolver(Convolver* convolver)
 {
@@ -336,7 +336,7 @@ void IRAgent::propagateChange()
 void IRAgent::process(const float* input, float* output, size_t len)
 {
   const float Epsilon = 0.0001f;
-  
+
   // This is the hopefully one and only rare exception where we need to
   // lock a mutex in the realtime audio thread :-/ (however, the according
   // convolver mutex is locked somewhere else only once for a very short and
@@ -344,10 +344,10 @@ void IRAgent::process(const float* input, float* output, size_t len)
   // systems internally try spinning before performing an expensive context switch,
   // so we will never give up the context here probably).
   juce::ScopedLock convolverLock(_convolverMutex);
-  
+
   if (_convolver && (_fadeFactor > Epsilon || ::fabs(_fadeIncrement) > Epsilon))
   {
-    _convolver->process(input, output, len);        
+    _convolver->process(input, output, len);
     if (::fabs(_fadeIncrement) > Epsilon || _fadeFactor < (1.0-Epsilon))
     {
       for (size_t i=0; i<len; ++i)
@@ -367,11 +367,11 @@ void IRAgent::process(const float* input, float* output, size_t len)
     _fadeFactor = 0.0;
     _fadeIncrement = 0.0;
   }
-  
+
   // EQ low
   const int eqLowType = _processor.getParameter(Parameters::EqLowType);
   if (eqLowType == Parameters::Cut)
-  {    
+  {
     const float eqLowCutFreq = _processor.getParameter(Parameters::EqLowCutFreq);
     if (::fabs(eqLowCutFreq-Parameters::EqLowCutFreq.getMinValue()) > 0.0001f)
     {
@@ -391,7 +391,7 @@ void IRAgent::process(const float* input, float* output, size_t len)
       _eqLo.filterOut(output, len);
     }
   }
-  
+
   // EQ high
   const int eqHighType = _processor.getParameter(Parameters::EqHighType);
   if (eqHighType == Parameters::Cut)

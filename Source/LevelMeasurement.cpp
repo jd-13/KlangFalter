@@ -22,7 +22,7 @@
 
 LevelMeasurement::LevelMeasurement(float decay) :
   _decay(decay),
-  _level(0.0f)  
+  _level(0.0f)
 {
 }
 
@@ -91,7 +91,7 @@ void LevelMeasurement::process(size_t len, const float* data)
           }
         }
       }
-    }    
+    }
     _level.store(level);
   }
 }

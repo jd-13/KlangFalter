@@ -114,7 +114,7 @@ void IRCalculation::run()
   {
     agents[i]->fadeOut();
   }
-  
+
   // Import the files
   std::vector<FloatBuffer::Ptr> buffers(agents.size(), nullptr);
   std::vector<double> fileSampleRates(agents.size(), 0.0);
@@ -139,7 +139,7 @@ void IRCalculation::run()
   const double stretch = _processor.getStretch();
   const double stretchSampleRate = convolverSampleRate * stretch;
   for (size_t i=0; i<agents.size(); ++i)
-  { 
+  {
     if (buffers[i] != nullptr && fileSampleRates[i] > 0.00001)
     {
       FloatBuffer::Ptr resampled = changeSampleRate(buffers[i], fileSampleRates[i], stretchSampleRate);
@@ -154,7 +154,7 @@ void IRCalculation::run()
   // Unify buffer size
   unifyBufferSize(buffers);
   if (threadShouldExit())
-  { 
+  {
     return;
   }
 
@@ -186,7 +186,7 @@ void IRCalculation::run()
     {
       return;
     }
-  }  
+  }
 
   // Reverse
   if (_processor.getReverse())
@@ -217,10 +217,10 @@ void IRCalculation::run()
         ::memset(buffer->data(), 0, predelaySamples * sizeof(float));
         ::memcpy(buffer->data()+predelaySamples, buffers[i]->data(), buffers[i]->getSize() * sizeof(float));
         buffers[i] = buffer;
-      }      
+      }
     }
   }
-  
+
   // Update convolvers
   const size_t headBlockSize = _processor.getConvolverHeadBlockSize();
   const size_t tailBlockSize = _processor.getConvolverTailBlockSize();
@@ -229,7 +229,7 @@ void IRCalculation::run()
   {
     std::unique_ptr<Convolver> convolver(new Convolver());
     if (buffers[i] != nullptr && buffers[i]->getSize() > 0)
-    {        
+    {
       convolver.reset(new Convolver());
       const bool successInit = convolver->init(headBlockSize, tailBlockSize, buffers[i]->data(), buffers[i]->getSize());
       if (!successInit || threadShouldExit())
@@ -343,7 +343,7 @@ std::vector<FloatBuffer::Ptr> IRCalculation::cropBuffers(const std::vector<Float
     {
       const size_t bufferSize = buffer->getSize();
       const size_t begin = static_cast<size_t>(irBegin * static_cast<double>(bufferSize));
-      const size_t end = static_cast<size_t>(irEnd * static_cast<double>(bufferSize));      
+      const size_t end = static_cast<size_t>(irEnd * static_cast<double>(bufferSize));
       if (begin < end)
       {
         const size_t croppedSize = end - begin;
@@ -399,7 +399,7 @@ FloatBuffer::Ptr IRCalculation::changeSampleRate(const FloatBuffer::Ptr& inputBu
     info.buffer = &blockBuffer;
     info.startSample = 0;
     info.numSamples = processing;
-    resamplingSource.getNextAudioBlock(info);      
+    resamplingSource.getNextAudioBlock(info);
     ::memcpy(outputBuffer->data()+static_cast<size_t>(processed), blockBuffer.getReadPointer(0), processing * sizeof(float));
     processed += processing;
   }
