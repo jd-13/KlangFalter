@@ -649,8 +649,6 @@ void KlangFalterEditor::resized()
         }
 
         const int IR_BROWSER_BUTTON_HEIGHT {scaled(24)};
-        availableArea.removeFromBottom(scaled(1));
-
         const juce::Rectangle<int> browseButtonArea = availableArea.removeFromBottom(IR_BROWSER_BUTTON_HEIGHT)
             .withTrimmedLeft(IR_BROWSER_MARGIN)
             .withTrimmedRight(IR_BROWSER_MARGIN);
@@ -896,29 +894,21 @@ void KlangFalterEditor::timerCallback()
 }
 
 void KlangFalterEditor::_updateIRBrowserOpen(bool isOpen) {
-    int browserHeight = 0;
-    juce::String browseButtonText;
-    if (isOpen)
-    {
-        browserHeight = IR_BROWSER_AREA_HEIGHT + 1;
-        browseButtonText = juce::String("Hide Browser");
-    }
-    else
-    {
-        browserHeight = 0;
-        browseButtonText = juce::String("Show Browser");
+    if (isOpen) {
+        _constrainer->setFixedAspectRatio(760.0 / (340.0 + IR_BROWSER_AREA_HEIGHT));
+        _browseButton->setButtonText("Hide Browser");
+    } else {
+        _constrainer->setFixedAspectRatio(760.0 / 340.0);
+        _browseButton->setButtonText("Show Browser");
     }
 
     // Make sure state is always consistent
     _processor.setIrBrowserOpen(isOpen);
     _browseButton->setToggleState(isOpen, juce::dontSendNotification);
 
-    _constrainer->setFixedAspectRatio(760.0 / (340.0 + browserHeight));
-
     const int newHeight = getWidth() / _constrainer->getFixedAspectRatio();
     setBounds(getBounds().withHeight(newHeight));
 
-    _browseButton->setButtonText(browseButtonText);
 }
 
 int KlangFalterEditor::scaled(float value) const {
