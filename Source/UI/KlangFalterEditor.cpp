@@ -633,33 +633,12 @@ void KlangFalterEditor::resized()
         _reverseButton->setBounds(scaled(20), scaled(198), scaled(72), scaled(24));
     }
 
-    // IR Browser
-    {
-        const int IR_BROWSER_MARGIN {scaled(12)};
-
-        if (_processor.getIrBrowserOpen()) {
-            const juce::Rectangle<int> irBrowserArea = availableArea.removeFromBottom(scaled(IR_BROWSER_AREA_HEIGHT))
-                .withTrimmedBottom(IR_BROWSER_MARGIN)
-                .withTrimmedLeft(IR_BROWSER_MARGIN)
-                .withTrimmedRight(IR_BROWSER_MARGIN);
-
-            _irBrowserComponent->setBounds(irBrowserArea);
-        } else {
-            _irBrowserComponent->setBounds(availableArea.removeFromBottom(0));
-        }
-
-        const int IR_BROWSER_BUTTON_HEIGHT {scaled(24)};
-        const juce::Rectangle<int> browseButtonArea = availableArea.removeFromBottom(IR_BROWSER_BUTTON_HEIGHT)
-            .withTrimmedLeft(IR_BROWSER_MARGIN)
-            .withTrimmedRight(IR_BROWSER_MARGIN);
-        _browseButton->setBounds(browseButtonArea);
-    }
-
     // Sliders row
+    juce::Rectangle<int> slidersRow = availableArea.removeFromTop(scaled(89));
 
     // Gain buttons
     {
-        juce::Rectangle<int> gainButtonsArea = availableArea.removeFromRight(METERS_TOTAL_WIDTH);
+        juce::Rectangle<int> gainButtonsArea = slidersRow.removeFromRight(METERS_TOTAL_WIDTH);
         juce::Rectangle<int> gainButtonLabelsRow = gainButtonsArea.removeFromTop(scaled(24));
 
         const int LEVEL_LABEL_WIDTH {scaled(60)};
@@ -683,29 +662,51 @@ void KlangFalterEditor::resized()
         flexBox.performLayout(gainButtonsArea.toFloat());
     }
 
-    availableArea.removeFromTop(scaled(4));
-    availableArea.removeFromBottom(scaled(4));
-    availableArea.removeFromLeft(scaled(12));
+    slidersRow.removeFromTop(scaled(4));
+    slidersRow.removeFromBottom(scaled(4));
+    slidersRow.removeFromLeft(scaled(12));
 
     // Sliders
     {
         const int SPACE_WIDTH {scaled(20)};
-        _irSliderGroup->setBounds(availableArea.removeFromLeft(scaled(144)));
-        availableArea.removeFromLeft(SPACE_WIDTH);
+        _irSliderGroup->setBounds(slidersRow.removeFromLeft(scaled(144)));
+        slidersRow.removeFromLeft(SPACE_WIDTH);
 
-        _attackSliderGroup->setBounds(availableArea.removeFromLeft(scaled(88)));
-        availableArea.removeFromLeft(SPACE_WIDTH);
+        _attackSliderGroup->setBounds(slidersRow.removeFromLeft(scaled(88)));
+        slidersRow.removeFromLeft(SPACE_WIDTH);
 
-        _decaySliderGroup->setBounds(availableArea.removeFromLeft(scaled(52)));
-        availableArea.removeFromLeft(SPACE_WIDTH);
+        _decaySliderGroup->setBounds(slidersRow.removeFromLeft(scaled(52)));
+        slidersRow.removeFromLeft(SPACE_WIDTH);
 
-        _stereoSliderGroup->setBounds(availableArea.removeFromLeft(scaled(52)));
-        availableArea.removeFromLeft(SPACE_WIDTH);
+        _stereoSliderGroup->setBounds(slidersRow.removeFromLeft(scaled(52)));
+        slidersRow.removeFromLeft(SPACE_WIDTH);
 
-        _lowEqSliderGroup->setBounds(availableArea.removeFromLeft(scaled(72)));
-        availableArea.removeFromLeft(SPACE_WIDTH);
+        _lowEqSliderGroup->setBounds(slidersRow.removeFromLeft(scaled(72)));
+        slidersRow.removeFromLeft(SPACE_WIDTH);
 
-        _highEqSliderGroup->setBounds(availableArea.removeFromLeft(scaled(72)));
+        _highEqSliderGroup->setBounds(slidersRow.removeFromLeft(scaled(72)));
+    }
+
+    // IR Browser
+    {
+        const int IR_BROWSER_MARGIN {scaled(12)};
+
+        if (_processor.getIrBrowserOpen()) {
+            const juce::Rectangle<int> irBrowserArea = availableArea.removeFromBottom(scaled(IR_BROWSER_AREA_HEIGHT))
+                .withTrimmedBottom(IR_BROWSER_MARGIN)
+                .withTrimmedLeft(IR_BROWSER_MARGIN)
+                .withTrimmedRight(IR_BROWSER_MARGIN);
+
+            _irBrowserComponent->setBounds(irBrowserArea);
+        } else {
+            _irBrowserComponent->setBounds(availableArea.removeFromBottom(0));
+        }
+
+        const int IR_BROWSER_BUTTON_HEIGHT {scaled(24)};
+        const juce::Rectangle<int> browseButtonArea = availableArea.removeFromTop(IR_BROWSER_BUTTON_HEIGHT)
+            .withTrimmedLeft(IR_BROWSER_MARGIN)
+            .withTrimmedRight(IR_BROWSER_MARGIN);
+        _browseButton->setBounds(browseButtonArea);
     }
 
     //[/UserResized]
