@@ -397,7 +397,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
 
     //[Constructor] You can add your own custom stuff here..
     setResizable(true, true);
-    _constrainer->setFixedAspectRatio(UIUtils::NOMINAL_WIDTH / 340.0);
+    _constrainer->setFixedAspectRatio(UIUtils::NOMINAL_WIDTH / UIUtils::NOMINAL_HEIGHT);
     _constrainer->setMinimumWidth(UIUtils::NOMINAL_WIDTH);
     setConstrainer(_constrainer.get());
 
@@ -896,10 +896,10 @@ void KlangFalterEditor::timerCallback()
 
 void KlangFalterEditor::_updateIRBrowserOpen(bool isOpen) {
     if (isOpen) {
-        _constrainer->setFixedAspectRatio(760.0 / (340.0 + IR_BROWSER_AREA_HEIGHT));
+        _constrainer->setFixedAspectRatio(UIUtils::NOMINAL_WIDTH / (UIUtils::NOMINAL_HEIGHT + IR_BROWSER_AREA_HEIGHT));
         _browseButton->setButtonText("Hide Browser");
     } else {
-        _constrainer->setFixedAspectRatio(760.0 / 340.0);
+        _constrainer->setFixedAspectRatio(UIUtils::NOMINAL_WIDTH / UIUtils::NOMINAL_HEIGHT);
         _browseButton->setButtonText("Show Browser");
     }
 
