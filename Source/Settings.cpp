@@ -16,7 +16,7 @@
 // ==================================================================================
 
 #include "Settings.h"
-
+#include "UI/UIUtils.hpp"
 
 Settings::Settings() :
   _properties()
@@ -121,7 +121,7 @@ juce::Rectangle<int> Settings::getDefaultUIBounds() {
         return juce::Rectangle<int>::fromString(propertiesFile->getValue("DefaultUIBounds"));
     }
 
-    return juce::Rectangle<int>(0, 0, 760, 340);
+    return juce::Rectangle<int>(0, 0, UIUtils::NOMINAL_WIDTH, 340);
 }
 
 void Settings::setDefaultUIBounds(const juce::Rectangle<int>& bounds) {

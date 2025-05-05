@@ -3,6 +3,7 @@
 #include <JuceHeader.h>
 
 namespace UIUtils {
+    inline constexpr float NOMINAL_WIDTH {760};
 
     struct Theme {
         juce::String productName;

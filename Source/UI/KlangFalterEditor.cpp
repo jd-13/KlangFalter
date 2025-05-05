@@ -397,8 +397,8 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
 
     //[Constructor] You can add your own custom stuff here..
     setResizable(true, true);
-    _constrainer->setFixedAspectRatio(760.0 / 340.0);
-    _constrainer->setMinimumWidth(760);
+    _constrainer->setFixedAspectRatio(UIUtils::NOMINAL_WIDTH / 340.0);
+    _constrainer->setMinimumWidth(UIUtils::NOMINAL_WIDTH);
     setConstrainer(_constrainer.get());
 
     _irTabComponent->clearTabs(); // Remove placeholder only used as dummy in the Jucer
@@ -914,14 +914,12 @@ void KlangFalterEditor::_updateIRBrowserOpen(bool isOpen) {
 
 int KlangFalterEditor::scaled(float value) const {
     // All measurements based on getWidth(), as getHeight() changes if the browser is open
-    constexpr float NOMINAL_WIDTH {760};
-    return static_cast<int>(getWidth() / (NOMINAL_WIDTH / value));
+    return static_cast<int>(getWidth() / (UIUtils::NOMINAL_WIDTH / value));
 }
 
 float KlangFalterEditor::scaledFloat(float value) const {
     // All measurements based on getWidth(), as getHeight() changes if the browser is open
-    constexpr float NOMINAL_WIDTH {760};
-    return getWidth() / (NOMINAL_WIDTH / value);
+    return getWidth() / (UIUtils::NOMINAL_WIDTH / value);
 }
 
 //[/MiscUserCode]

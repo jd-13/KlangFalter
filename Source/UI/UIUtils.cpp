@@ -8,8 +8,7 @@ namespace {
     constexpr double DOUBLE_TAU {static_cast<double>(LONG_TAU)};
 
     float scaled(int currentParentWidth, float value) {
-        constexpr float NOMINAL_WIDTH {760};
-        return currentParentWidth / (NOMINAL_WIDTH / value);
+        return currentParentWidth / (UIUtils::NOMINAL_WIDTH / value);
     }
 }
 
