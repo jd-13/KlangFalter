@@ -90,6 +90,7 @@ Processor::Processor() :
   _parameterSet.registerParameter(Parameters::EqHighShelfFreq);
   _parameterSet.registerParameter(Parameters::EqHighShelfDecibels);
   _parameterSet.registerParameter(Parameters::StereoWidth);
+  _parameterSet.registerParameter(Parameters::ShimmerFeedback);
   _parameterSet.registerParameter(Parameters::AutoGainOn);
   _parameterSet.registerParameter(Parameters::AutoGainDecibels);
 

@@ -120,13 +120,21 @@ const FloatParameterDescriptor Parameters::StereoWidth(12,
                                                        0.0f,
                                                        10.0f);
 
-const BoolParameterDescriptor Parameters::AutoGainOn(13,
+const FloatParameterDescriptor Parameters::ShimmerFeedback(13,
+                                                        "Shimmer Feedback",
+                                                        "",
+                                                        ParameterDescriptor::Automatable,
+                                                        0.0f,
+                                                        0.0f,
+                                                        1.0f);
+
+const BoolParameterDescriptor Parameters::AutoGainOn(14,
                                                      "Autogain On",
                                                      "",
                                                      ParameterDescriptor::NotAutomatable,
                                                      true);
 
-const FloatParameterDescriptor Parameters::AutoGainDecibels(14,
+const FloatParameterDescriptor Parameters::AutoGainDecibels(15,
                                                             "Autogain",
                                                             "dB",
                                                             ParameterDescriptor::NotAutomatable,
