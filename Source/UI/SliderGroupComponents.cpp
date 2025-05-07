@@ -870,3 +870,74 @@ void HighEqSliderGroup::onUpdate(bool enableSliders) {
     _hiGainSlider->setEnabled(enableSliders);
     _hiGainSlider->setValue(shelfGainDb, juce::dontSendNotification);
 }
+
+ShimmerSliderGroup::ShimmerSliderGroup(Processor& processor, UIUtils::Theme theme) :
+        _processor(processor),
+        _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()) {
+    _rotarySliderLookAndFeel->theme = theme;
+
+    _shimmerHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Shimmer")));
+    addAndMakeVisible(_shimmerHeaderLabel.get());
+    _shimmerHeaderLabel->setFont(juce::Font(15.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _shimmerHeaderLabel->setJustificationType(juce::Justification::centred);
+    _shimmerHeaderLabel->setEditable(false, false, false);
+    _shimmerHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
+
+    _shimmerFeedbackHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Feedback")));
+    addAndMakeVisible(_shimmerFeedbackHeaderLabel.get());
+    _shimmerFeedbackHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _shimmerFeedbackHeaderLabel->setJustificationType(juce::Justification::centred);
+    _shimmerFeedbackHeaderLabel->setEditable(false, false, false);
+    _shimmerFeedbackHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
+
+    _shimmerFeedbackSlider.reset(new juce::Slider(juce::String()));
+    addAndMakeVisible(_shimmerFeedbackSlider.get());
+    _shimmerFeedbackSlider->setRange(0, 1, 0);
+    _shimmerFeedbackSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
+    _shimmerFeedbackSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
+    _shimmerFeedbackSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
+    _shimmerFeedbackSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
+    _shimmerFeedbackSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
+    _shimmerFeedbackSlider->setDoubleClickReturnValue(true, Parameters::ShimmerFeedback.getDefaultValue());
+    _shimmerFeedbackSlider->onValueChange = [this] {
+        _processor.setParameterNotifyingHost(Parameters::ShimmerFeedback, SnapValue(static_cast<float>(_shimmerFeedbackSlider->getValue()), 0.0f, 0.01f));
+    };
+
+    _shimmerFeedbackLabel.reset(new juce::Label(juce::String(), TRANS("0.0")));
+    addAndMakeVisible(_shimmerFeedbackLabel.get());
+    _shimmerFeedbackLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _shimmerFeedbackLabel->setJustificationType(juce::Justification::centred);
+    _shimmerFeedbackLabel->setEditable(false, false, false);
+    _shimmerFeedbackLabel->setColour(juce::Label::textColourId, theme.neutral);
+}
+
+ShimmerSliderGroup::~ShimmerSliderGroup() {
+    _shimmerHeaderLabel = nullptr;
+
+    _shimmerFeedbackHeaderLabel = nullptr;
+    _shimmerFeedbackSlider = nullptr;
+    _shimmerFeedbackLabel = nullptr;
+}
+
+void ShimmerSliderGroup::resized() {
+    constexpr float NOMINAL_WIDTH {52};
+
+    setFontHeight(_shimmerHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), GROUP_HEADER_FONT_SIZE));
+
+    setFontHeight(_shimmerFeedbackHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+    setFontHeight(_shimmerFeedbackLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+
+    juce::Rectangle<int> availableArea = getLocalBounds();
+
+    _shimmerHeaderLabel->setBounds(availableArea.withHeight(scaled(NOMINAL_WIDTH, getWidth(), 24)));
+    availableArea.removeFromTop(scaled(NOMINAL_WIDTH, getWidth(), 16));
+
+    layoutSlider(availableArea, _shimmerFeedbackHeaderLabel.get(), _shimmerFeedbackSlider.get(), _shimmerFeedbackLabel.get(), NOMINAL_WIDTH, getWidth());
+}
+
+void ShimmerSliderGroup::onUpdate(bool enableSliders) {
+    const float feedback = _processor.getParameter(Parameters::ShimmerFeedback);
+    _shimmerFeedbackSlider->setValue(feedback, juce::dontSendNotification);
+    _shimmerFeedbackSlider->setEnabled(enableSliders);
+    _shimmerFeedbackLabel->setText(juce::String(feedback, 2), juce::sendNotification);
+}

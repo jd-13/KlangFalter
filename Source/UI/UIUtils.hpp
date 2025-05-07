@@ -4,7 +4,7 @@
 
 namespace UIUtils {
     inline constexpr float NOMINAL_WIDTH {760};
-    inline constexpr float NOMINAL_HEIGHT {340};
+    inline constexpr float NOMINAL_HEIGHT {421};
 
     struct Theme {
         juce::String productName;

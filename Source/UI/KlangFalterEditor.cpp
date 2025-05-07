@@ -315,6 +315,9 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _highEqSliderGroup.reset(new HighEqSliderGroup(_processor, _theme));
     addAndMakeVisible(_highEqSliderGroup.get());
 
+    _shimmerSliderGroup.reset(new ShimmerSliderGroup(_processor, _theme));
+    addAndMakeVisible(_shimmerSliderGroup.get());
+
     customLookAndFeel->theme = _theme;
     setLookAndFeel(customLookAndFeel);
 
@@ -461,6 +464,7 @@ KlangFalterEditor::~KlangFalterEditor()
     _stereoSliderGroup = nullptr;
     _lowEqSliderGroup = nullptr;
     _highEqSliderGroup = nullptr;
+    _shimmerSliderGroup = nullptr;
 
     _processor.setUIBounds(getBounds(), true);
     //[/Destructor_pre]
@@ -634,11 +638,12 @@ void KlangFalterEditor::resized()
     }
 
     // Sliders row
-    juce::Rectangle<int> slidersRow = availableArea.removeFromTop(scaled(89));
+    juce::Rectangle<int> slidersTopRow = availableArea.removeFromTop(scaled(89));
+    juce::Rectangle<int> slidersBottomRow = availableArea.removeFromTop(scaled(89));
 
     // Gain buttons
     {
-        juce::Rectangle<int> gainButtonsArea = slidersRow.removeFromRight(METERS_TOTAL_WIDTH);
+        juce::Rectangle<int> gainButtonsArea = slidersTopRow.removeFromRight(METERS_TOTAL_WIDTH);
         juce::Rectangle<int> gainButtonLabelsRow = gainButtonsArea.removeFromTop(scaled(24));
 
         const int LEVEL_LABEL_WIDTH {scaled(60)};
@@ -662,29 +667,31 @@ void KlangFalterEditor::resized()
         flexBox.performLayout(gainButtonsArea.toFloat());
     }
 
-    slidersRow.removeFromTop(scaled(4));
-    slidersRow.removeFromBottom(scaled(4));
-    slidersRow.removeFromLeft(scaled(12));
+    slidersTopRow.removeFromTop(scaled(4));
+    slidersTopRow.removeFromBottom(scaled(4));
+    slidersTopRow.removeFromLeft(scaled(12));
 
     // Sliders
     {
         const int SPACE_WIDTH {scaled(20)};
-        _irSliderGroup->setBounds(slidersRow.removeFromLeft(scaled(144)));
-        slidersRow.removeFromLeft(SPACE_WIDTH);
+        _irSliderGroup->setBounds(slidersTopRow.removeFromLeft(scaled(144)));
+        slidersTopRow.removeFromLeft(SPACE_WIDTH);
 
-        _attackSliderGroup->setBounds(slidersRow.removeFromLeft(scaled(88)));
-        slidersRow.removeFromLeft(SPACE_WIDTH);
+        _attackSliderGroup->setBounds(slidersTopRow.removeFromLeft(scaled(88)));
+        slidersTopRow.removeFromLeft(SPACE_WIDTH);
 
-        _decaySliderGroup->setBounds(slidersRow.removeFromLeft(scaled(52)));
-        slidersRow.removeFromLeft(SPACE_WIDTH);
+        _decaySliderGroup->setBounds(slidersTopRow.removeFromLeft(scaled(52)));
+        slidersTopRow.removeFromLeft(SPACE_WIDTH);
 
-        _stereoSliderGroup->setBounds(slidersRow.removeFromLeft(scaled(52)));
-        slidersRow.removeFromLeft(SPACE_WIDTH);
+        _stereoSliderGroup->setBounds(slidersTopRow.removeFromLeft(scaled(52)));
+        slidersTopRow.removeFromLeft(SPACE_WIDTH);
 
-        _lowEqSliderGroup->setBounds(slidersRow.removeFromLeft(scaled(72)));
-        slidersRow.removeFromLeft(SPACE_WIDTH);
+        _lowEqSliderGroup->setBounds(slidersTopRow.removeFromLeft(scaled(72)));
+        slidersTopRow.removeFromLeft(SPACE_WIDTH);
 
-        _highEqSliderGroup->setBounds(slidersRow.removeFromLeft(scaled(72)));
+        _highEqSliderGroup->setBounds(slidersTopRow.removeFromLeft(scaled(72)));
+
+        _shimmerSliderGroup->setBounds(slidersBottomRow.removeFromLeft(scaled(52)));
     }
 
     // IR Browser
@@ -802,6 +809,7 @@ void KlangFalterEditor::updateUI()
   _stereoSliderGroup->onUpdate(irAvailable, numOutputChannels);
   _lowEqSliderGroup->onUpdate(irAvailable);
   _highEqSliderGroup->onUpdate(irAvailable);
+  _shimmerSliderGroup->onUpdate(irAvailable);
   {
     const float db = _processor.getParameter(Parameters::DryDecibels);
     const float scale = DecibelScaling::Db2Scale(db);
