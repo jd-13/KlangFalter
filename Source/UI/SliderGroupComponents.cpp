@@ -883,6 +883,34 @@ ShimmerSliderGroup::ShimmerSliderGroup(Processor& processor, UIUtils::Theme them
     _shimmerHeaderLabel->setEditable(false, false, false);
     _shimmerHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
 
+    _shimmerWetGainHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Wet")));
+    addAndMakeVisible(_shimmerWetGainHeaderLabel.get());
+    _shimmerWetGainHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _shimmerWetGainHeaderLabel->setJustificationType(juce::Justification::centred);
+    _shimmerWetGainHeaderLabel->setEditable(false, false, false);
+    _shimmerWetGainHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
+
+    _shimmerWetGainSlider.reset(new juce::Slider(juce::String()));
+    addAndMakeVisible(_shimmerWetGainSlider.get());
+    _shimmerWetGainSlider->setRange(0, 1, 0);
+    _shimmerWetGainSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
+    _shimmerWetGainSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
+    _shimmerWetGainSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
+    _shimmerWetGainSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
+    _shimmerWetGainSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
+    _shimmerWetGainSlider->setDoubleClickReturnValue(true, Parameters::ShimmerFeedback.getDefaultValue());
+    _shimmerWetGainSlider->onValueChange = [this] {
+        _processor.setParameterNotifyingHost(Parameters::ShimmerWetGain, SnapValue(static_cast<float>(_shimmerWetGainSlider->getValue()), 0.0f, 0.01f));
+    };
+
+    _shimmerWetGainLabel.reset(new juce::Label(juce::String(), TRANS("0.0")));
+    addAndMakeVisible(_shimmerWetGainLabel.get());
+    _shimmerWetGainLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _shimmerWetGainLabel->setJustificationType(juce::Justification::centred);
+    _shimmerWetGainLabel->setEditable(false, false, false);
+    _shimmerWetGainLabel->setColour(juce::Label::textColourId, theme.neutral);
+
+
     _shimmerFeedbackHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Feedback")));
     addAndMakeVisible(_shimmerFeedbackHeaderLabel.get());
     _shimmerFeedbackHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
@@ -914,15 +942,22 @@ ShimmerSliderGroup::ShimmerSliderGroup(Processor& processor, UIUtils::Theme them
 ShimmerSliderGroup::~ShimmerSliderGroup() {
     _shimmerHeaderLabel = nullptr;
 
+    _shimmerWetGainHeaderLabel = nullptr;
+    _shimmerWetGainSlider = nullptr;
+    _shimmerWetGainLabel = nullptr;
+
     _shimmerFeedbackHeaderLabel = nullptr;
     _shimmerFeedbackSlider = nullptr;
     _shimmerFeedbackLabel = nullptr;
 }
 
 void ShimmerSliderGroup::resized() {
-    constexpr float NOMINAL_WIDTH {52};
+    constexpr float NOMINAL_WIDTH {72};
 
     setFontHeight(_shimmerHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), GROUP_HEADER_FONT_SIZE));
+
+    setFontHeight(_shimmerWetGainHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+    setFontHeight(_shimmerWetGainLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
 
     setFontHeight(_shimmerFeedbackHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
     setFontHeight(_shimmerFeedbackLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
@@ -932,10 +967,17 @@ void ShimmerSliderGroup::resized() {
     _shimmerHeaderLabel->setBounds(availableArea.withHeight(scaled(NOMINAL_WIDTH, getWidth(), 24)));
     availableArea.removeFromTop(scaled(NOMINAL_WIDTH, getWidth(), 16));
 
+    const int sliderAreaWidth {availableArea.getWidth() / 2};
+    layoutSlider(availableArea.removeFromLeft(sliderAreaWidth), _shimmerWetGainHeaderLabel.get(), _shimmerWetGainSlider.get(), _shimmerWetGainLabel.get(), NOMINAL_WIDTH, getWidth());
     layoutSlider(availableArea, _shimmerFeedbackHeaderLabel.get(), _shimmerFeedbackSlider.get(), _shimmerFeedbackLabel.get(), NOMINAL_WIDTH, getWidth());
 }
 
 void ShimmerSliderGroup::onUpdate(bool enableSliders) {
+    const float wetGain = _processor.getParameter(Parameters::ShimmerWetGain);
+    _shimmerWetGainSlider->setValue(wetGain, juce::dontSendNotification);
+    _shimmerWetGainSlider->setEnabled(enableSliders);
+    _shimmerWetGainLabel->setText(juce::String(wetGain, 2), juce::sendNotification);
+
     const float feedback = _processor.getParameter(Parameters::ShimmerFeedback);
     _shimmerFeedbackSlider->setValue(feedback, juce::dontSendNotification);
     _shimmerFeedbackSlider->setEnabled(enableSliders);

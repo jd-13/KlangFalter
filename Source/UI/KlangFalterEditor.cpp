@@ -440,6 +440,9 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
         _processor.setParameterNotifyingHost(Parameters::EqHighCutFreq, Parameters::EqHighCutFreq.getDefaultValue());
         _processor.setParameterNotifyingHost(Parameters::EqHighShelfFreq, Parameters::EqHighShelfFreq.getDefaultValue());
         _processor.setParameterNotifyingHost(Parameters::EqHighShelfDecibels, Parameters::EqHighShelfDecibels.getDefaultValue());
+
+        _processor.setParameterNotifyingHost(Parameters::ShimmerWetGain, Parameters::ShimmerWetGain.getDefaultValue());
+        _processor.setParameterNotifyingHost(Parameters::ShimmerFeedback, Parameters::ShimmerFeedback.getDefaultValue());
     };
 
     _processor.addNotificationListener(this);
@@ -671,6 +674,9 @@ void KlangFalterEditor::resized()
     slidersTopRow.removeFromBottom(scaled(4));
     slidersTopRow.removeFromLeft(scaled(12));
 
+    slidersBottomRow.removeFromBottom(scaled(4));
+    slidersBottomRow.removeFromLeft(scaled(12));
+
     // Sliders
     {
         const int SPACE_WIDTH {scaled(20)};
@@ -691,7 +697,7 @@ void KlangFalterEditor::resized()
 
         _highEqSliderGroup->setBounds(slidersTopRow.removeFromLeft(scaled(72)));
 
-        _shimmerSliderGroup->setBounds(slidersBottomRow.removeFromLeft(scaled(52)));
+        _shimmerSliderGroup->setBounds(slidersBottomRow.removeFromLeft(scaled(72)));
     }
 
     // IR Browser

@@ -128,13 +128,21 @@ const FloatParameterDescriptor Parameters::ShimmerFeedback(13,
                                                         0.0f,
                                                         1.0f);
 
-const BoolParameterDescriptor Parameters::AutoGainOn(14,
+const FloatParameterDescriptor Parameters::ShimmerWetGain(14,
+                                                          "Shimmer Wet Gain",
+                                                          "dB",
+                                                          ParameterDescriptor::Automatable,
+                                                          0.0f,
+                                                          0.0f,
+                                                          1.0f);
+
+const BoolParameterDescriptor Parameters::AutoGainOn(15,
                                                      "Autogain On",
                                                      "",
                                                      ParameterDescriptor::NotAutomatable,
                                                      true);
 
-const FloatParameterDescriptor Parameters::AutoGainDecibels(15,
+const FloatParameterDescriptor Parameters::AutoGainDecibels(16,
                                                             "Autogain",
                                                             "dB",
                                                             ParameterDescriptor::NotAutomatable,

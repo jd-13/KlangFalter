@@ -92,6 +92,8 @@ XmlElement* SaveState(const File& irDirectory, Processor& processor)
   convolutionElement->setAttribute("attackShape", processor.getAttackShape());
   convolutionElement->setAttribute("decayShape", processor.getDecayShape());
   convolutionElement->setAttribute("stereoWidth", processor.getParameter(Parameters::StereoWidth));
+  convolutionElement->setAttribute("shimmerWetGain", processor.getParameter(Parameters::ShimmerWetGain));
+  convolutionElement->setAttribute("shimmerFeedback", processor.getParameter(Parameters::ShimmerFeedback));
   convolutionElement->setAttribute("reverse", processor.getReverse());
   convolutionElement->setAttribute("irBrowserOpen", processor.getIrBrowserOpen());
   convolutionElement->setAttribute("uiBounds", processor.getUIBounds().toString());
@@ -147,6 +149,8 @@ bool LoadState(const File& irDirectory, XmlElement& element, Processor& processo
   double attackShape = element.getDoubleAttribute("attackShape", 0.0);
   double decayShape = element.getDoubleAttribute("decayShape", 0.0);
   double stereoWidth = element.getDoubleAttribute("stereoWidth", Parameters::StereoWidth.getDefaultValue());
+  double shimmerWetGain = element.getDoubleAttribute("shimmerWetGain", Parameters::ShimmerWetGain.getDefaultValue());
+  double shimmerFeedback = element.getDoubleAttribute("shimmerFeedback", Parameters::ShimmerFeedback.getDefaultValue());
   bool reverse = element.getBoolAttribute("reverse", false);
   const bool irBrowserOpen = element.getBoolAttribute("irBrowserOpen", false);
 
@@ -203,6 +207,8 @@ bool LoadState(const File& irDirectory, XmlElement& element, Processor& processo
   processor.setParameterNotifyingHost(Parameters::EqHighShelfFreq, static_cast<float>(eqHiShelfFreq));
   processor.setParameterNotifyingHost(Parameters::EqHighShelfDecibels, static_cast<float>(eqHiShelfDecibels));
   processor.setParameterNotifyingHost(Parameters::StereoWidth, static_cast<float>(stereoWidth));
+  processor.setParameterNotifyingHost(Parameters::ShimmerWetGain, static_cast<float>(shimmerWetGain));
+  processor.setParameterNotifyingHost(Parameters::ShimmerFeedback, static_cast<float>(shimmerFeedback));
   processor.setIRBegin(irBegin);
   processor.setIREnd(irEnd);
   processor.setPredelayMs(predelayMs);

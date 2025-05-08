@@ -27,6 +27,7 @@
 #include "Settings.h"
 #include "SmoothValue.h"
 #include "StereoWidth.h"
+#include "Shimmer.hpp"
 
 #include <map>
 #include <vector>
@@ -167,6 +168,7 @@ public:
 
 private:
   juce::AudioSampleBuffer _wetBuffer;
+  juce::AudioSampleBuffer _shimmerBuffer;
   std::vector<float> _convolutionBuffer;
   ParameterSet _parameterSet;
   std::array<LevelMeasurement, 2> _levelMeasurementsDry;
@@ -198,6 +200,8 @@ private:
   std::unique_ptr<juce::Thread> _irCalculation;
 
   bool _irBrowserOpen;
+
+  Shimmer _shimmer;
 
   //==============================================================================
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Processor);

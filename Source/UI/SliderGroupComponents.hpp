@@ -181,6 +181,10 @@ private:
 
     std::unique_ptr<juce::Label> _shimmerHeaderLabel;
 
+    std::unique_ptr<juce::Label> _shimmerWetGainHeaderLabel;
+    std::unique_ptr<juce::Slider> _shimmerWetGainSlider;
+    std::unique_ptr<juce::Label> _shimmerWetGainLabel;
+
     std::unique_ptr<juce::Label> _shimmerFeedbackHeaderLabel;
     std::unique_ptr<juce::Slider> _shimmerFeedbackSlider;
     std::unique_ptr<juce::Label> _shimmerFeedbackLabel;
