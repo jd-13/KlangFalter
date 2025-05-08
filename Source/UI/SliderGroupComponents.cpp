@@ -983,3 +983,156 @@ void ShimmerSliderGroup::onUpdate(bool enableSliders) {
     _shimmerFeedbackSlider->setEnabled(enableSliders);
     _shimmerFeedbackLabel->setText(juce::String(feedback, 2), juce::sendNotification);
 }
+
+ChorusSliderGroup::ChorusSliderGroup(Processor& processor, UIUtils::Theme theme) :
+        _processor(processor),
+        _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()) {
+    _rotarySliderLookAndFeel->theme = theme;
+
+    _chorusHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Chorus")));
+    addAndMakeVisible(_chorusHeaderLabel.get());
+    _chorusHeaderLabel->setFont(juce::Font(15.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _chorusHeaderLabel->setJustificationType(juce::Justification::centred);
+    _chorusHeaderLabel->setEditable(false, false, false);
+    _chorusHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
+
+    _chorusWetGainHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Wet")));
+    addAndMakeVisible(_chorusWetGainHeaderLabel.get());
+    _chorusWetGainHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _chorusWetGainHeaderLabel->setJustificationType(juce::Justification::centred);
+    _chorusWetGainHeaderLabel->setEditable(false, false, false);
+    _chorusWetGainHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
+
+    _chorusWetGainSlider.reset(new juce::Slider(juce::String()));
+    addAndMakeVisible(_chorusWetGainSlider.get());
+    _chorusWetGainSlider->setRange(0, 1, 0);
+    _chorusWetGainSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
+    _chorusWetGainSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
+    _chorusWetGainSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
+    _chorusWetGainSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
+    _chorusWetGainSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
+    _chorusWetGainSlider->setDoubleClickReturnValue(true, Parameters::ChorusWetGain.getDefaultValue());
+    _chorusWetGainSlider->onValueChange = [this] {
+        _processor.setParameterNotifyingHost(Parameters::ChorusWetGain, SnapValue(static_cast<float>(_chorusWetGainSlider->getValue()), 0.0f, 0.01f));
+    };
+
+    _chorusWetGainLabel.reset(new juce::Label(juce::String(), TRANS("0.0")));
+    addAndMakeVisible(_chorusWetGainLabel.get());
+    _chorusWetGainLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _chorusWetGainLabel->setJustificationType(juce::Justification::centred);
+    _chorusWetGainLabel->setEditable(false, false, false);
+    _chorusWetGainLabel->setColour(juce::Label::textColourId, theme.neutral);
+
+    _chorusFrequencyHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Freq")));
+    addAndMakeVisible(_chorusFrequencyHeaderLabel.get());
+    _chorusFrequencyHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _chorusFrequencyHeaderLabel->setJustificationType(juce::Justification::centred);
+    _chorusFrequencyHeaderLabel->setEditable(false, false, false);
+    _chorusFrequencyHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
+
+    _chorusFrequencySlider.reset(new juce::Slider(juce::String()));
+    addAndMakeVisible(_chorusFrequencySlider.get());
+    _chorusFrequencySlider->setRange(0, 4, 0);
+    _chorusFrequencySlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
+    _chorusFrequencySlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
+    _chorusFrequencySlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
+    _chorusFrequencySlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
+    _chorusFrequencySlider->setSkewFactor(0.7);
+    _chorusFrequencySlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
+    _chorusFrequencySlider->setDoubleClickReturnValue(true, Parameters::ChorusFrequency.getDefaultValue());
+    _chorusFrequencySlider->onValueChange = [this] {
+        _processor.setParameterNotifyingHost(Parameters::ChorusFrequency, static_cast<float>(_chorusFrequencySlider->getValue()));
+    };
+
+    _chorusFrequencyLabel.reset(new juce::Label(juce::String(), TRANS("0.0Hz")));
+    addAndMakeVisible(_chorusFrequencyLabel.get());
+    _chorusFrequencyLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _chorusFrequencyLabel->setJustificationType(juce::Justification::centred);
+    _chorusFrequencyLabel->setEditable(false, false, false);
+    _chorusFrequencyLabel->setColour(juce::Label::textColourId, theme.neutral);
+
+    _chorusDepthHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Depth")));
+    addAndMakeVisible(_chorusDepthHeaderLabel.get());
+    _chorusDepthHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _chorusDepthHeaderLabel->setJustificationType(juce::Justification::centred);
+    _chorusDepthHeaderLabel->setEditable(false, false, false);
+    _chorusDepthHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
+
+    _chorusDepthSlider.reset(new juce::Slider(juce::String()));
+    addAndMakeVisible(_chorusDepthSlider.get());
+    _chorusDepthSlider->setRange(0, 1, 0);
+    _chorusDepthSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
+    _chorusDepthSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
+    _chorusDepthSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
+    _chorusDepthSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
+    _chorusDepthSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
+    _chorusDepthSlider->setDoubleClickReturnValue(true, Parameters::ChorusDepth.getDefaultValue());
+    _chorusDepthSlider->onValueChange = [this] {
+        _processor.setParameterNotifyingHost(Parameters::ChorusDepth, SnapValue(static_cast<float>(_chorusDepthSlider->getValue()), 0.0f, 0.01f));
+    };
+
+    _chorusDepthLabel.reset(new juce::Label(juce::String(), TRANS("0.0")));
+    addAndMakeVisible(_chorusDepthLabel.get());
+    _chorusDepthLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _chorusDepthLabel->setJustificationType(juce::Justification::centred);
+    _chorusDepthLabel->setEditable(false, false, false);
+    _chorusDepthLabel->setColour(juce::Label::textColourId, theme.neutral);
+}
+
+ChorusSliderGroup::~ChorusSliderGroup() {
+    _chorusHeaderLabel = nullptr;
+
+    _chorusWetGainHeaderLabel = nullptr;
+    _chorusWetGainSlider = nullptr;
+    _chorusWetGainLabel = nullptr;
+
+    _chorusFrequencyHeaderLabel = nullptr;
+    _chorusFrequencySlider = nullptr;
+    _chorusFrequencyLabel = nullptr;
+
+    _chorusDepthHeaderLabel = nullptr;
+    _chorusDepthSlider = nullptr;
+    _chorusDepthLabel = nullptr;
+}
+
+void ChorusSliderGroup::resized() {
+    constexpr float NOMINAL_WIDTH {92};
+
+    setFontHeight(_chorusHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), GROUP_HEADER_FONT_SIZE));
+
+    setFontHeight(_chorusWetGainHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+    setFontHeight(_chorusWetGainLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+
+    setFontHeight(_chorusFrequencyHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+    setFontHeight(_chorusFrequencyLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+
+    setFontHeight(_chorusDepthHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+    setFontHeight(_chorusDepthLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+
+    juce::Rectangle<int> availableArea = getLocalBounds();
+
+    _chorusHeaderLabel->setBounds(availableArea.withHeight(scaled(NOMINAL_WIDTH, getWidth(), 24)));
+    availableArea.removeFromTop(scaled(NOMINAL_WIDTH, getWidth(), 16));
+
+    const int sliderAreaWidth {availableArea.getWidth() / 3};
+    layoutSlider(availableArea.removeFromLeft(sliderAreaWidth), _chorusWetGainHeaderLabel.get(), _chorusWetGainSlider.get(), _chorusWetGainLabel.get(), NOMINAL_WIDTH, getWidth());
+    layoutSlider(availableArea.removeFromLeft(sliderAreaWidth), _chorusFrequencyHeaderLabel.get(), _chorusFrequencySlider.get(), _chorusFrequencyLabel.get(), NOMINAL_WIDTH, getWidth());
+    layoutSlider(availableArea, _chorusDepthHeaderLabel.get(), _chorusDepthSlider.get(), _chorusDepthLabel.get(), NOMINAL_WIDTH, getWidth());
+}
+
+void ChorusSliderGroup::onUpdate(bool enableSliders) {
+    const float wetGain = _processor.getParameter(Parameters::ChorusWetGain);
+    _chorusWetGainSlider->setValue(wetGain, juce::dontSendNotification);
+    _chorusWetGainSlider->setEnabled(enableSliders);
+    _chorusWetGainLabel->setText(juce::String(wetGain, 2), juce::sendNotification);
+
+    const float frequency = _processor.getParameter(Parameters::ChorusFrequency);
+    _chorusFrequencySlider->setValue(frequency, juce::dontSendNotification);
+    _chorusFrequencySlider->setEnabled(enableSliders);
+    _chorusFrequencyLabel->setText(FormatFrequency(frequency), juce::sendNotification);
+
+    const float depth = _processor.getParameter(Parameters::ChorusDepth);
+    _chorusDepthSlider->setValue(depth, juce::dontSendNotification);
+    _chorusDepthSlider->setEnabled(enableSliders);
+    _chorusDepthLabel->setText(juce::String(depth, 2), juce::sendNotification);
+}

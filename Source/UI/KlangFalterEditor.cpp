@@ -318,6 +318,9 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _shimmerSliderGroup.reset(new ShimmerSliderGroup(_processor, _theme));
     addAndMakeVisible(_shimmerSliderGroup.get());
 
+    _chorusSliderGroup.reset(new ChorusSliderGroup(_processor, _theme));
+    addAndMakeVisible(_chorusSliderGroup.get());
+
     customLookAndFeel->theme = _theme;
     setLookAndFeel(customLookAndFeel);
 
@@ -443,6 +446,10 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
 
         _processor.setParameterNotifyingHost(Parameters::ShimmerWetGain, Parameters::ShimmerWetGain.getDefaultValue());
         _processor.setParameterNotifyingHost(Parameters::ShimmerFeedback, Parameters::ShimmerFeedback.getDefaultValue());
+
+        _processor.setParameterNotifyingHost(Parameters::ChorusWetGain, Parameters::ChorusWetGain.getDefaultValue());
+        _processor.setParameterNotifyingHost(Parameters::ChorusFrequency, Parameters::ChorusFrequency.getDefaultValue());
+        _processor.setParameterNotifyingHost(Parameters::ChorusDepth, Parameters::ChorusDepth.getDefaultValue());
     };
 
     _processor.addNotificationListener(this);
@@ -468,6 +475,7 @@ KlangFalterEditor::~KlangFalterEditor()
     _lowEqSliderGroup = nullptr;
     _highEqSliderGroup = nullptr;
     _shimmerSliderGroup = nullptr;
+    _chorusSliderGroup = nullptr;
 
     _processor.setUIBounds(getBounds(), true);
     //[/Destructor_pre]
@@ -698,6 +706,9 @@ void KlangFalterEditor::resized()
         _highEqSliderGroup->setBounds(slidersTopRow.removeFromLeft(scaled(72)));
 
         _shimmerSliderGroup->setBounds(slidersBottomRow.removeFromLeft(scaled(72)));
+        slidersBottomRow.removeFromLeft(SPACE_WIDTH);
+
+        _chorusSliderGroup->setBounds(slidersBottomRow.removeFromLeft(scaled(92)));
     }
 
     // IR Browser
@@ -816,6 +827,7 @@ void KlangFalterEditor::updateUI()
   _lowEqSliderGroup->onUpdate(irAvailable);
   _highEqSliderGroup->onUpdate(irAvailable);
   _shimmerSliderGroup->onUpdate(irAvailable);
+  _chorusSliderGroup->onUpdate(irAvailable);
   {
     const float db = _processor.getParameter(Parameters::DryDecibels);
     const float scale = DecibelScaling::Db2Scale(db);
