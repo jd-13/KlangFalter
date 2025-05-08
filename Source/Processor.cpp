@@ -93,6 +93,9 @@ Processor::Processor() :
   _parameterSet.registerParameter(Parameters::StereoWidth);
   _parameterSet.registerParameter(Parameters::ShimmerWetGain);
   _parameterSet.registerParameter(Parameters::ShimmerFeedback);
+  _parameterSet.registerParameter(Parameters::ChorusWetGain);
+  _parameterSet.registerParameter(Parameters::ChorusFrequency);
+  _parameterSet.registerParameter(Parameters::ChorusDepth);
   _parameterSet.registerParameter(Parameters::AutoGainOn);
   _parameterSet.registerParameter(Parameters::AutoGainDecibels);
 

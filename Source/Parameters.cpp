@@ -136,13 +136,37 @@ const FloatParameterDescriptor Parameters::ShimmerWetGain(14,
                                                           0.0f,
                                                           1.0f);
 
-const BoolParameterDescriptor Parameters::AutoGainOn(15,
+const FloatParameterDescriptor Parameters::ChorusWetGain(15,
+                                                         "Chorus Wet Gain",
+                                                         "dB",
+                                                         ParameterDescriptor::Automatable,
+                                                         0.0f,
+                                                         0.0f,
+                                                         1.0f);
+
+const FloatParameterDescriptor Parameters::ChorusFrequency(16,
+                                                           "Chorus Frequency",
+                                                           "Hz",
+                                                           ParameterDescriptor::Automatable,
+                                                           0.0f,
+                                                           0.0f,
+                                                           4.0f);
+
+const FloatParameterDescriptor Parameters::ChorusDepth(17,
+                                                       "Chorus Depth",
+                                                       "",
+                                                       ParameterDescriptor::Automatable,
+                                                       0.0f,
+                                                       0.0f,
+                                                       1.0f);
+
+const BoolParameterDescriptor Parameters::AutoGainOn(18,
                                                      "Autogain On",
                                                      "",
                                                      ParameterDescriptor::NotAutomatable,
                                                      true);
 
-const FloatParameterDescriptor Parameters::AutoGainDecibels(16,
+const FloatParameterDescriptor Parameters::AutoGainDecibels(19,
                                                             "Autogain",
                                                             "dB",
                                                             ParameterDescriptor::NotAutomatable,
