@@ -23,24 +23,24 @@ jobs:
           repository: jd-13/body-and-soul-intro-irs
           token: ${{ secrets.IRS_SECRET }}
           path: IRs/Intro
-      - name: Checkout Body IRs
-        uses: actions/checkout@v4
-        with:
-          repository: jd-13/body-and-soul-body-irs
-          token: ${{ secrets.IRS_SECRET }}
-          path: IRs/Body
-      - name: Checkout Soul IRs
-        uses: actions/checkout@v4
-        with:
-          repository: jd-13/body-and-soul-soul-irs
-          token: ${{ secrets.IRS_SECRET }}
-          path: IRs/Soul
-      - name: Checkout FX IRs
-        uses: actions/checkout@v4
-        with:
-          repository: jd-13/body-and-soul-fx-irs
-          token: ${{ secrets.IRS_SECRET }}
-          path: IRs/FX
+      # - name: Checkout Body IRs
+      #   uses: actions/checkout@v4
+      #   with:
+      #     repository: jd-13/body-and-soul-body-irs
+      #     token: ${{ secrets.IRS_SECRET }}
+      #     path: IRs/Body
+      # - name: Checkout Soul IRs
+      #   uses: actions/checkout@v4
+      #   with:
+      #     repository: jd-13/body-and-soul-soul-irs
+      #     token: ${{ secrets.IRS_SECRET }}
+      #     path: IRs/Soul
+      # - name: Checkout FX IRs
+      #   uses: actions/checkout@v4
+      #   with:
+      #     repository: jd-13/body-and-soul-fx-irs
+      #     token: ${{ secrets.IRS_SECRET }}
+      #     path: IRs/FX
       - name: Checkout CLAP JUCE extensions
         uses: actions/checkout@v4
         with:
@@ -67,24 +67,24 @@ jobs:
           repository: jd-13/body-and-soul-intro-irs
           token: ${{ secrets.IRS_SECRET }}
           path: IRs/Intro
-      - name: Checkout Body IRs
-        uses: actions/checkout@v4
-        with:
-          repository: jd-13/body-and-soul-body-irs
-          token: ${{ secrets.IRS_SECRET }}
-          path: IRs/Body
-      - name: Checkout Soul IRs
-        uses: actions/checkout@v4
-        with:
-          repository: jd-13/body-and-soul-soul-irs
-          token: ${{ secrets.IRS_SECRET }}
-          path: IRs/Soul
-      - name: Checkout FX IRs
-        uses: actions/checkout@v4
-        with:
-          repository: jd-13/body-and-soul-fx-irs
-          token: ${{ secrets.IRS_SECRET }}
-          path: IRs/FX
+      # - name: Checkout Body IRs
+      #   uses: actions/checkout@v4
+      #   with:
+      #     repository: jd-13/body-and-soul-body-irs
+      #     token: ${{ secrets.IRS_SECRET }}
+      #     path: IRs/Body
+      # - name: Checkout Soul IRs
+      #   uses: actions/checkout@v4
+      #   with:
+      #     repository: jd-13/body-and-soul-soul-irs
+      #     token: ${{ secrets.IRS_SECRET }}
+      #     path: IRs/Soul
+      # - name: Checkout FX IRs
+      #   uses: actions/checkout@v4
+      #   with:
+      #     repository: jd-13/body-and-soul-fx-irs
+      #     token: ${{ secrets.IRS_SECRET }}
+      #     path: IRs/FX
       - name: SetupMSBuild
         uses: microsoft/setup-msbuild@v1.0.2
       - name: Checkout CLAP JUCE extensions
