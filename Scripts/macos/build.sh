@@ -4,6 +4,31 @@ set -e
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null 2>&1 && pwd )"
 
+echo "=== Cloning WE-Core ==="
+WECORE_HOME=$SCRIPT_DIR/../../WECore
+git clone --recurse-submodules https://github.com/jd-13/WE-Core $WECORE_HOME
+
+cd $WECORE_HOME
+echo "=== Using WE-Core $(git log --pretty=format:'%h' -n 1) ==="
+cd -
+
+echo "=== Cloning linear ==="
+LINEAR_HOME=$SCRIPT_DIR/../../linear
+git clone https://github.com/Signalsmith-Audio/linear $LINEAR_HOME
+
+cd $LINEAR_HOME
+echo "=== Using linear $(git log --pretty=format:'%h' -n 1) ==="
+cd -
+
+
+echo "=== Cloning Stretch ==="
+STRETCH_HOME=$SCRIPT_DIR/../../signalsmith-stretch
+git clone https://github.com/Signalsmith-Audio/signalsmith-stretch $STRETCH_HOME
+
+cd $STRETCH_HOME
+echo "=== Using stretch $(git log --pretty=format:'%h' -n 1) ==="
+cd -
+
 echo "=== Downloading JUCE ==="
 JUCE_VERSION=8.0.4
 wget https://github.com/juce-framework/JUCE/releases/download/$JUCE_VERSION/juce-$JUCE_VERSION-osx.zip \
@@ -21,8 +46,8 @@ $JUCE_HOME/Projucer.app/Contents/MacOS/Projucer --resave $PROJECT_DIR/Projects/S
 echo "=== Starting VST builds ==="
 xcodebuild -version
 xcodebuild -project "$PROJECT_DIR/Projects/Intro/Builds/MacOSX/Body and Soul Intro.xcodeproj" -scheme "Body and Soul Intro - All" -configuration Release
-xcodebuild -project "$PROJECT_DIR/Projects/Body/Builds/MacOSX/Body and Soul Body.xcodeproj" -scheme "Body and Soul Body - All" -configuration Release
-xcodebuild -project "$PROJECT_DIR/Projects/Soul/Builds/MacOSX/Body and Soul Soul.xcodeproj" -scheme "Body and Soul Soul - All" -configuration Release
+# xcodebuild -project "$PROJECT_DIR/Projects/Body/Builds/MacOSX/Body and Soul Body.xcodeproj" -scheme "Body and Soul Body - All" -configuration Release
+# xcodebuild -project "$PROJECT_DIR/Projects/Soul/Builds/MacOSX/Body and Soul Soul.xcodeproj" -scheme "Body and Soul Soul - All" -configuration Release
 # xcodebuild -project "$PROJECT_DIR/Projects/FX/Builds/MacOSX/Body and Soul FX.xcodeproj" -scheme "Body and Soul FX - All" -configuration Release
 
 echo "=== Starting CLAP builds ==="
@@ -32,8 +57,8 @@ buildClap() {
 }
 
 cd $PROJECT_DIR/Projects/Intro && buildClap
-cd $PROJECT_DIR/Projects/Body && buildClap
-cd $PROJECT_DIR/Projects/Soul && buildClap
+# cd $PROJECT_DIR/Projects/Body && buildClap
+# cd $PROJECT_DIR/Projects/Soul && buildClap
 cd $PROJECT_DIR
 
 echo "=== Collecting artefacts ==="
@@ -75,14 +100,14 @@ collectVST $SCRIPT_DIR/dist/BodyandSoulIntro Intro
 collectAU $SCRIPT_DIR/dist/BodyandSoulIntro Intro
 collectCLAP $SCRIPT_DIR/dist/BodyandSoulIntro Intro
 
-mkdir -p $SCRIPT_DIR/dist/BodyandSoul
-collectVST $SCRIPT_DIR/dist/BodyandSoul Body
-collectAU $SCRIPT_DIR/dist/BodyandSoul Body
-collectCLAP $SCRIPT_DIR/dist/BodyandSoul Body
+# mkdir -p $SCRIPT_DIR/dist/BodyandSoul
+# collectVST $SCRIPT_DIR/dist/BodyandSoul Body
+# collectAU $SCRIPT_DIR/dist/BodyandSoul Body
+# collectCLAP $SCRIPT_DIR/dist/BodyandSoul Body
 
-collectVST $SCRIPT_DIR/dist/BodyandSoul Soul
-collectAU $SCRIPT_DIR/dist/BodyandSoul Soul
-collectCLAP $SCRIPT_DIR/dist/BodyandSoul Soul
+# collectVST $SCRIPT_DIR/dist/BodyandSoul Soul
+# collectAU $SCRIPT_DIR/dist/BodyandSoul Soul
+# collectCLAP $SCRIPT_DIR/dist/BodyandSoul Soul
 
 # collectVST $SCRIPT_DIR/dist/BodyandSoul FX
 # collectCLAP $SCRIPT_DIR/dist/BodyandSoul FX
