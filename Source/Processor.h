@@ -28,6 +28,7 @@
 #include "SmoothValue.h"
 #include "StereoWidth.h"
 #include "Shimmer.hpp"
+#include "Chorus.hpp"
 
 #include <map>
 #include <vector>
@@ -202,6 +203,7 @@ private:
   bool _irBrowserOpen;
 
   Shimmer _shimmer;
+  Chorus _chorus;
 
   //==============================================================================
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Processor);

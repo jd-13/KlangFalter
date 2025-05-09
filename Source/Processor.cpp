@@ -285,6 +285,7 @@ void Processor::prepareToPlay(double sampleRate, int samplesPerBlock)
   updateConvolvers();
 
   _shimmer.prepareToPlay(sampleRate, samplesPerBlock, getTotalNumOutputChannels());
+  _chorus.prepareToPlay(sampleRate, samplesPerBlock, getTotalNumOutputChannels());
 }
 
 
@@ -294,6 +295,7 @@ void Processor::releaseResources()
   _shimmerBuffer.setSize(1, 0, false, true, false);
   _convolutionBuffer.clear();
   _beatsPerMinute.store(0);
+  _chorus.reset();
   notifyAboutChange();
 }
 
@@ -325,6 +327,14 @@ void Processor::processBlock(AudioSampleBuffer& buffer, MidiBuffer& /*midiMessag
   _shimmer.setWetGain(getParameter(Parameters::ShimmerWetGain));
   _shimmer.setFeedback(getParameter(Parameters::ShimmerFeedback));
   _shimmer.processBlock(_shimmerBuffer);
+
+  _chorus.setWetGain(getParameter(Parameters::ChorusWetGain));
+  _chorus.setFrequency(getParameter(Parameters::ChorusFrequency));
+  _chorus.setDepth(getParameter(Parameters::ChorusDepth));
+
+  juce::AudioPlayHead::CurrentPositionInfo tempoInfo;
+  getPlayHead()->getCurrentPosition(tempoInfo);
+  _chorus.processBlock(_shimmerBuffer, tempoInfo.bpm, tempoInfo.timeInSeconds);
 
   const float* channelData0 = nullptr;
   const float* channelData1 = nullptr;
