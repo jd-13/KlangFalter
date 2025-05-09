@@ -22,22 +22,22 @@ PROJECT_FILE_PATH=Intro/BodyandSoulIntro.jucer
 cp Local/BodyandSoulLocal.jucer $PROJECT_FILE_PATH
 
 setModules $PROJECT_FILE_PATH
-sed -i '' -e 's#name="Body and Soul Local"#name="Body and Soul Intro"#g' $PROJECT_FILE_PATH
-sed -i '' -e 's#bundleIdentifier="com.thesoundofmerlin.BodyAndSoulLocal"#bundleIdentifier="com.thesoundofmerlin.BodyAndSoulIntro"#g' $PROJECT_FILE_PATH
-sed -i '' -e 's#pluginName="B\&amp;S Local"#pluginName="B\&amp;S Intro"#g' $PROJECT_FILE_PATH
-sed -i '' -e 's#pluginDesc="Body and Soul Local"#pluginDesc="Body and Soul Intro"#g' $PROJECT_FILE_PATH
-sed -i '' -e 's#pluginCode="Tbsl"#pluginCode="Tbsi"#g' $PROJECT_FILE_PATH
-sed -i '' -e 's#pluginAUExportPrefix="BodyAndSoulLocalAU"#pluginAUExportPrefix="BodyAndSoulIntroAU"#g' $PROJECT_FILE_PATH
-sed -i '' -e 's#aaxIdentifier="com.thesoundofmerlin.BodyAndSoulLocal"#aaxIdentifier="com.thesoundofmerlin.BodyAndSoulIntro"#g' $PROJECT_FILE_PATH
-sed -i '' -e 's#targetName="TSoM-BodyandSoulLocal"#targetName="TSoM-BodyandSoulIntro"#g' $PROJECT_FILE_PATH
+sed -i '' -e 's#name="Body and Soul Local"#name="Body and Soul Mod"#g' $PROJECT_FILE_PATH
+sed -i '' -e 's#bundleIdentifier="com.thesoundofmerlin.BodyAndSoulMod"#bundleIdentifier="com.thesoundofmerlin.BodyAndSoulMod"#g' $PROJECT_FILE_PATH
+sed -i '' -e 's#pluginName="B\&amp;S Local"#pluginName="B\&amp;S Mod"#g' $PROJECT_FILE_PATH
+sed -i '' -e 's#pluginDesc="Body and Soul Local"#pluginDesc="Body and Soul Mod"#g' $PROJECT_FILE_PATH
+sed -i '' -e 's#pluginCode="Tbsl"#pluginCode="Tbsm"#g' $PROJECT_FILE_PATH
+sed -i '' -e 's#pluginAUExportPrefix="BodyAndSoulLocalAU"#pluginAUExportPrefix="BodyAndSoulModAU"#g' $PROJECT_FILE_PATH
+sed -i '' -e 's#aaxIdentifier="com.thesoundofmerlin.BodyAndSoulLocal"#aaxIdentifier="com.thesoundofmerlin.BodyAndSoulMod"#g' $PROJECT_FILE_PATH
+sed -i '' -e 's#targetName="TSoM-BodyandSoulLocal"#targetName="TSoM-BodyandSoulMod"#g' $PROJECT_FILE_PATH
 
 CMAKE_FILE_PATH=Intro/CMakeLists.txt
 cp Local/CMakeLists.txt $CMAKE_FILE_PATH
 
 setCMakePaths $CMAKE_FILE_PATH
-sed -i '' -e 's#BodyandSoulLocal#BodyandSoulIntro#g' $CMAKE_FILE_PATH
-sed -i '' -e 's#Body and Soul Local#Body and Soul Intro#g' $CMAKE_FILE_PATH
-sed -i '' -e 's#PLUGIN_CODE Tbsl#PLUGIN_CODE Tbsi#g' $CMAKE_FILE_PATH
+sed -i '' -e 's#BodyandSoulLocal#BodyandSoulMod#g' $CMAKE_FILE_PATH
+sed -i '' -e 's#Body and Soul Local#Body and Soul Mod#g' $CMAKE_FILE_PATH
+sed -i '' -e 's#PLUGIN_CODE Tbsl#PLUGIN_CODE Tbsm#g' $CMAKE_FILE_PATH
 
 echo "=== Generating Body project ==="
 mkdir -p Body
