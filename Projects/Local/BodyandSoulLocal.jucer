@@ -21,10 +21,10 @@
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="TSoM-BodyandSoulLocal"
                        defines="JUCE_MODAL_LOOPS_PERMITTED=1" macOSDeploymentTarget="10.14"
-                       osxCompatibility="10.14 SDK" osxArchitecture="64BitIntel" headerPath="/Users/jack/GithubProjects/third-party/signalsmith-stretch/include/signalsmith-stretch&#10;/Users/jack/GithubProjects/third-party/linear/include&#10;../../../../WECore/WECore "/>
+                       osxCompatibility="10.14 SDK" osxArchitecture="64BitIntel" headerPath="../../../../signalsmith-stretch/include/signalsmith-stretch&#10;../../../../linear/include&#10;../../../../WECore/WECore "/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="TSoM-BodyandSoulLocal"
                        defines="JUCE_MODAL_LOOPS_PERMITTED=1" macOSDeploymentTarget="10.14"
-                       osxCompatibility="10.14 SDK" headerPath="/Users/jack/GithubProjects/third-party/signalsmith-stretch/include/signalsmith-stretch&#10;/Users/jack/GithubProjects/third-party/linear/include&#10;../../../../WECore/WECore "/>
+                       osxCompatibility="10.14 SDK" headerPath="../../../../signalsmith-stretch/include/signalsmith-stretch&#10;../../../../linear/include&#10;../../../../WECore/WECore "/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_gui_extra" path="../../../../../SDKs/JUCE/modules"/>
@@ -45,9 +45,9 @@
     <VS2019 targetFolder="Builds/VisualStudio2019">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" defines="JUCE_MODAL_LOOPS_PERMITTED=1"
-                       targetName="TSoM-BodyandSoulLocal" useRuntimeLibDLL="0"/>
+                       targetName="TSoM-BodyandSoulLocal" useRuntimeLibDLL="0" headerPath="../../../../signalsmith-stretch/include/signalsmith-stretch&#10;../../../../linear/include&#10;../../../../WECore/WECore "/>
         <CONFIGURATION isDebug="0" name="Release" useRuntimeLibDLL="0" defines="JUCE_MODAL_LOOPS_PERMITTED=1"
-                       targetName="TSoM-BodyandSoulLocal"/>
+                       targetName="TSoM-BodyandSoulLocal" headerPath="../../../../signalsmith-stretch/include/signalsmith-stretch&#10;../../../../linear/include&#10;../../../../WECore/WECore "/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_gui_extra" path="..\..\JUCE\modules"/>
