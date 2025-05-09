@@ -118,9 +118,9 @@ function CollectCLAP {
 
 CollectVST "dist\BodyandSoulIntro" "Intro"
 # CollectCLAP "dist\BodyandSoulIntro" "Intro"
-CollectVST "dist\BodyandSoul" "Body"
+# CollectVST "dist\BodyandSoul" "Body"
 # CollectCLAP "dist\BodyandSoul" "Body"
-CollectVST "dist\BodyandSoul" "Soul"
+# CollectVST "dist\BodyandSoul" "Soul"
 # CollectCLAP "dist\BodyandSoul" "Soul"
 # CollectVST "dist\BodyandSoul" "FX"
 
