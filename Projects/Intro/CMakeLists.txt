@@ -17,7 +17,7 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Release>:Release>" CACHE
 # set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED "NO")
 # set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED "NO")
 
-project(BodyandSoulMod VERSION 1.0.0)
+project(BodyandSoulIntro VERSION 1.0.0)
 
 set(PATH_TO_JUCE ../../JUCE)
 set(PATH_TO_CLAP_EXTENSIONS ../../clap-juce-extensions)
@@ -31,14 +31,14 @@ endif ()
 
 include(${PATH_TO_CLAP_EXTENSIONS}/cmake/JucerClap.cmake)
 create_jucer_clap_target(
-        TARGET TSoM-BodyandSoulMod # "Binary Name" in the Projucer
-        PLUGIN_NAME "Body and Soul Mod"
-        BINARY_NAME "TSoM-BodyandSoulMod" # Name of the resulting plugin binary
+        TARGET TSoM-BodyandSoulIntro # "Binary Name" in the Projucer
+        PLUGIN_NAME "Body and Soul Intro"
+        BINARY_NAME "TSoM-BodyandSoulIntro" # Name of the resulting plugin binary
         MANUFACTURER_NAME "The Sound of Merlin"
         MANUFACTURER_CODE Tsom
-        PLUGIN_CODE Tbsm
+        PLUGIN_CODE Tbsi
         VERSION_STRING "1.0.0"
-        CLAP_ID "com.thesoundofmerlin.BodyandSoulMod"
+        CLAP_ID "com.thesoundofmerlin.BodyandSoulIntro"
         CLAP_FEATURES audio-effect
         CLAP_SUPPORT_URL "https://www.thesoundofmerlin.com"
         EDITOR_NEEDS_KEYBOARD_FOCUS FALSE
