@@ -708,7 +708,7 @@ void KlangFalterEditor::resized()
         _shimmerSliderGroup->setBounds(slidersBottomRow.removeFromLeft(scaled(72)));
         slidersBottomRow.removeFromLeft(SPACE_WIDTH);
 
-        _chorusSliderGroup->setBounds(slidersBottomRow.removeFromLeft(scaled(92)));
+        _chorusSliderGroup->setBounds(slidersBottomRow.removeFromLeft(scaled(144)));
     }
 
     // IR Browser
@@ -827,7 +827,7 @@ void KlangFalterEditor::updateUI()
   _lowEqSliderGroup->onUpdate(irAvailable);
   _highEqSliderGroup->onUpdate(irAvailable);
   _shimmerSliderGroup->onUpdate(irAvailable);
-  _chorusSliderGroup->onUpdate(irAvailable);
+  _chorusSliderGroup->onUpdate(irAvailable, numOutputChannels);
   {
     const float db = _processor.getParameter(Parameters::DryDecibels);
     const float scale = DecibelScaling::Db2Scale(db);

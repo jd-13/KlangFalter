@@ -96,6 +96,7 @@ Processor::Processor() :
   _parameterSet.registerParameter(Parameters::ChorusWetGain);
   _parameterSet.registerParameter(Parameters::ChorusFrequency);
   _parameterSet.registerParameter(Parameters::ChorusDepth);
+  _parameterSet.registerParameter(Parameters::ChorusWidth);
   _parameterSet.registerParameter(Parameters::AutoGainOn);
   _parameterSet.registerParameter(Parameters::AutoGainDecibels);
 
@@ -331,6 +332,7 @@ void Processor::processBlock(AudioSampleBuffer& buffer, MidiBuffer& /*midiMessag
   _chorus.setWetGain(getParameter(Parameters::ChorusWetGain));
   _chorus.setFrequency(getParameter(Parameters::ChorusFrequency));
   _chorus.setDepth(getParameter(Parameters::ChorusDepth));
+  _chorus.setWidth(getParameter(Parameters::ChorusWidth));
 
   juce::AudioPlayHead::CurrentPositionInfo tempoInfo;
   getPlayHead()->getCurrentPosition(tempoInfo);

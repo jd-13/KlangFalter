@@ -197,7 +197,7 @@ public:
 
     void resized() override;
 
-    void onUpdate(bool enableSliders);
+    void onUpdate(bool enableSliders, int numOutputChannels);
 
 private:
     Processor& _processor;
@@ -217,4 +217,8 @@ private:
     std::unique_ptr<juce::Label> _chorusDepthHeaderLabel;
     std::unique_ptr<juce::Slider> _chorusDepthSlider;
     std::unique_ptr<juce::Label> _chorusDepthLabel;
+
+    std::unique_ptr<juce::Label> _chorusWidthHeaderLabel;
+    std::unique_ptr<juce::Slider> _chorusWidthSlider;
+    std::unique_ptr<juce::Label> _chorusWidthLabel;
 };

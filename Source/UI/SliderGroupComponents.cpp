@@ -10,10 +10,15 @@ namespace {
         return juce::String(seconds, 2) + juce::String("s");
     }
 
-    juce::String FormatFrequency(float freq) {
+    juce::String FormatFrequency(float freq, int decimalPlaces) {
         if (freq < 1000.0f) {
-            return juce::String(static_cast<int>(freq+0.5f)) + juce::String("Hz");
+            if (decimalPlaces == 0) {
+                return juce::String(static_cast<int>(freq+0.5f)) + juce::String("Hz");
+            } else {
+                return juce::String(freq, decimalPlaces) + juce::String("Hz");
+            }
         }
+
         return juce::String(freq/1000.0f, (freq < 1500.0f) ? 2 : 1) + juce::String("kHz");
     }
 
@@ -678,13 +683,13 @@ void LowEqSliderGroup::onUpdate(bool enableSliders) {
     _lowEqButton->setButtonText(lowEqType == Parameters::Shelf ? juce::String("Low Shelf") : juce::String("Low Cut"));
     _lowCutFreqHeaderLabel->setVisible(lowEqType == Parameters::Cut);
     _lowCutFreqLabel->setVisible(lowEqType == Parameters::Cut);
-    _lowCutFreqLabel->setText((::fabs(cutFreq-Parameters::EqLowCutFreq.getMinValue()) > 0.0001f) ? FormatFrequency(cutFreq) : juce::String("Off"), juce::sendNotification);
+    _lowCutFreqLabel->setText((::fabs(cutFreq-Parameters::EqLowCutFreq.getMinValue()) > 0.0001f) ? FormatFrequency(cutFreq, 0) : juce::String("Off"), juce::sendNotification);
     _lowCutFreqSlider->setVisible(lowEqType == Parameters::Cut);
     _lowCutFreqSlider->setEnabled(enableSliders);
     _lowCutFreqSlider->setValue(cutFreq, juce::dontSendNotification);
     _loFreqHeaderLabel->setVisible(lowEqType == Parameters::Shelf);
     _loFreqLabel->setVisible(lowEqType == Parameters::Shelf);
-    _loFreqLabel->setText(FormatFrequency(shelfFreq), juce::sendNotification);
+    _loFreqLabel->setText(FormatFrequency(shelfFreq, 0), juce::sendNotification);
     _loFreqSlider->setVisible(lowEqType == Parameters::Shelf);
     _loFreqSlider->setEnabled(enableSliders);
     _loFreqSlider->setValue(shelfFreq, juce::dontSendNotification);
@@ -853,13 +858,13 @@ void HighEqSliderGroup::onUpdate(bool enableSliders) {
     _highEqButton->setButtonText(highEqType == Parameters::Shelf ? juce::String("High Shelf") : juce::String("High Cut"));
     _highCutFreqHeaderLabel->setVisible(highEqType == Parameters::Cut);
     _highCutFreqLabel->setVisible(highEqType == Parameters::Cut);
-    _highCutFreqLabel->setText((::fabs(cutFreq-Parameters::EqHighCutFreq.getMaxValue()) > 0.0001f) ? FormatFrequency(cutFreq) : juce::String("Off"), juce::sendNotification);
+    _highCutFreqLabel->setText((::fabs(cutFreq-Parameters::EqHighCutFreq.getMaxValue()) > 0.0001f) ? FormatFrequency(cutFreq, 0) : juce::String("Off"), juce::sendNotification);
     _highCutFreqSlider->setVisible(highEqType == Parameters::Cut);
     _highCutFreqSlider->setEnabled(enableSliders);
     _highCutFreqSlider->setValue(cutFreq, juce::dontSendNotification);
     _hiFreqHeaderLabel->setVisible(highEqType == Parameters::Shelf);
     _hiFreqLabel->setVisible(highEqType == Parameters::Shelf);
-    _hiFreqLabel->setText(FormatFrequency(shelfFreq), juce::sendNotification);
+    _hiFreqLabel->setText(FormatFrequency(shelfFreq, 0), juce::sendNotification);
     _hiFreqSlider->setVisible(highEqType == Parameters::Shelf);
     _hiFreqSlider->setEnabled(enableSliders);
     _hiFreqSlider->setValue(shelfFreq, juce::dontSendNotification);
@@ -1077,6 +1082,33 @@ ChorusSliderGroup::ChorusSliderGroup(Processor& processor, UIUtils::Theme theme)
     _chorusDepthLabel->setJustificationType(juce::Justification::centred);
     _chorusDepthLabel->setEditable(false, false, false);
     _chorusDepthLabel->setColour(juce::Label::textColourId, theme.neutral);
+
+    _chorusWidthHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Width")));
+    addAndMakeVisible(_chorusWidthHeaderLabel.get());
+    _chorusWidthHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _chorusWidthHeaderLabel->setJustificationType(juce::Justification::centred);
+    _chorusWidthHeaderLabel->setEditable(false, false, false);
+    _chorusWidthHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
+
+    _chorusWidthSlider.reset(new juce::Slider(juce::String()));
+    addAndMakeVisible(_chorusWidthSlider.get());
+    _chorusWidthSlider->setRange(0, 1, 0);
+    _chorusWidthSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
+    _chorusWidthSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
+    _chorusWidthSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
+    _chorusWidthSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
+    _chorusWidthSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
+    _chorusWidthSlider->setDoubleClickReturnValue(true, Parameters::ChorusWidth.getDefaultValue());
+    _chorusWidthSlider->onValueChange = [this] {
+        _processor.setParameterNotifyingHost(Parameters::ChorusWidth, SnapValue(static_cast<float>(_chorusWidthSlider->getValue()), 0.0f, 0.01f));
+    };
+
+    _chorusWidthLabel.reset(new juce::Label(juce::String(), TRANS("0.0")));
+    addAndMakeVisible(_chorusWidthLabel.get());
+    _chorusWidthLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _chorusWidthLabel->setJustificationType(juce::Justification::centred);
+    _chorusWidthLabel->setEditable(false, false, false);
+    _chorusWidthLabel->setColour(juce::Label::textColourId, theme.neutral);
 }
 
 ChorusSliderGroup::~ChorusSliderGroup() {
@@ -1093,10 +1125,14 @@ ChorusSliderGroup::~ChorusSliderGroup() {
     _chorusDepthHeaderLabel = nullptr;
     _chorusDepthSlider = nullptr;
     _chorusDepthLabel = nullptr;
+
+    _chorusWidthHeaderLabel = nullptr;
+    _chorusWidthSlider = nullptr;
+    _chorusWidthLabel = nullptr;
 }
 
 void ChorusSliderGroup::resized() {
-    constexpr float NOMINAL_WIDTH {92};
+    constexpr float NOMINAL_WIDTH {144};
 
     setFontHeight(_chorusHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), GROUP_HEADER_FONT_SIZE));
 
@@ -1109,18 +1145,22 @@ void ChorusSliderGroup::resized() {
     setFontHeight(_chorusDepthHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
     setFontHeight(_chorusDepthLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
 
+    setFontHeight(_chorusWidthHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+    setFontHeight(_chorusWidthLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+
     juce::Rectangle<int> availableArea = getLocalBounds();
 
     _chorusHeaderLabel->setBounds(availableArea.withHeight(scaled(NOMINAL_WIDTH, getWidth(), 24)));
     availableArea.removeFromTop(scaled(NOMINAL_WIDTH, getWidth(), 16));
 
-    const int sliderAreaWidth {availableArea.getWidth() / 3};
+    const int sliderAreaWidth {availableArea.getWidth() / 4};
     layoutSlider(availableArea.removeFromLeft(sliderAreaWidth), _chorusWetGainHeaderLabel.get(), _chorusWetGainSlider.get(), _chorusWetGainLabel.get(), NOMINAL_WIDTH, getWidth());
     layoutSlider(availableArea.removeFromLeft(sliderAreaWidth), _chorusFrequencyHeaderLabel.get(), _chorusFrequencySlider.get(), _chorusFrequencyLabel.get(), NOMINAL_WIDTH, getWidth());
-    layoutSlider(availableArea, _chorusDepthHeaderLabel.get(), _chorusDepthSlider.get(), _chorusDepthLabel.get(), NOMINAL_WIDTH, getWidth());
+    layoutSlider(availableArea.removeFromLeft(sliderAreaWidth), _chorusDepthHeaderLabel.get(), _chorusDepthSlider.get(), _chorusDepthLabel.get(), NOMINAL_WIDTH, getWidth());
+    layoutSlider(availableArea, _chorusWidthHeaderLabel.get(), _chorusWidthSlider.get(), _chorusWidthLabel.get(), NOMINAL_WIDTH, getWidth());
 }
 
-void ChorusSliderGroup::onUpdate(bool enableSliders) {
+void ChorusSliderGroup::onUpdate(bool enableSliders, int numOutputChannels) {
     const float wetGain = _processor.getParameter(Parameters::ChorusWetGain);
     _chorusWetGainSlider->setValue(wetGain, juce::dontSendNotification);
     _chorusWetGainSlider->setEnabled(enableSliders);
@@ -1129,10 +1169,15 @@ void ChorusSliderGroup::onUpdate(bool enableSliders) {
     const float frequency = _processor.getParameter(Parameters::ChorusFrequency);
     _chorusFrequencySlider->setValue(frequency, juce::dontSendNotification);
     _chorusFrequencySlider->setEnabled(enableSliders);
-    _chorusFrequencyLabel->setText(FormatFrequency(frequency), juce::sendNotification);
+    _chorusFrequencyLabel->setText(FormatFrequency(frequency, 2), juce::sendNotification);
 
     const float depth = _processor.getParameter(Parameters::ChorusDepth);
     _chorusDepthSlider->setValue(depth, juce::dontSendNotification);
     _chorusDepthSlider->setEnabled(enableSliders);
     _chorusDepthLabel->setText(juce::String(depth, 2), juce::sendNotification);
+
+    const float width = _processor.getParameter(Parameters::ChorusWidth);
+    _chorusWidthSlider->setValue(width, juce::dontSendNotification);
+    _chorusWidthSlider->setEnabled(enableSliders && numOutputChannels >= 2);
+    _chorusWidthLabel->setText(juce::String(width, 2), juce::sendNotification);
 }
