@@ -43,6 +43,13 @@ namespace {
 
     constexpr int GROUP_HEADER_FONT_SIZE {15};
     constexpr int LABEL_FONT_SIZE {11};
+
+    void styleGroupHeader(juce::Label* label, UIUtils::Theme& theme) {
+        label->setFont(juce::Font(15.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+        label->setJustificationType(juce::Justification::centred);
+        label->setEditable(false, false, false);
+        label->setColour(juce::Label::textColourId, theme.neutral);
+    }
 }
 
 IRSliderGroup::IRSliderGroup(Processor& processor, UIUtils::Theme theme) :
@@ -52,10 +59,7 @@ IRSliderGroup::IRSliderGroup(Processor& processor, UIUtils::Theme theme) :
 
     _impulseResponseHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Impulse Response")));
     addAndMakeVisible(_impulseResponseHeaderLabel.get());
-    _impulseResponseHeaderLabel->setFont(juce::Font(15.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _impulseResponseHeaderLabel->setJustificationType(juce::Justification::centred);
-    _impulseResponseHeaderLabel->setEditable(false, false, false);
-    _impulseResponseHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
+    styleGroupHeader(_impulseResponseHeaderLabel.get(), theme);
 
     _predelayHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Gap")));
     addAndMakeVisible(_predelayHeaderLabel.get());
@@ -260,10 +264,7 @@ AttackSliderGroup::AttackSliderGroup(Processor& processor, UIUtils::Theme theme)
 
     _attackHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Attack")));
     addAndMakeVisible(_attackHeaderLabel.get());
-    _attackHeaderLabel->setFont(juce::Font(15.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _attackHeaderLabel->setJustificationType(juce::Justification::centred);
-    _attackHeaderLabel->setEditable(false, false, false);
-    _attackHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
+    styleGroupHeader(_attackHeaderLabel.get(), theme);
 
     _attackLengthHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Length")));
     addAndMakeVisible(_attackLengthHeaderLabel.get());
@@ -377,12 +378,7 @@ DecaySliderGroup::DecaySliderGroup(Processor& processor, UIUtils::Theme theme) :
 
     _decayHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Decay")));
     addAndMakeVisible(_decayHeaderLabel.get());
-    _decayHeaderLabel->setFont(juce::Font(15.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _decayHeaderLabel->setJustificationType(juce::Justification::centred);
-    _decayHeaderLabel->setEditable(false, false, false);
-    _decayHeaderLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
-    _decayHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colour(0xffb0b0b6));
-    _decayHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+    styleGroupHeader(_decayHeaderLabel.get(), theme);
 
     _decayShapeHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Shape")));
     addAndMakeVisible(_decayShapeHeaderLabel.get());
@@ -455,10 +451,7 @@ StereoSliderGroup::StereoSliderGroup(Processor& processor, UIUtils::Theme theme)
 
     _stereoHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Stereo")));
     addAndMakeVisible(_stereoHeaderLabel.get());
-    _stereoHeaderLabel->setFont(juce::Font(15.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _stereoHeaderLabel->setJustificationType(juce::Justification::centred);
-    _stereoHeaderLabel->setEditable(false, false, false);
-    _stereoHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
+    styleGroupHeader(_stereoHeaderLabel.get(), theme);
 
     _widthHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Width")));
     addAndMakeVisible(_widthHeaderLabel.get());
