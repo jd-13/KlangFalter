@@ -55,6 +55,12 @@ namespace {
         label->setEditable(false, false, false);
         label->setColour(juce::Label::textColourId, theme.neutral);
     }
+
+    void styleSlider(juce::Slider* slider, UIUtils::RotarySliderLookAndFeel* lookAndFeel) {
+        slider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
+        slider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
+        slider->setLookAndFeel(lookAndFeel);
+    }
 }
 
 IRSliderGroup::IRSliderGroup(Processor& processor, UIUtils::Theme theme) :
@@ -72,12 +78,8 @@ IRSliderGroup::IRSliderGroup(Processor& processor, UIUtils::Theme theme) :
 
     _predelaySlider.reset(new juce::Slider (juce::String()));
     addAndMakeVisible(_predelaySlider.get());
+    styleSlider(_predelaySlider.get(), _rotarySliderLookAndFeel.get());
     _predelaySlider->setRange(0, 1000, 0);
-    _predelaySlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
-    _predelaySlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
-    _predelaySlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
-    _predelaySlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
-    _predelaySlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _predelaySlider->setDoubleClickReturnValue(true, 0);
     _predelaySlider->onValueChange = [this] {
         _processor.setPredelayMs(_predelaySlider->getValue());
@@ -93,13 +95,9 @@ IRSliderGroup::IRSliderGroup(Processor& processor, UIUtils::Theme theme) :
 
     _beginSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_beginSlider.get());
+    styleSlider(_beginSlider.get(), _rotarySliderLookAndFeel.get());
     _beginSlider->setRange(0, 1, 0.001);
-    _beginSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
-    _beginSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
-    _beginSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
-    _beginSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
     _beginSlider->setSkewFactor(0.5);
-    _beginSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _beginSlider->setDoubleClickReturnValue(true, 0);
     _beginSlider->onValueChange = [this] {
         _processor.setIRBegin(_beginSlider->getValue());
@@ -115,12 +113,8 @@ IRSliderGroup::IRSliderGroup(Processor& processor, UIUtils::Theme theme) :
 
     _endSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_endSlider.get());
+    styleSlider(_endSlider.get(), _rotarySliderLookAndFeel.get());
     _endSlider->setRange(0, 1, 0.001);
-    _endSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
-    _endSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
-    _endSlider->setColour(juce::Slider::thumbColourId, juce::Colour (0xffafafff));
-    _endSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour (0xb1606060));
-    _endSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _endSlider->setDoubleClickReturnValue(true, 1);
     _endSlider->onValueChange = [this] {
         _processor.setIREnd(_endSlider->getValue());
@@ -136,12 +130,8 @@ IRSliderGroup::IRSliderGroup(Processor& processor, UIUtils::Theme theme) :
 
     _stretchSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_stretchSlider.get());
+    styleSlider(_stretchSlider.get(), _rotarySliderLookAndFeel.get());
     _stretchSlider->setRange(0, 2, 0);
-    _stretchSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
-    _stretchSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
-    _stretchSlider->setColour(juce::Slider::thumbColourId, juce::Colour (0xffafafff));
-    _stretchSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour (0xb1606060));
-    _stretchSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _stretchSlider->setDoubleClickReturnValue(true, 1);
     _stretchSlider->onValueChange = [this] {
         // Invert as we're treating stretch as tune
@@ -253,13 +243,9 @@ AttackSliderGroup::AttackSliderGroup(Processor& processor, UIUtils::Theme theme)
 
     _attackLengthSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_attackLengthSlider.get());
+    styleSlider(_attackLengthSlider.get(), _rotarySliderLookAndFeel.get());
     _attackLengthSlider->setRange(0, 1, 0);
-    _attackLengthSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
-    _attackLengthSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
-    _attackLengthSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
-    _attackLengthSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
     _attackLengthSlider->setSkewFactor(0.5);
-    _attackLengthSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _attackLengthSlider->setDoubleClickReturnValue(true, 0);
     _attackLengthSlider->onValueChange = [this] {
         _processor.setAttackLength(_attackLengthSlider->getValue());
@@ -275,13 +261,9 @@ AttackSliderGroup::AttackSliderGroup(Processor& processor, UIUtils::Theme theme)
 
     _attackShapeSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_attackShapeSlider.get());
+    styleSlider(_attackShapeSlider.get(), _rotarySliderLookAndFeel.get());
     _attackShapeSlider->setRange(0, 10, 0);
-    _attackShapeSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
-    _attackShapeSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
-    _attackShapeSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
-    _attackShapeSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
     _attackShapeSlider->setSkewFactor(0.5);
-    _attackShapeSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _attackShapeSlider->setDoubleClickReturnValue(true, 0);
     _attackShapeSlider->onValueChange = [this] {
         _processor.setAttackShape(_attackShapeSlider->getValue());
@@ -355,13 +337,9 @@ DecaySliderGroup::DecaySliderGroup(Processor& processor, UIUtils::Theme theme) :
 
     _decayShapeSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_decayShapeSlider.get());
+    styleSlider(_decayShapeSlider.get(), _rotarySliderLookAndFeel.get());
     _decayShapeSlider->setRange(0, 10, 0);
-    _decayShapeSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
-    _decayShapeSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
-    _decayShapeSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
-    _decayShapeSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
     _decayShapeSlider->setSkewFactor(0.5);
-    _decayShapeSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _decayShapeSlider->setDoubleClickReturnValue(true, 0);
     _decayShapeSlider->onValueChange = [this] {
         _processor.setDecayShape(_decayShapeSlider->getValue());
@@ -418,13 +396,9 @@ StereoSliderGroup::StereoSliderGroup(Processor& processor, UIUtils::Theme theme)
 
     _widthSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_widthSlider.get());
+    styleSlider(_widthSlider.get(), _rotarySliderLookAndFeel.get());
     _widthSlider->setRange(0, 10, 0);
-    _widthSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
-    _widthSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
-    _widthSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
-    _widthSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
     _widthSlider->setSkewFactor(0.30102);
-    _widthSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _widthSlider->setDoubleClickReturnValue(true, Parameters::StereoWidth.getDefaultValue());
     _widthSlider->onValueChange = [this] {
         _processor.setParameterNotifyingHost(Parameters::StereoWidth, SnapValue(static_cast<float>(_widthSlider->getValue()), 1.0f, 0.05f));
@@ -492,13 +466,9 @@ LowEqSliderGroup::LowEqSliderGroup(Processor& processor, UIUtils::Theme theme) :
 
     _lowCutFreqSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_lowCutFreqSlider.get());
+    styleSlider(_lowCutFreqSlider.get(), _rotarySliderLookAndFeel.get());
     _lowCutFreqSlider->setRange(20, 2000, 0);
-    _lowCutFreqSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
-    _lowCutFreqSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
-    _lowCutFreqSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
-    _lowCutFreqSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
     _lowCutFreqSlider->setSkewFactor(0.5);
-    _lowCutFreqSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _lowCutFreqSlider->setRange(Parameters::EqLowCutFreq.getMinValue(), Parameters::EqLowCutFreq.getMaxValue());
     _lowCutFreqSlider->setDoubleClickReturnValue(true, Parameters::EqLowCutFreq.getDefaultValue());
     _lowCutFreqSlider->onValueChange = [this] {
@@ -515,13 +485,9 @@ LowEqSliderGroup::LowEqSliderGroup(Processor& processor, UIUtils::Theme theme) :
 
     _loFreqSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_loFreqSlider.get());
+    styleSlider(_loFreqSlider.get(), _rotarySliderLookAndFeel.get());
     _loFreqSlider->setRange(20, 2000, 0);
-    _loFreqSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
-    _loFreqSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
-    _loFreqSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
-    _loFreqSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
     _loFreqSlider->setSkewFactor(0.5);
-    _loFreqSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _loFreqSlider->setRange(Parameters::EqLowShelfFreq.getMinValue(), Parameters::EqLowShelfFreq.getMaxValue());
     _loFreqSlider->setDoubleClickReturnValue(true, Parameters::EqLowShelfFreq.getDefaultValue());
     _loFreqSlider->onValueChange = [this] {
@@ -538,12 +504,8 @@ LowEqSliderGroup::LowEqSliderGroup(Processor& processor, UIUtils::Theme theme) :
 
     _loGainSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_loGainSlider.get());
+    styleSlider(_loGainSlider.get(), _rotarySliderLookAndFeel.get());
     _loGainSlider->setRange(-30, 30, 0);
-    _loGainSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
-    _loGainSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
-    _loGainSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
-    _loGainSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
-    _loGainSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _loGainSlider->setRange(Parameters::EqLowShelfDecibels.getMinValue(), Parameters::EqLowShelfDecibels.getMaxValue());
     _loGainSlider->setDoubleClickReturnValue(true, Parameters::EqLowShelfDecibels.getDefaultValue());
     _loGainSlider->onValueChange = [this] {
@@ -650,13 +612,9 @@ HighEqSliderGroup::HighEqSliderGroup(Processor& processor, UIUtils::Theme theme)
 
     _highCutFreqSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_highCutFreqSlider.get());
+    styleSlider(_highCutFreqSlider.get(), _rotarySliderLookAndFeel.get());
     _highCutFreqSlider->setRange(2000, 20000, 0);
-    _highCutFreqSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
-    _highCutFreqSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
-    _highCutFreqSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
-    _highCutFreqSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
     _highCutFreqSlider->setSkewFactor(0.7);
-    _highCutFreqSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _highCutFreqSlider->setRange(Parameters::EqHighCutFreq.getMinValue(), Parameters::EqHighCutFreq.getMaxValue());
     _highCutFreqSlider->setDoubleClickReturnValue(true, Parameters::EqHighCutFreq.getDefaultValue());
     _highCutFreqSlider->onValueChange = [this] {
@@ -673,13 +631,9 @@ HighEqSliderGroup::HighEqSliderGroup(Processor& processor, UIUtils::Theme theme)
 
     _hiFreqSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_hiFreqSlider.get());
+    styleSlider(_hiFreqSlider.get(), _rotarySliderLookAndFeel.get());
     _hiFreqSlider->setRange(2000, 20000, 0);
-    _hiFreqSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
-    _hiFreqSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
-    _hiFreqSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
-    _hiFreqSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
     _hiFreqSlider->setSkewFactor(0.7);
-    _hiFreqSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _hiFreqSlider->setRange(Parameters::EqHighShelfFreq.getMinValue(), Parameters::EqHighShelfFreq.getMaxValue());
     _hiFreqSlider->setDoubleClickReturnValue(true, Parameters::EqHighShelfFreq.getDefaultValue());
     _hiFreqSlider->onValueChange = [this] {
@@ -696,12 +650,8 @@ HighEqSliderGroup::HighEqSliderGroup(Processor& processor, UIUtils::Theme theme)
 
     _hiGainSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_hiGainSlider.get());
+    styleSlider(_hiGainSlider.get(), _rotarySliderLookAndFeel.get());
     _hiGainSlider->setRange(-30, 30, 0);
-    _hiGainSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
-    _hiGainSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
-    _hiGainSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
-    _hiGainSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
-    _hiGainSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _hiGainSlider->setRange(Parameters::EqHighShelfDecibels.getMinValue(), Parameters::EqHighShelfDecibels.getMaxValue());
     _hiGainSlider->setDoubleClickReturnValue(true, Parameters::EqHighShelfDecibels.getDefaultValue());
     _hiGainSlider->onValueChange = [this] {
