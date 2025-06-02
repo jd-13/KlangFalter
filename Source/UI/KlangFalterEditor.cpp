@@ -101,7 +101,8 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     addAndMakeVisible(_irTabComponent.get());
     _irTabComponent->setTabBarDepth(0);
     _irTabComponent->addTab(TRANS ("Placeholder"), juce::Colour(0xffb0b0b6), new IRComponent(_theme), true);
-    _irTabComponent->setCurrentTabIndex (0);
+    _irTabComponent->setCurrentTabIndex(0);
+    _irTabComponent->setColour(juce::TabbedComponent::backgroundColourId, _theme.waveformContainerBackground);
 
     _levelMeterDry.reset(new LevelMeter(_theme));
     addAndMakeVisible(_levelMeterDry.get());
@@ -154,12 +155,19 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _browseButton->setButtonText(TRANS("Show Browser"));
     _browseButton->setConnectedEdges(juce::Button::ConnectedOnBottom);
     _browseButton->addListener(this);
-    _browseButton->setColour(juce::TextButton::buttonOnColourId, juce::Colour (0xffbcbcff));
+    _browseButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, _theme.neutral);
+    _browseButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, _theme.neutral);
     _browseButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
     _browseButton->setClickingTogglesState(true);
+    _browseButton->setConnectedEdges(juce::Button::ConnectedOnBottom);
 
     _irBrowserComponent.reset(new IRBrowserComponent());
     addAndMakeVisible(_irBrowserComponent.get());
+
+    auto setButtonColours = [&](juce::TextButton* button) {
+        button->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, _theme.neutral);
+        button->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, _theme.highlight);
+    };
 
     _wetButton.reset(new juce::TextButton(juce::String()));
     addAndMakeVisible(_wetButton.get());
@@ -167,10 +175,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _wetButton->setButtonText(TRANS("Wet"));
     _wetButton->setConnectedEdges(juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
     _wetButton->addListener(this);
-    _wetButton->setColour(juce::TextButton::buttonColourId, juce::Colour(0x80bcbcbc));
-    _wetButton->setColour(juce::TextButton::buttonOnColourId, juce::Colour(0xffbcbcff));
-    _wetButton->setColour(juce::TextButton::textColourOffId, juce::Colour(0xff202020));
-    _wetButton->setColour(juce::TextButton::textColourOnId, juce::Colour(0xff202020));
+    setButtonColours(_wetButton.get());
     _wetButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
     _wetButton->setClickingTogglesState(true);
 
@@ -180,10 +185,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _dryButton->setButtonText(TRANS("Dry"));
     _dryButton->setConnectedEdges(juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
     _dryButton->addListener(this);
-    _dryButton->setColour(juce::TextButton::buttonColourId, juce::Colour(0x80bcbcbc));
-    _dryButton->setColour(juce::TextButton::buttonOnColourId, juce::Colour(0xffbcbcff));
-    _dryButton->setColour(juce::TextButton::textColourOffId, juce::Colour(0xff202020));
-    _dryButton->setColour(juce::TextButton::textColourOnId, juce::Colour(0xff202020));
+    setButtonColours(_dryButton.get());
     _dryButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
     _dryButton->setClickingTogglesState(true);
 
@@ -193,10 +195,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _autogainButton->setButtonText(TRANS("Autogain 0.0dB"));
     _autogainButton->setConnectedEdges(juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
     _autogainButton->addListener(this);
-    _autogainButton->setColour(juce::TextButton::buttonColourId, juce::Colour(0x80bcbcbc));
-    _autogainButton->setColour(juce::TextButton::buttonOnColourId, juce::Colour(0xffbcbcff));
-    _autogainButton->setColour(juce::TextButton::textColourOffId, juce::Colour(0xff202020));
-    _autogainButton->setColour(juce::TextButton::textColourOnId, juce::Colour(0xff202020));
+    setButtonColours(_autogainButton.get());
     _autogainButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
     _autogainButton->setClickingTogglesState(true);
 
@@ -206,10 +205,8 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _reverseButton->setButtonText(TRANS("Reverse"));
     _reverseButton->setConnectedEdges(juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
     _reverseButton->addListener(this);
-    _reverseButton->setColour(juce::TextButton::buttonColourId, juce::Colour(0x80bcbcbc));
-    _reverseButton->setColour(juce::TextButton::buttonOnColourId, juce::Colour(0xffbcbcff));
-    _reverseButton->setColour(juce::TextButton::textColourOffId, juce::Colour(0xff202020));
-    _reverseButton->setColour(juce::TextButton::textColourOnId, juce::Colour(0xff202020));
+    setButtonColours(_reverseButton.get());
+    _reverseButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, _theme.waveformContainerNeutral);
     _reverseButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
     _reverseButton->setClickingTogglesState(true);
 
@@ -224,8 +221,8 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _levelMeterOutLabelButton->addListener(this);
     _levelMeterOutLabelButton->setColour(juce::TextButton::buttonColourId, juce::Colour(0x00bbbbff));
     _levelMeterOutLabelButton->setColour(juce::TextButton::buttonOnColourId, juce::Colour(0x00bcbcff));
-    _levelMeterOutLabelButton->setColour(juce::TextButton::textColourOffId, juce::Colour(0xffb0b0b6));
-    _levelMeterOutLabelButton->setColour(juce::TextButton::textColourOnId, juce::Colour(0xffb0b0b6));
+    _levelMeterOutLabelButton->setColour(juce::TextButton::textColourOffId, _theme.neutral);
+    _levelMeterOutLabelButton->setColour(juce::TextButton::textColourOnId, _theme.neutral);
     _levelMeterOutLabelButton->setLookAndFeel(_simpleButtonLookAndFeel.get());
     _levelMeterOutLabelButton->setClickingTogglesState(true);
 
@@ -264,10 +261,8 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     addAndMakeVisible(_resetButton.get());
     _resetButton->setTooltip(TRANS("Reset all parameters"));
     _resetButton->setButtonText(TRANS ("Reset"));
-    _resetButton->setColour(juce::TextButton::buttonColourId, juce::Colour(0x80bcbcbc));
-    _resetButton->setColour(juce::TextButton::buttonOnColourId, juce::Colour(0xffbcbcff));
-    _resetButton->setColour(juce::TextButton::textColourOffId, juce::Colour(0xff202020));
-    _resetButton->setColour(juce::TextButton::textColourOnId, juce::Colour(0xff202020));
+    _resetButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, _theme.neutral);
+    _resetButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, _theme.neutral);
     _resetButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
 
     //[UserPreSize]
@@ -292,8 +287,6 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
 
     customLookAndFeel->theme = _theme;
     setLookAndFeel(customLookAndFeel);
-
-    _irTabComponent->setColour(juce::TabbedComponent::backgroundColourId, _theme.waveformContainerBackground);
 
     _creditsWindowOptions.reset(new juce::DialogWindow::LaunchOptions());
     _creditsWindowOptions->dialogTitle = "Credits";
@@ -320,33 +313,10 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
         juce::DialogWindow* window = _creditsWindowOptions->launchAsync();
         window->centreWithSize(500, 300);
     };
-
-    auto setButtonColours = [&](juce::TextButton* button) {
-        button->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, _theme.neutral);
-        button->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, _theme.highlight);
-    };
-
-    setButtonColours(_dryButton.get());
-    setButtonColours(_wetButton.get());
-    setButtonColours(_autogainButton.get());
-    setButtonColours(_reverseButton.get());
-
-    _reverseButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, _theme.waveformContainerNeutral);
-
-    _browseButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, _theme.neutral);
-    _browseButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, _theme.neutral);
-
-    _browseButton->setConnectedEdges(juce::Button::ConnectedOnBottom);
-
-    _resetButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, _theme.neutral);
-    _resetButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, _theme.neutral);
-    _levelMeterOutLabelButton->setColour(juce::TextButton::textColourOffId, _theme.neutral);
-    _levelMeterOutLabelButton->setColour(juce::TextButton::textColourOnId, _theme.neutral);
     //[/UserPreSize]
 
     const juce::Rectangle<int> bounds = _processor.getUIBounds();
     setSize(bounds.getWidth(), bounds.getHeight());
-
 
     //[Constructor] You can add your own custom stuff here..
     setResizable(true, true);
