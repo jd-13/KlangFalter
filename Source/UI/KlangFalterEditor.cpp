@@ -94,206 +94,158 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _theme = UIUtils::LoadTheme();
     //[/Constructor_pre]
 
-    _decibelScaleDry.reset (new DecibelScale());
-    addAndMakeVisible (_decibelScaleDry.get());
+    _decibelScaleDry.reset(new DecibelScale());
+    addAndMakeVisible(_decibelScaleDry.get());
 
-    _decibelScaleDry->setBounds (584, 51, 32, 176);
-
-    _irTabComponent.reset (new juce::TabbedComponent (juce::TabbedButtonBar::TabsAtTop));
-    addAndMakeVisible (_irTabComponent.get());
-    _irTabComponent->setTabBarDepth (0);
-    _irTabComponent->addTab (TRANS ("Placeholder"), juce::Colour (0xffb0b0b6), new IRComponent (_theme), true);
+    _irTabComponent.reset(new juce::TabbedComponent(juce::TabbedButtonBar::TabsAtTop));
+    addAndMakeVisible(_irTabComponent.get());
+    _irTabComponent->setTabBarDepth(0);
+    _irTabComponent->addTab(TRANS ("Placeholder"), juce::Colour(0xffb0b0b6), new IRComponent(_theme), true);
     _irTabComponent->setCurrentTabIndex (0);
 
-    _irTabComponent->setBounds (16, 51, 462, 176);
+    _levelMeterDry.reset(new LevelMeter(_theme));
+    addAndMakeVisible(_levelMeterDry.get());
 
-    _levelMeterDry.reset (new LevelMeter (_theme));
-    addAndMakeVisible (_levelMeterDry.get());
-
-    _levelMeterDry->setBounds (632, 51, 12, 176);
-
-    _dryLevelLabel.reset (new juce::Label ("DryLevelLabel",
-                                           TRANS ("-inf")));
-    addAndMakeVisible (_dryLevelLabel.get());
-    _dryLevelLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _dryLevelLabel->setJustificationType (juce::Justification::centredRight);
-    _dryLevelLabel->setEditable (false, false, false);
+    _dryLevelLabel.reset(new juce::Label("DryLevelLabel", TRANS("-inf")));
+    addAndMakeVisible(_dryLevelLabel.get());
+    _dryLevelLabel->setFont(juce::Font (11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _dryLevelLabel->setJustificationType(juce::Justification::centredRight);
+    _dryLevelLabel->setEditable(false, false, false);
     _dryLevelLabel->setColour(juce::Label::textColourId, _theme.neutral);
 
-    _dryLevelLabel->setBounds (572, 231, 60, 24);
-
-    _wetLevelLabel.reset (new juce::Label ("WetLevelLabel",
-                                           TRANS ("-inf")));
-    addAndMakeVisible (_wetLevelLabel.get());
-    _wetLevelLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _wetLevelLabel->setJustificationType (juce::Justification::centredRight);
-    _wetLevelLabel->setEditable (false, false, false);
+    _wetLevelLabel.reset(new juce::Label("WetLevelLabel", TRANS("-inf")));
+    addAndMakeVisible(_wetLevelLabel.get());
+    _wetLevelLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _wetLevelLabel->setJustificationType(juce::Justification::centredRight);
+    _wetLevelLabel->setEditable(false, false, false);
     _wetLevelLabel->setColour(juce::Label::textColourId, _theme.neutral);
 
-    _wetLevelLabel->setBounds (656, 231, 64, 24);
+    _drySlider.reset(new juce::Slider(juce::String()));
+    addAndMakeVisible(_drySlider.get());
+    _drySlider->setRange(0, 10, 0);
+    _drySlider->setSliderStyle(juce::Slider::LinearVertical);
+    _drySlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
+    _drySlider->addListener(this);
 
-    _drySlider.reset (new juce::Slider (juce::String()));
-    addAndMakeVisible (_drySlider.get());
-    _drySlider->setRange (0, 10, 0);
-    _drySlider->setSliderStyle (juce::Slider::LinearVertical);
-    _drySlider->setTextBoxStyle (juce::Slider::NoTextBox, false, 80, 20);
-    _drySlider->addListener (this);
+    _decibelScaleOut.reset(new DecibelScale());
+    addAndMakeVisible(_decibelScaleOut.get());
 
-    _drySlider->setBounds (612, 43, 24, 192);
+    _wetSlider.reset(new juce::Slider (juce::String()));
+    addAndMakeVisible(_wetSlider.get());
+    _wetSlider->setRange(0, 10, 0);
+    _wetSlider->setSliderStyle(juce::Slider::LinearVertical);
+    _wetSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
+    _wetSlider->addListener(this);
 
-    _decibelScaleOut.reset (new DecibelScale());
-    addAndMakeVisible (_decibelScaleOut.get());
+    _browseButton.reset(new juce::TextButton(juce::String()));
+    addAndMakeVisible(_browseButton.get());
+    _browseButton->setTooltip(TRANS("Show Browser For Impulse Response Selection"));
+    _browseButton->setButtonText(TRANS("Show Browser"));
+    _browseButton->setConnectedEdges(juce::Button::ConnectedOnBottom);
+    _browseButton->addListener(this);
+    _browseButton->setColour(juce::TextButton::buttonOnColourId, juce::Colour (0xffbcbcff));
 
-    _decibelScaleOut->setBounds (672, 51, 32, 176);
+    _irBrowserComponent.reset(new IRBrowserComponent());
+    addAndMakeVisible(_irBrowserComponent.get());
 
-    _wetSlider.reset (new juce::Slider (juce::String()));
-    addAndMakeVisible (_wetSlider.get());
-    _wetSlider->setRange (0, 10, 0);
-    _wetSlider->setSliderStyle (juce::Slider::LinearVertical);
-    _wetSlider->setTextBoxStyle (juce::Slider::NoTextBox, false, 80, 20);
-    _wetSlider->addListener (this);
+    _wetButton.reset(new juce::TextButton(juce::String()));
+    addAndMakeVisible(_wetButton.get());
+    _wetButton->setTooltip(TRANS("Wet Signal On/Off"));
+    _wetButton->setButtonText(TRANS("Wet"));
+    _wetButton->setConnectedEdges(juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
+    _wetButton->addListener(this);
+    _wetButton->setColour(juce::TextButton::buttonColourId, juce::Colour(0x80bcbcbc));
+    _wetButton->setColour(juce::TextButton::buttonOnColourId, juce::Colour(0xffbcbcff));
+    _wetButton->setColour(juce::TextButton::textColourOffId, juce::Colour(0xff202020));
+    _wetButton->setColour(juce::TextButton::textColourOnId, juce::Colour(0xff202020));
 
-    _wetSlider->setBounds (700, 43, 24, 192);
+    _dryButton.reset(new juce::TextButton(juce::String()));
+    addAndMakeVisible(_dryButton.get());
+    _dryButton->setTooltip(TRANS("Dry Signal On/Off"));
+    _dryButton->setButtonText(TRANS("Dry"));
+    _dryButton->setConnectedEdges(juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
+    _dryButton->addListener(this);
+    _dryButton->setColour(juce::TextButton::buttonColourId, juce::Colour(0x80bcbcbc));
+    _dryButton->setColour(juce::TextButton::buttonOnColourId, juce::Colour(0xffbcbcff));
+    _dryButton->setColour(juce::TextButton::textColourOffId, juce::Colour(0xff202020));
+    _dryButton->setColour(juce::TextButton::textColourOnId, juce::Colour(0xff202020));
 
-    _browseButton.reset (new juce::TextButton (juce::String()));
-    addAndMakeVisible (_browseButton.get());
-    _browseButton->setTooltip (TRANS ("Show Browser For Impulse Response Selection"));
-    _browseButton->setButtonText (TRANS ("Show Browser"));
-    _browseButton->setConnectedEdges (juce::Button::ConnectedOnBottom);
-    _browseButton->addListener (this);
-    _browseButton->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0xffbcbcff));
+    _autogainButton.reset(new juce::TextButton(juce::String()));
+    addAndMakeVisible(_autogainButton.get());
+    _autogainButton->setTooltip(TRANS("Autogain On/Off"));
+    _autogainButton->setButtonText(TRANS("Autogain 0.0dB"));
+    _autogainButton->setConnectedEdges(juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
+    _autogainButton->addListener(this);
+    _autogainButton->setColour(juce::TextButton::buttonColourId, juce::Colour(0x80bcbcbc));
+    _autogainButton->setColour(juce::TextButton::buttonOnColourId, juce::Colour(0xffbcbcff));
+    _autogainButton->setColour(juce::TextButton::textColourOffId, juce::Colour(0xff202020));
+    _autogainButton->setColour(juce::TextButton::textColourOnId, juce::Colour(0xff202020));
 
-    _browseButton->setBounds (12, 319, 736, 24);
+    _reverseButton.reset(new juce::TextButton(juce::String()));
+    addAndMakeVisible(_reverseButton.get());
+    _reverseButton->setTooltip(TRANS("Reverse Impulse Response"));
+    _reverseButton->setButtonText(TRANS("Reverse"));
+    _reverseButton->setConnectedEdges(juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
+    _reverseButton->addListener(this);
+    _reverseButton->setColour(juce::TextButton::buttonColourId, juce::Colour(0x80bcbcbc));
+    _reverseButton->setColour(juce::TextButton::buttonOnColourId, juce::Colour(0xffbcbcff));
+    _reverseButton->setColour(juce::TextButton::textColourOffId, juce::Colour(0xff202020));
+    _reverseButton->setColour(juce::TextButton::textColourOnId, juce::Colour(0xff202020));
 
-    _irBrowserComponent.reset (new IRBrowserComponent());
-    addAndMakeVisible (_irBrowserComponent.get());
+    _levelMeterOut.reset(new LevelMeter(_theme));
+    addAndMakeVisible(_levelMeterOut.get());
 
-    _irBrowserComponent->setBounds (12, 343, 736, 288);
+    _levelMeterOutLabelButton.reset(new juce::TextButton(juce::String()));
+    addAndMakeVisible(_levelMeterOutLabelButton.get());
+    _levelMeterOutLabelButton->setTooltip(TRANS("Switches Between Out/Wet Level Measurement"));
+    _levelMeterOutLabelButton->setButtonText(TRANS("Out"));
+    _levelMeterOutLabelButton->setConnectedEdges(juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
+    _levelMeterOutLabelButton->addListener(this);
+    _levelMeterOutLabelButton->setColour(juce::TextButton::buttonColourId, juce::Colour(0x00bbbbff));
+    _levelMeterOutLabelButton->setColour(juce::TextButton::buttonOnColourId, juce::Colour(0x00bcbcff));
+    _levelMeterOutLabelButton->setColour(juce::TextButton::textColourOffId, juce::Colour(0xffb0b0b6));
+    _levelMeterOutLabelButton->setColour(juce::TextButton::textColourOnId, juce::Colour(0xffb0b0b6));
 
-    _wetButton.reset (new juce::TextButton (juce::String()));
-    addAndMakeVisible (_wetButton.get());
-    _wetButton->setTooltip (TRANS ("Wet Signal On/Off"));
-    _wetButton->setButtonText (TRANS ("Wet"));
-    _wetButton->setConnectedEdges (juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
-    _wetButton->addListener (this);
-    _wetButton->setColour (juce::TextButton::buttonColourId, juce::Colour (0x80bcbcbc));
-    _wetButton->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0xffbcbcff));
-    _wetButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xff202020));
-    _wetButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xff202020));
+    _levelMeterDryLabel.reset(new juce::Label(juce::String(), TRANS("Dry")));
+    addAndMakeVisible(_levelMeterDryLabel.get());
+    _levelMeterDryLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _levelMeterDryLabel->setJustificationType(juce::Justification::centred);
+    _levelMeterDryLabel->setEditable(false, false, false);
+    _levelMeterDryLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
+    _levelMeterDryLabel->setColour(juce::TextEditor::textColourId, juce::Colour(0xffb0b0b6));
+    _levelMeterDryLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
 
-    _wetButton->setBounds (684, 255, 44, 24);
-
-    _dryButton.reset (new juce::TextButton (juce::String()));
-    addAndMakeVisible (_dryButton.get());
-    _dryButton->setTooltip (TRANS ("Dry Signal On/Off"));
-    _dryButton->setButtonText (TRANS ("Dry"));
-    _dryButton->setConnectedEdges (juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
-    _dryButton->addListener (this);
-    _dryButton->setColour (juce::TextButton::buttonColourId, juce::Colour (0x80bcbcbc));
-    _dryButton->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0xffbcbcff));
-    _dryButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xff202020));
-    _dryButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xff202020));
-
-    _dryButton->setBounds (596, 255, 44, 24);
-
-    _autogainButton.reset (new juce::TextButton (juce::String()));
-    addAndMakeVisible (_autogainButton.get());
-    _autogainButton->setTooltip (TRANS ("Autogain On/Off"));
-    _autogainButton->setButtonText (TRANS ("Autogain 0.0dB"));
-    _autogainButton->setConnectedEdges (juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
-    _autogainButton->addListener (this);
-    _autogainButton->setColour (juce::TextButton::buttonColourId, juce::Colour (0x80bcbcbc));
-    _autogainButton->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0xffbcbcff));
-    _autogainButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xff202020));
-    _autogainButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xff202020));
-
-    _autogainButton->setBounds (596, 287, 132, 24);
-
-    _reverseButton.reset (new juce::TextButton (juce::String()));
-    addAndMakeVisible (_reverseButton.get());
-    _reverseButton->setTooltip (TRANS ("Reverse Impulse Response"));
-    _reverseButton->setButtonText (TRANS ("Reverse"));
-    _reverseButton->setConnectedEdges (juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
-    _reverseButton->addListener (this);
-    _reverseButton->setColour (juce::TextButton::buttonColourId, juce::Colour (0x80bcbcbc));
-    _reverseButton->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0xffbcbcff));
-    _reverseButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xff202020));
-    _reverseButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xff202020));
-
-    _reverseButton->setBounds (20, 198, 72, 24);
-
-    _levelMeterOut.reset (new LevelMeter(_theme));
-    addAndMakeVisible (_levelMeterOut.get());
-
-    _levelMeterOut->setBounds (720, 51, 12, 176);
-
-    _levelMeterOutLabelButton.reset (new juce::TextButton (juce::String()));
-    addAndMakeVisible (_levelMeterOutLabelButton.get());
-    _levelMeterOutLabelButton->setTooltip (TRANS ("Switches Between Out/Wet Level Measurement"));
-    _levelMeterOutLabelButton->setButtonText (TRANS ("Out"));
-    _levelMeterOutLabelButton->setConnectedEdges (juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
-    _levelMeterOutLabelButton->addListener (this);
-    _levelMeterOutLabelButton->setColour (juce::TextButton::buttonColourId, juce::Colour (0x00bbbbff));
-    _levelMeterOutLabelButton->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0x00bcbcff));
-    _levelMeterOutLabelButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xffb0b0b6));
-    _levelMeterOutLabelButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xffb0b0b6));
-
-    _levelMeterOutLabelButton->setBounds (712, 31, 28, 18);
-
-    _levelMeterDryLabel.reset (new juce::Label (juce::String(),
-                                                TRANS ("Dry")));
-    addAndMakeVisible (_levelMeterDryLabel.get());
-    _levelMeterDryLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _levelMeterDryLabel->setJustificationType (juce::Justification::centred);
-    _levelMeterDryLabel->setEditable (false, false, false);
-    _levelMeterDryLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
-    _levelMeterDryLabel->setColour (juce::TextEditor::textColourId, juce::Colour (0xffb0b0b6));
-    _levelMeterDryLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
-    _levelMeterDryLabel->setBounds (620, 27, 36, 24);
-
-    _titleLabel.reset (new juce::Label ("Title Label",
-                                        TRANS ("Body & Soul:")));
-    addAndMakeVisible (_titleLabel.get());
-    _titleLabel->setFont (juce::Font (35.30f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _titleLabel->setJustificationType (juce::Justification::centredLeft);
-    _titleLabel->setEditable (false, false, false);
+    _titleLabel.reset(new juce::Label("Title Label", TRANS("Body & Soul:")));
+    addAndMakeVisible(_titleLabel.get());
+    _titleLabel->setFont(juce::Font(35.30f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _titleLabel->setJustificationType(juce::Justification::centredLeft);
+    _titleLabel->setEditable(false, false, false);
     _titleLabel->setColour(juce::Label::textColourId, _theme.neutral);
 
-    _titleLabel->setBounds (248, 4, 195, 40);
+    _subtitleLabel.reset(new juce::Label("Subtitle Label", TRANS("Intro")));
+    addAndMakeVisible(_subtitleLabel.get());
+    _subtitleLabel->setFont(juce::Font(35.30f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _subtitleLabel->setJustificationType(juce::Justification::centredLeft);
+    _subtitleLabel->setEditable(false, false, false);
+    _subtitleLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
+    _subtitleLabel->setColour(juce::TextEditor::textColourId, juce::Colour(0xffb0b0b6));
+    _subtitleLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
 
-    _subtitleLabel.reset (new juce::Label ("Subtitle Label",
-                                           TRANS ("Intro")));
-    addAndMakeVisible (_subtitleLabel.get());
-    _subtitleLabel->setFont (juce::Font (35.30f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _subtitleLabel->setJustificationType (juce::Justification::centredLeft);
-    _subtitleLabel->setEditable (false, false, false);
-    _subtitleLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
-    _subtitleLabel->setColour (juce::TextEditor::textColourId, juce::Colour (0xffb0b0b6));
-    _subtitleLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+    _creditsButton.reset(new juce::TextButton(juce::String()));
+    addAndMakeVisible(_creditsButton.get());
+    _creditsButton->setColour(juce::TextButton::buttonColourId, juce::Colour(0x00bbbbff));
+    _creditsButton->setColour(juce::TextButton::buttonOnColourId, juce::Colour(0x002c2cff));
+    _creditsButton->setColour(juce::TextButton::textColourOffId, juce::Colour(0xffb0b0b6));
+    _creditsButton->setColour(juce::TextButton::textColourOnId, juce::Colour(0xffb0b0b6));
 
-    _subtitleLabel->setBounds (432, 4, 79, 40);
-
-    _creditsButton.reset (new juce::TextButton (juce::String()));
-    addAndMakeVisible (_creditsButton.get());
-    _creditsButton->setColour (juce::TextButton::buttonColourId, juce::Colour (0x00bbbbff));
-    _creditsButton->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0x002c2cff));
-    _creditsButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xffb0b0b6));
-    _creditsButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xffb0b0b6));
-
-    _creditsButton->setBounds (244, 4, 268, 40);
-
-    _resetButton.reset (new juce::TextButton (juce::String()));
-    addAndMakeVisible (_resetButton.get());
-    _resetButton->setTooltip (TRANS ("Reset all parameters"));
-    _resetButton->setButtonText (TRANS ("Reset"));
-    _resetButton->setColour (juce::TextButton::buttonColourId, juce::Colour (0x80bcbcbc));
-    _resetButton->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0xffbcbcff));
-    _resetButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xff202020));
-    _resetButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xff202020));
-
-    _resetButton->setBounds (16, 14, 52, 24);
-
+    _resetButton.reset(new juce::TextButton(juce::String()));
+    addAndMakeVisible(_resetButton.get());
+    _resetButton->setTooltip(TRANS("Reset all parameters"));
+    _resetButton->setButtonText(TRANS ("Reset"));
+    _resetButton->setColour(juce::TextButton::buttonColourId, juce::Colour(0x80bcbcbc));
+    _resetButton->setColour(juce::TextButton::buttonOnColourId, juce::Colour(0xffbcbcff));
+    _resetButton->setColour(juce::TextButton::textColourOffId, juce::Colour(0xff202020));
+    _resetButton->setColour(juce::TextButton::textColourOnId, juce::Colour(0xff202020));
 
     //[UserPreSize]
     _rotarySliderLookAndFeel->theme = _theme;
