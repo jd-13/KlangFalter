@@ -118,7 +118,8 @@ private:
     std::unique_ptr<juce::Label> _subtitleLabel;
     std::unique_ptr<juce::TextButton> _creditsButton;
     std::unique_ptr<juce::TextButton> _resetButton;
-
+    std::unique_ptr<juce::TextButton> _saveButton;
+    std::unique_ptr<juce::TextButton> _loadButton;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KlangFalterEditor)

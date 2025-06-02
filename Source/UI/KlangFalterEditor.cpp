@@ -256,10 +256,26 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _resetButton.reset(new juce::TextButton(juce::String()));
     addAndMakeVisible(_resetButton.get());
     _resetButton->setTooltip(TRANS("Reset all parameters"));
-    _resetButton->setButtonText(TRANS ("Reset"));
+    _resetButton->setButtonText(TRANS("Reset"));
     _resetButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, _theme.neutral);
     _resetButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, _theme.neutral);
     _resetButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
+
+    _saveButton.reset(new juce::TextButton(juce::String()));
+    addAndMakeVisible(_saveButton.get());
+    _saveButton->setTooltip(TRANS("Save all parameters to a preset file"));
+    _saveButton->setButtonText(TRANS("Save"));
+    _saveButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, _theme.neutral);
+    _saveButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, _theme.neutral);
+    _saveButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
+
+    _loadButton.reset(new juce::TextButton(juce::String()));
+    addAndMakeVisible(_loadButton.get());
+    _loadButton->setTooltip(TRANS("Load parameters from a preset file"));
+    _loadButton->setButtonText(TRANS("Load"));
+    _loadButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, _theme.neutral);
+    _loadButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, _theme.neutral);
+    _loadButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
 
     //[UserPreSize]
     _rotarySliderLookAndFeel->theme = _theme;
@@ -482,14 +498,25 @@ void KlangFalterEditor::resized()
     // Title row
     {
         const int TITLE_ROW_HEIGHT {scaled(51)};
-        const int TITLE_TEXT_HEIGHT {scaled(40)};
+        const int BUTTON_SPACE_WIDTH {scaled(10)};
+        const int BUTTON_WIDTH {scaled(52)};
+
         juce::Rectangle<int> titleRow = availableArea.removeFromTop(TITLE_ROW_HEIGHT).withTrimmedTop(scaled(4));
+        titleRow.reduce(scaled(16), scaled(14));
+
+        _resetButton->setBounds(titleRow.removeFromLeft(BUTTON_WIDTH));
+        titleRow.removeFromLeft(BUTTON_SPACE_WIDTH);
+        _saveButton->setBounds(titleRow.removeFromLeft(BUTTON_WIDTH));
+        titleRow.removeFromLeft(BUTTON_SPACE_WIDTH);
+        _loadButton->setBounds(titleRow.removeFromLeft(BUTTON_WIDTH));
 
         const int titleRowYCentre {availableArea.getWidth() / 2};
         const int titleTextWidth {_titleLabel->getFont().getStringWidth(_titleLabel->getText())};
         const int titleTextTotalWidth {
             titleTextWidth + _subtitleLabel->getFont().getStringWidth(_subtitleLabel->getText())
         };
+
+        const int TITLE_TEXT_HEIGHT {scaled(40)};
 
         _titleLabel->setBounds(
             titleRowYCentre - titleTextTotalWidth / 2,
@@ -508,8 +535,6 @@ void KlangFalterEditor::resized()
             _titleLabel->getY(),
             titleTextTotalWidth,
             TITLE_TEXT_HEIGHT);
-
-        _resetButton->setBounds(scaled(16), scaled(14), scaled(52), scaled(24));
     }
 
     // Imager row
