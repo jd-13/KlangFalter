@@ -173,7 +173,6 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     addAndMakeVisible(_wetButton.get());
     _wetButton->setTooltip(TRANS("Wet Signal On/Off"));
     _wetButton->setButtonText(TRANS("Wet"));
-    _wetButton->setConnectedEdges(juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
     _wetButton->addListener(this);
     setButtonColours(_wetButton.get());
     _wetButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
@@ -183,7 +182,6 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     addAndMakeVisible(_dryButton.get());
     _dryButton->setTooltip(TRANS("Dry Signal On/Off"));
     _dryButton->setButtonText(TRANS("Dry"));
-    _dryButton->setConnectedEdges(juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
     _dryButton->addListener(this);
     setButtonColours(_dryButton.get());
     _dryButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
@@ -193,7 +191,6 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     addAndMakeVisible(_autogainButton.get());
     _autogainButton->setTooltip(TRANS("Autogain On/Off"));
     _autogainButton->setButtonText(TRANS("Autogain 0.0dB"));
-    _autogainButton->setConnectedEdges(juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
     _autogainButton->addListener(this);
     setButtonColours(_autogainButton.get());
     _autogainButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
@@ -203,7 +200,6 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     addAndMakeVisible(_reverseButton.get());
     _reverseButton->setTooltip(TRANS("Reverse Impulse Response"));
     _reverseButton->setButtonText(TRANS("Reverse"));
-    _reverseButton->setConnectedEdges(juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
     _reverseButton->addListener(this);
     setButtonColours(_reverseButton.get());
     _reverseButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, _theme.waveformContainerNeutral);
