@@ -120,12 +120,18 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _wetLevelLabel->setEditable(false, false, false);
     _wetLevelLabel->setColour(juce::Label::textColourId, _theme.neutral);
 
+    auto setLinearSliderColours = [&](juce::Slider* slider) {
+        slider->setColour(juce::Slider::thumbColourId, _theme.highlight);
+        slider->setColour(juce::Slider::trackColourId, _theme.neutral);
+    };
+
     _drySlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_drySlider.get());
     _drySlider->setRange(0, 10, 0);
     _drySlider->setSliderStyle(juce::Slider::LinearVertical);
     _drySlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
     _drySlider->addListener(this);
+    setLinearSliderColours(_drySlider.get());
 
     _decibelScaleOut.reset(new DecibelScale());
     addAndMakeVisible(_decibelScaleOut.get());
@@ -136,6 +142,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _wetSlider->setSliderStyle(juce::Slider::LinearVertical);
     _wetSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
     _wetSlider->addListener(this);
+    setLinearSliderColours(_wetSlider.get());
 
     _browseButton.reset(new juce::TextButton(juce::String()));
     addAndMakeVisible(_browseButton.get());
@@ -333,14 +340,6 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
 
     _drySlider->setLookAndFeel(_linearSliderLookAndFeel.get());
     _wetSlider->setLookAndFeel(_linearSliderLookAndFeel.get());
-
-    auto setLinearSliderColours = [&](juce::Slider* slider) {
-        slider->setColour(juce::Slider::thumbColourId, _theme.highlight);
-        slider->setColour(juce::Slider::trackColourId, _theme.neutral);
-    };
-
-    setLinearSliderColours(_drySlider.get());
-    setLinearSliderColours(_wetSlider.get());
     //[/UserPreSize]
 
     const juce::Rectangle<int> bounds = _processor.getUIBounds();
