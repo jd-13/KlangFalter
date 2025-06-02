@@ -155,6 +155,8 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _browseButton->setConnectedEdges(juce::Button::ConnectedOnBottom);
     _browseButton->addListener(this);
     _browseButton->setColour(juce::TextButton::buttonOnColourId, juce::Colour (0xffbcbcff));
+    _browseButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
+    _browseButton->setClickingTogglesState(true);
 
     _irBrowserComponent.reset(new IRBrowserComponent());
     addAndMakeVisible(_irBrowserComponent.get());
@@ -169,6 +171,8 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _wetButton->setColour(juce::TextButton::buttonOnColourId, juce::Colour(0xffbcbcff));
     _wetButton->setColour(juce::TextButton::textColourOffId, juce::Colour(0xff202020));
     _wetButton->setColour(juce::TextButton::textColourOnId, juce::Colour(0xff202020));
+    _wetButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
+    _wetButton->setClickingTogglesState(true);
 
     _dryButton.reset(new juce::TextButton(juce::String()));
     addAndMakeVisible(_dryButton.get());
@@ -180,6 +184,8 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _dryButton->setColour(juce::TextButton::buttonOnColourId, juce::Colour(0xffbcbcff));
     _dryButton->setColour(juce::TextButton::textColourOffId, juce::Colour(0xff202020));
     _dryButton->setColour(juce::TextButton::textColourOnId, juce::Colour(0xff202020));
+    _dryButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
+    _dryButton->setClickingTogglesState(true);
 
     _autogainButton.reset(new juce::TextButton(juce::String()));
     addAndMakeVisible(_autogainButton.get());
@@ -191,6 +197,8 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _autogainButton->setColour(juce::TextButton::buttonOnColourId, juce::Colour(0xffbcbcff));
     _autogainButton->setColour(juce::TextButton::textColourOffId, juce::Colour(0xff202020));
     _autogainButton->setColour(juce::TextButton::textColourOnId, juce::Colour(0xff202020));
+    _autogainButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
+    _autogainButton->setClickingTogglesState(true);
 
     _reverseButton.reset(new juce::TextButton(juce::String()));
     addAndMakeVisible(_reverseButton.get());
@@ -202,6 +210,8 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _reverseButton->setColour(juce::TextButton::buttonOnColourId, juce::Colour(0xffbcbcff));
     _reverseButton->setColour(juce::TextButton::textColourOffId, juce::Colour(0xff202020));
     _reverseButton->setColour(juce::TextButton::textColourOnId, juce::Colour(0xff202020));
+    _reverseButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
+    _reverseButton->setClickingTogglesState(true);
 
     _levelMeterOut.reset(new LevelMeter(_theme));
     addAndMakeVisible(_levelMeterOut.get());
@@ -216,6 +226,8 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _levelMeterOutLabelButton->setColour(juce::TextButton::buttonOnColourId, juce::Colour(0x00bcbcff));
     _levelMeterOutLabelButton->setColour(juce::TextButton::textColourOffId, juce::Colour(0xffb0b0b6));
     _levelMeterOutLabelButton->setColour(juce::TextButton::textColourOnId, juce::Colour(0xffb0b0b6));
+    _levelMeterOutLabelButton->setLookAndFeel(_simpleButtonLookAndFeel.get());
+    _levelMeterOutLabelButton->setClickingTogglesState(true);
 
     _levelMeterDryLabel.reset(new juce::Label(juce::String(), TRANS("Dry")));
     addAndMakeVisible(_levelMeterDryLabel.get());
@@ -256,6 +268,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _resetButton->setColour(juce::TextButton::buttonOnColourId, juce::Colour(0xffbcbcff));
     _resetButton->setColour(juce::TextButton::textColourOffId, juce::Colour(0xff202020));
     _resetButton->setColour(juce::TextButton::textColourOnId, juce::Colour(0xff202020));
+    _resetButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
 
     //[UserPreSize]
     _rotarySliderLookAndFeel->theme = _theme;
@@ -313,13 +326,6 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
         button->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, _theme.highlight);
     };
 
-    _dryButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
-    _wetButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
-    _autogainButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
-    _reverseButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
-    _browseButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
-    _resetButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
-
     setButtonColours(_dryButton.get());
     setButtonColours(_wetButton.get());
     setButtonColours(_autogainButton.get());
@@ -349,14 +355,6 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     setConstrainer(_constrainer.get());
 
     _irTabComponent->clearTabs(); // Remove placeholder only used as dummy in the Jucer
-    _browseButton->setClickingTogglesState(true);
-    _dryButton->setClickingTogglesState(true);
-    _wetButton->setClickingTogglesState(true);
-    _autogainButton->setClickingTogglesState(true);
-    _reverseButton->setClickingTogglesState(true);
-    _levelMeterOutLabelButton->setClickingTogglesState(true);
-
-    _levelMeterOutLabelButton->setLookAndFeel(_simpleButtonLookAndFeel.get());
 
     _resetButton->onClick = [&]() {
         _processor.setPredelayMs(0.0);
