@@ -227,16 +227,15 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _titleLabel->setFont(juce::Font(35.30f, juce::Font::plain).withTypefaceStyle("Regular"));
     _titleLabel->setJustificationType(juce::Justification::centredLeft);
     _titleLabel->setEditable(false, false, false);
-    _titleLabel->setColour(juce::Label::textColourId, _theme.neutral);
+    _titleLabel->setColour(juce::Label::textColourId, _theme.neutral.withAlpha(0.5f));
 
     _subtitleLabel.reset(new juce::Label("Subtitle Label", TRANS("Intro")));
     addAndMakeVisible(_subtitleLabel.get());
     _subtitleLabel->setFont(juce::Font(35.30f, juce::Font::plain).withTypefaceStyle("Regular"));
     _subtitleLabel->setJustificationType(juce::Justification::centredLeft);
     _subtitleLabel->setEditable(false, false, false);
-    _subtitleLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
-    _subtitleLabel->setColour(juce::TextEditor::textColourId, juce::Colour(0xffb0b0b6));
-    _subtitleLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+    _subtitleLabel->setColour(juce::Label::textColourId, _theme.subtitle);
+    _subtitleLabel->setText(_theme.productName, juce::dontSendNotification);
 
     _creditsButton.reset(new juce::TextButton(juce::String()));
     addAndMakeVisible(_creditsButton.get());
@@ -304,10 +303,6 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
         juce::DialogWindow* window = _creditsWindowOptions->launchAsync();
         window->centreWithSize(500, 300);
     };
-
-    _titleLabel->setColour(juce::Label::textColourId, _theme.neutral.withAlpha(0.5f));
-    _subtitleLabel->setColour(juce::Label::textColourId, _theme.subtitle);
-    _subtitleLabel->setText(_theme.productName, juce::dontSendNotification);
 
     auto setButtonColours = [&](juce::TextButton* button) {
         button->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, _theme.neutral);
