@@ -131,6 +131,8 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _drySlider->setSliderStyle(juce::Slider::LinearVertical);
     _drySlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
     _drySlider->addListener(this);
+    _drySlider->setDoubleClickReturnValue(true, DecibelScaling::Db2Scale(Parameters::DryDecibels.getDefaultValue()));
+    _drySlider->setLookAndFeel(_linearSliderLookAndFeel.get());
     setLinearSliderColours(_drySlider.get());
 
     _decibelScaleOut.reset(new DecibelScale());
@@ -142,6 +144,8 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _wetSlider->setSliderStyle(juce::Slider::LinearVertical);
     _wetSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
     _wetSlider->addListener(this);
+    _wetSlider->setDoubleClickReturnValue(true, DecibelScaling::Db2Scale(Parameters::WetDecibels.getDefaultValue()));
+    _wetSlider->setLookAndFeel(_linearSliderLookAndFeel.get());
     setLinearSliderColours(_wetSlider.get());
 
     _browseButton.reset(new juce::TextButton(juce::String()));
@@ -332,9 +336,6 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _resetButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, _theme.neutral);
     _levelMeterOutLabelButton->setColour(juce::TextButton::textColourOffId, _theme.neutral);
     _levelMeterOutLabelButton->setColour(juce::TextButton::textColourOnId, _theme.neutral);
-
-    _drySlider->setLookAndFeel(_linearSliderLookAndFeel.get());
-    _wetSlider->setLookAndFeel(_linearSliderLookAndFeel.get());
     //[/UserPreSize]
 
     const juce::Rectangle<int> bounds = _processor.getUIBounds();
@@ -356,11 +357,6 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _levelMeterOutLabelButton->setClickingTogglesState(true);
 
     _levelMeterOutLabelButton->setLookAndFeel(_simpleButtonLookAndFeel.get());
-
-
-    // Double click to default
-    _drySlider->setDoubleClickReturnValue(true, DecibelScaling::Db2Scale(Parameters::DryDecibels.getDefaultValue()));
-    _wetSlider->setDoubleClickReturnValue(true, DecibelScaling::Db2Scale(Parameters::WetDecibels.getDefaultValue()));
 
     _resetButton->onClick = [&]() {
         _processor.setPredelayMs(0.0);
