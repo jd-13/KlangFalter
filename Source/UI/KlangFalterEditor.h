@@ -90,10 +90,13 @@ private:
     std::unique_ptr<ChorusSliderGroup> _chorusSliderGroup;
     std::unique_ptr<juce::ComponentBoundsConstrainer> _constrainer;
     UIUtils::Theme _theme;
+    std::unique_ptr<juce::FileChooser> _fileChooser;
 
     void _updateIRBrowserOpen(bool isOpen);
     int scaled(float value) const;
     float scaledFloat(float value) const;
+    void _onExportToFile(juce::File file);
+    void _onImportFromFile(juce::File file);
     //[/UserVariables]
 
     //==============================================================================

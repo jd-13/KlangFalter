@@ -268,6 +268,13 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _saveButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, _theme.neutral);
     _saveButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, _theme.neutral);
     _saveButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
+    _saveButton->onClick = [&]() {
+        const int flags {juce::FileBrowserComponent::canSelectFiles | juce::FileBrowserComponent::saveMode | juce::FileBrowserComponent::warnAboutOverwriting};
+        _fileChooser.reset(new juce::FileChooser("Save Body and Soul Preset", juce::File(), "*.bas"));
+        _fileChooser->launchAsync(flags, [&](const juce::FileChooser& chooser) {
+            _onExportToFile(chooser.getResult());
+        });
+    };
 
     _loadButton.reset(new juce::TextButton(juce::String()));
     addAndMakeVisible(_loadButton.get());
@@ -276,6 +283,13 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _loadButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, _theme.neutral);
     _loadButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, _theme.neutral);
     _loadButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
+    _loadButton->onClick = [&]() {
+        const int flags {juce::FileBrowserComponent::canSelectFiles | juce::FileBrowserComponent::openMode};
+        _fileChooser.reset(new juce::FileChooser("Load Body and Soul Preset", juce::File(), "*.bas"));
+        _fileChooser->launchAsync(flags, [&](const juce::FileChooser& chooser) {
+            _onImportFromFile(chooser.getResult());
+        });
+    };
 
     //[UserPreSize]
     _rotarySliderLookAndFeel->theme = _theme;
@@ -877,6 +891,20 @@ int KlangFalterEditor::scaled(float value) const {
 float KlangFalterEditor::scaledFloat(float value) const {
     // All measurements based on getWidth(), as getHeight() changes if the browser is open
     return getWidth() / (UIUtils::NOMINAL_WIDTH / value);
+}
+
+void KlangFalterEditor::_onExportToFile(juce::File file) {
+    std::unique_ptr<juce::XmlElement> element = _processor.writeToXml();
+    element->writeTo(file);
+}
+
+void KlangFalterEditor::_onImportFromFile(juce::File file) {
+    if (file.existsAsFile()) {
+        std::unique_ptr<juce::XmlElement> element = juce::XmlDocument::parse(file);
+        if (element != nullptr) {
+            _processor.restoreFromXml(std::move(element));
+        }
+    }
 }
 
 //[/MiscUserCode]

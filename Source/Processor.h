@@ -110,7 +110,10 @@ public:
   void changeProgramName (int index, const juce::String& newName);
 
   void getStateInformation(juce::MemoryBlock& destData);
+  std::unique_ptr<juce::XmlElement> writeToXml();
+
   void setStateInformation(const void* data, int sizeInBytes);
+  void restoreFromXml(std::unique_ptr<juce::XmlElement> element);
 
   float getLevelDry(size_t channel) const;
   float getLevelWet(size_t channel) const;

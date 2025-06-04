@@ -498,27 +498,29 @@ AudioProcessorEditor* Processor::createEditor()
 }
 
 //==============================================================================
-void Processor::getStateInformation (MemoryBlock& destData)
-{
-  const juce::File irDirectory = _settings.getImpulseResponseDirectory();
-  std::unique_ptr<juce::XmlElement> element(SaveState(irDirectory, *this));
-  if (element)
-  {
-    copyXmlToBinary(*element, destData);
-  }
+void Processor::getStateInformation(MemoryBlock& destData) {
+    std::unique_ptr<juce::XmlElement> element(writeToXml());
+    if (element) {
+      copyXmlToBinary(*element, destData);
+    }
 }
 
+std::unique_ptr<juce::XmlElement> Processor::writeToXml() {
+    const juce::File irDirectory = _settings.getImpulseResponseDirectory();
+    return std::unique_ptr<juce::XmlElement>(SaveState(irDirectory, *this));
+}
 
-void Processor::setStateInformation (const void* data, int sizeInBytes)
-{
-  auto element = getXmlFromBinary(data, sizeInBytes);
-  if (element)
-  {
+void Processor::setStateInformation(const void* data, int sizeInBytes) {
+    auto element = getXmlFromBinary(data, sizeInBytes);
+    if (element) {
+      restoreFromXml(std::move(element));
+    }
+}
+
+void Processor::restoreFromXml(std::unique_ptr<juce::XmlElement> element) {
     const juce::File irDirectory = _settings.getImpulseResponseDirectory();
     LoadState(irDirectory, *element, *this);
-  }
 }
-
 
 float Processor::getLevelDry(size_t channel) const
 {
