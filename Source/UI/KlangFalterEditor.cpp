@@ -386,6 +386,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
         _processor.setParameterNotifyingHost(Parameters::ChorusWetGain, Parameters::ChorusWetGain.getDefaultValue());
         _processor.setParameterNotifyingHost(Parameters::ChorusFrequency, Parameters::ChorusFrequency.getDefaultValue());
         _processor.setParameterNotifyingHost(Parameters::ChorusDepth, Parameters::ChorusDepth.getDefaultValue());
+        _processor.setParameterNotifyingHost(Parameters::ChorusWidth, Parameters::ChorusWidth.getDefaultValue());
     };
 
     _processor.addNotificationListener(this);
