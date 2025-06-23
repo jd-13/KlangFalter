@@ -645,10 +645,10 @@ void KlangFalterEditor::resized()
         _stereoSliderGroup->setBounds(slidersTopRow.removeFromLeft(scaled(52)));
         slidersTopRow.removeFromLeft(SPACE_WIDTH);
 
-        _lowEqSliderGroup->setBounds(slidersTopRow.removeFromLeft(scaled(72)));
+        _lowEqSliderGroup->setBounds(slidersTopRow.removeFromLeft(scaled(88)));
         slidersTopRow.removeFromLeft(SPACE_WIDTH);
 
-        _highEqSliderGroup->setBounds(slidersTopRow.removeFromLeft(scaled(72)));
+        _highEqSliderGroup->setBounds(slidersTopRow.removeFromLeft(scaled(88)));
 
         // _shimmerSliderGroup->setBounds(slidersBottomRow.removeFromLeft(scaled(72)));
         // slidersBottomRow.removeFromLeft(SPACE_WIDTH);

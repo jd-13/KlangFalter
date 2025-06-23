@@ -89,7 +89,7 @@ IRSliderGroup::IRSliderGroup(Processor& processor, UIUtils::Theme theme) :
     addAndMakeVisible(_predelayLabel.get());
     styleLabel(_predelayLabel.get(), theme, LABEL_FONT_SIZE);
 
-    _beginHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Begin")));
+    _beginHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Start")));
     addAndMakeVisible(_beginHeaderLabel.get());
     styleLabel(_beginHeaderLabel.get(), theme, LABEL_FONT_SIZE);
 
@@ -534,7 +534,7 @@ LowEqSliderGroup::~LowEqSliderGroup() {
 }
 
 void LowEqSliderGroup::resized() {
-    constexpr float NOMINAL_WIDTH {72};
+    constexpr float NOMINAL_WIDTH {88};
 
     setFontHeight(_lowCutFreqHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
     setFontHeight(_lowCutFreqLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
@@ -680,7 +680,7 @@ HighEqSliderGroup::~HighEqSliderGroup() {
 }
 
 void HighEqSliderGroup::resized() {
-    constexpr float NOMINAL_WIDTH {72};
+    constexpr float NOMINAL_WIDTH {88};
 
     setFontHeight(_highCutFreqHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
 
@@ -825,7 +825,7 @@ ChorusSliderGroup::ChorusSliderGroup(Processor& processor, UIUtils::Theme theme)
         _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()) {
     _rotarySliderLookAndFeel->theme = theme;
 
-    _chorusHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Chorus")));
+    _chorusHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Pitch Modulation")));
     addAndMakeVisible(_chorusHeaderLabel.get());
     styleLabel(_chorusHeaderLabel.get(), theme, GROUP_HEADER_FONT_SIZE);
 
