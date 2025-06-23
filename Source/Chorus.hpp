@@ -36,7 +36,6 @@ public:
     void setWetGain(double wetGain) { _wetGain = wetGain; }
     void setFrequency(float freq);
     void setDepth(float depth);
-    void setWidth(float width) { _rightVoice.setPhaseOffset(width * 180.0f); }
 
 private:
     double _wetGain;

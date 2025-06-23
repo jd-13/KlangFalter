@@ -97,7 +97,6 @@ XmlElement* SaveState(const File& irDirectory, Processor& processor)
   convolutionElement->setAttribute("chorusWetGain", processor.getParameter(Parameters::ChorusWetGain));
   convolutionElement->setAttribute("chorusFrequency", processor.getParameter(Parameters::ChorusFrequency));
   convolutionElement->setAttribute("chorusDepth", processor.getParameter(Parameters::ChorusDepth));
-  convolutionElement->setAttribute("chorusWidth", processor.getParameter(Parameters::ChorusWidth));
   convolutionElement->setAttribute("reverse", processor.getReverse());
   convolutionElement->setAttribute("irBrowserOpen", processor.getIrBrowserOpen());
   convolutionElement->setAttribute("uiBounds", processor.getUIBounds().toString());
@@ -158,7 +157,6 @@ bool LoadState(const File& irDirectory, XmlElement& element, Processor& processo
   double chorusWetGain = element.getDoubleAttribute("chorusWetGain", Parameters::ChorusWetGain.getDefaultValue());
   double chorusFrequency = element.getDoubleAttribute("chorusFrequency", Parameters::ChorusFrequency.getDefaultValue());
   double chorusDepth = element.getDoubleAttribute("chorusDepth", Parameters::ChorusDepth.getDefaultValue());
-  double chorusWidth = element.getDoubleAttribute("chorusWidth", Parameters::ChorusWidth.getDefaultValue());
   bool reverse = element.getBoolAttribute("reverse", false);
   const bool irBrowserOpen = element.getBoolAttribute("irBrowserOpen", false);
 
@@ -220,7 +218,6 @@ bool LoadState(const File& irDirectory, XmlElement& element, Processor& processo
   processor.setParameterNotifyingHost(Parameters::ChorusWetGain, static_cast<float>(chorusWetGain));
   processor.setParameterNotifyingHost(Parameters::ChorusFrequency, static_cast<float>(chorusFrequency));
   processor.setParameterNotifyingHost(Parameters::ChorusDepth, static_cast<float>(chorusDepth));
-  processor.setParameterNotifyingHost(Parameters::ChorusWidth, static_cast<float>(chorusWidth));
   processor.setIRBegin(irBegin);
   processor.setIREnd(irEnd);
   processor.setPredelayMs(predelayMs);

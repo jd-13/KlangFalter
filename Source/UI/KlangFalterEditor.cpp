@@ -386,7 +386,6 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
         _processor.setParameterNotifyingHost(Parameters::ChorusWetGain, Parameters::ChorusWetGain.getDefaultValue());
         _processor.setParameterNotifyingHost(Parameters::ChorusFrequency, Parameters::ChorusFrequency.getDefaultValue());
         _processor.setParameterNotifyingHost(Parameters::ChorusDepth, Parameters::ChorusDepth.getDefaultValue());
-        _processor.setParameterNotifyingHost(Parameters::ChorusWidth, Parameters::ChorusWidth.getDefaultValue());
     };
 
     _processor.addNotificationListener(this);
@@ -654,7 +653,7 @@ void KlangFalterEditor::resized()
         _shimmerSliderGroup->setBounds(slidersBottomRow.removeFromLeft(scaled(72)));
         slidersBottomRow.removeFromLeft(SPACE_WIDTH);
 
-        _chorusSliderGroup->setBounds(slidersBottomRow.removeFromLeft(scaled(144)));
+        _chorusSliderGroup->setBounds(slidersBottomRow.removeFromLeft(scaled(108)));
     }
 
     // IR Browser

@@ -38,6 +38,7 @@ void ChorusVoice::reset() {
 Chorus::Chorus() :
         _wetGain(0.0f),
         _dryBuffer(1, 0) {
+    _rightVoice.setPhaseOffset(180.0f);
 }
 
 void Chorus::prepareToPlay(double sampleRate, int samplesPerBlock, int numChannels) {

@@ -217,8 +217,4 @@ private:
     std::unique_ptr<juce::Label> _chorusDepthHeaderLabel;
     std::unique_ptr<juce::Slider> _chorusDepthSlider;
     std::unique_ptr<juce::Label> _chorusDepthLabel;
-
-    std::unique_ptr<juce::Label> _chorusWidthHeaderLabel;
-    std::unique_ptr<juce::Slider> _chorusWidthSlider;
-    std::unique_ptr<juce::Label> _chorusWidthLabel;
 };

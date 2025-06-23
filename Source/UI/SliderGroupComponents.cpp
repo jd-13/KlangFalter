@@ -880,23 +880,6 @@ ChorusSliderGroup::ChorusSliderGroup(Processor& processor, UIUtils::Theme theme)
     _chorusDepthLabel.reset(new juce::Label(juce::String(), TRANS("0.0")));
     addAndMakeVisible(_chorusDepthLabel.get());
     styleLabel(_chorusDepthLabel.get(), theme, LABEL_FONT_SIZE);
-
-    _chorusWidthHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Width")));
-    addAndMakeVisible(_chorusWidthHeaderLabel.get());
-    styleLabel(_chorusWidthHeaderLabel.get(), theme, LABEL_FONT_SIZE);
-
-    _chorusWidthSlider.reset(new juce::Slider(juce::String()));
-    addAndMakeVisible(_chorusWidthSlider.get());
-    styleSlider(_chorusWidthSlider.get(), _rotarySliderLookAndFeel.get());
-    _chorusWidthSlider->setRange(0, 1, 0);
-    _chorusWidthSlider->setDoubleClickReturnValue(true, Parameters::ChorusWidth.getDefaultValue());
-    _chorusWidthSlider->onValueChange = [this] {
-        _processor.setParameterNotifyingHost(Parameters::ChorusWidth, SnapValue(static_cast<float>(_chorusWidthSlider->getValue()), 0.0f, 0.01f));
-    };
-
-    _chorusWidthLabel.reset(new juce::Label(juce::String(), TRANS("0.0")));
-    addAndMakeVisible(_chorusWidthLabel.get());
-    styleLabel(_chorusWidthLabel.get(), theme, LABEL_FONT_SIZE);
 }
 
 ChorusSliderGroup::~ChorusSliderGroup() {
@@ -913,14 +896,10 @@ ChorusSliderGroup::~ChorusSliderGroup() {
     _chorusDepthHeaderLabel = nullptr;
     _chorusDepthSlider = nullptr;
     _chorusDepthLabel = nullptr;
-
-    _chorusWidthHeaderLabel = nullptr;
-    _chorusWidthSlider = nullptr;
-    _chorusWidthLabel = nullptr;
 }
 
 void ChorusSliderGroup::resized() {
-    constexpr float NOMINAL_WIDTH {144};
+    constexpr float NOMINAL_WIDTH {108};
 
     setFontHeight(_chorusHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), GROUP_HEADER_FONT_SIZE));
 
@@ -933,19 +912,15 @@ void ChorusSliderGroup::resized() {
     setFontHeight(_chorusDepthHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
     setFontHeight(_chorusDepthLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
 
-    setFontHeight(_chorusWidthHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
-    setFontHeight(_chorusWidthLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
-
     juce::Rectangle<int> availableArea = getLocalBounds();
 
     _chorusHeaderLabel->setBounds(availableArea.withHeight(scaled(NOMINAL_WIDTH, getWidth(), 24)));
     availableArea.removeFromTop(scaled(NOMINAL_WIDTH, getWidth(), 16));
 
-    const int sliderAreaWidth {availableArea.getWidth() / 4};
+    const int sliderAreaWidth {availableArea.getWidth() / 3};
     layoutSlider(availableArea.removeFromLeft(sliderAreaWidth), _chorusWetGainHeaderLabel.get(), _chorusWetGainSlider.get(), _chorusWetGainLabel.get(), NOMINAL_WIDTH, getWidth());
     layoutSlider(availableArea.removeFromLeft(sliderAreaWidth), _chorusFrequencyHeaderLabel.get(), _chorusFrequencySlider.get(), _chorusFrequencyLabel.get(), NOMINAL_WIDTH, getWidth());
     layoutSlider(availableArea.removeFromLeft(sliderAreaWidth), _chorusDepthHeaderLabel.get(), _chorusDepthSlider.get(), _chorusDepthLabel.get(), NOMINAL_WIDTH, getWidth());
-    layoutSlider(availableArea, _chorusWidthHeaderLabel.get(), _chorusWidthSlider.get(), _chorusWidthLabel.get(), NOMINAL_WIDTH, getWidth());
 }
 
 void ChorusSliderGroup::onUpdate(bool enableSliders, int numOutputChannels) {
@@ -963,9 +938,4 @@ void ChorusSliderGroup::onUpdate(bool enableSliders, int numOutputChannels) {
     _chorusDepthSlider->setValue(depth, juce::dontSendNotification);
     _chorusDepthSlider->setEnabled(enableSliders);
     _chorusDepthLabel->setText(juce::String(depth, 2), juce::sendNotification);
-
-    const float width = _processor.getParameter(Parameters::ChorusWidth);
-    _chorusWidthSlider->setValue(width, juce::dontSendNotification);
-    _chorusWidthSlider->setEnabled(enableSliders && numOutputChannels >= 2);
-    _chorusWidthLabel->setText(juce::String(width, 2), juce::sendNotification);
 }

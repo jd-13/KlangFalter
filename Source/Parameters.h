@@ -58,7 +58,6 @@ struct Parameters
   static const FloatParameterDescriptor ChorusWetGain;
   static const FloatParameterDescriptor ChorusFrequency;
   static const FloatParameterDescriptor ChorusDepth;
-  static const FloatParameterDescriptor ChorusWidth;
 };
 
 #endif // Header guard
