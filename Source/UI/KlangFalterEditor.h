@@ -30,6 +30,7 @@
 #include "../Processor.h"
 #include "UIUtils.hpp"
 #include "SliderGroupComponents.hpp"
+#include "Title.hpp"
 //[/Headers]
 
 
@@ -79,7 +80,6 @@ private:
     Processor& _processor;
     juce::Component::SafePointer<juce::DialogWindow> _settingsDialogWindow;
     std::map<std::pair<size_t, size_t>, IRComponent*> _irComponents;
-    std::unique_ptr<juce::DialogWindow::LaunchOptions> _creditsWindowOptions;
     std::unique_ptr<IRSliderGroup> _irSliderGroup;
     std::unique_ptr<AttackSliderGroup> _attackSliderGroup;
     std::unique_ptr<DecaySliderGroup> _decaySliderGroup;
@@ -88,6 +88,7 @@ private:
     std::unique_ptr<HighEqSliderGroup> _highEqSliderGroup;
     // std::unique_ptr<ShimmerSliderGroup> _shimmerSliderGroup;
     std::unique_ptr<ChorusSliderGroup> _chorusSliderGroup;
+    std::unique_ptr<Title> _title;
     std::unique_ptr<juce::ComponentBoundsConstrainer> _constrainer;
     UIUtils::Theme _theme;
     std::unique_ptr<juce::FileChooser> _fileChooser;
@@ -117,9 +118,6 @@ private:
     std::unique_ptr<LevelMeter> _levelMeterOut;
     std::unique_ptr<juce::TextButton> _levelMeterOutLabelButton;
     std::unique_ptr<juce::Label> _levelMeterDryLabel;
-    std::unique_ptr<juce::Label> _titleLabel;
-    std::unique_ptr<juce::Label> _subtitleLabel;
-    std::unique_ptr<juce::TextButton> _creditsButton;
     std::unique_ptr<juce::TextButton> _resetButton;
     std::unique_ptr<juce::TextButton> _saveButton;
     std::unique_ptr<juce::TextButton> _loadButton;

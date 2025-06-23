@@ -109,6 +109,8 @@
             file="../../Source/UI/SliderGroupComponents.cpp"/>
       <FILE id="fPHWuW" name="SliderGroupComponents.hpp" compile="0" resource="0"
             file="../../Source/UI/SliderGroupComponents.hpp"/>
+      <FILE id="HpsKfN" name="Title.cpp" compile="1" resource="0" file="../../Source/UI/Title.cpp"/>
+      <FILE id="hBxEa3" name="Title.hpp" compile="0" resource="0" file="../../Source/UI/Title.hpp"/>
       <FILE id="atIeXr" name="UIUtils.cpp" compile="1" resource="0" file="../../Source/UI/UIUtils.cpp"/>
       <FILE id="NpWwBu" name="UIUtils.hpp" compile="0" resource="0" file="../../Source/UI/UIUtils.hpp"/>
       <FILE id="xM5QfR" name="WaveformComponent.cpp" compile="1" resource="0"

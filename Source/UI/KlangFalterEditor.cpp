@@ -41,40 +41,6 @@ T SnapValue(T val, T snapValue, T sensitivity)
 
 namespace {
     constexpr int IR_BROWSER_AREA_HEIGHT {300};
-
-    juce::String buildVersionString(juce::AudioProcessor::WrapperType pluginFormat) {
-        juce::String versionString = JucePlugin_Name;
-        versionString += " ";
-        versionString += JucePlugin_VersionString;
-
-        // Format
-        versionString += " ";
-        versionString += juce::AudioProcessor::getWrapperTypeDescription(pluginFormat);
-
-        // OS
-        versionString += " ";
-#if _WIN32
-        versionString += "Win";
-#elif __APPLE__
-        versionString += "macOS";
-#elif __linux__
-        versionString += "Linux";
-#else
-    #error "Unknown OS"
-#endif
-
-        // Arch
-        versionString += " ";
-#if defined(__x86_64__) || defined(_M_AMD64)
-        versionString += "x86_64";
-#elif defined(__aarch64__) || defined(_M_ARM64)
-        versionString += "arm64";
-#else
-    #error "Unknown arch"
-#endif
-
-        return versionString;
-    }
 }
 
 
@@ -231,28 +197,6 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _levelMeterDryLabel->setColour(juce::TextEditor::textColourId, juce::Colour(0xffb0b0b6));
     _levelMeterDryLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
 
-    _titleLabel.reset(new juce::Label("Title Label", TRANS("Body & Soul:")));
-    addAndMakeVisible(_titleLabel.get());
-    _titleLabel->setFont(juce::Font(35.30f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _titleLabel->setJustificationType(juce::Justification::centredLeft);
-    _titleLabel->setEditable(false, false, false);
-    _titleLabel->setColour(juce::Label::textColourId, _theme.neutral.withAlpha(0.5f));
-
-    _subtitleLabel.reset(new juce::Label("Subtitle Label", TRANS("Intro")));
-    addAndMakeVisible(_subtitleLabel.get());
-    _subtitleLabel->setFont(juce::Font(35.30f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _subtitleLabel->setJustificationType(juce::Justification::centredLeft);
-    _subtitleLabel->setEditable(false, false, false);
-    _subtitleLabel->setColour(juce::Label::textColourId, _theme.subtitle);
-    _subtitleLabel->setText(_theme.productName, juce::dontSendNotification);
-
-    _creditsButton.reset(new juce::TextButton(juce::String()));
-    addAndMakeVisible(_creditsButton.get());
-    _creditsButton->setColour(juce::TextButton::buttonColourId, juce::Colour(0x00bbbbff));
-    _creditsButton->setColour(juce::TextButton::buttonOnColourId, juce::Colour(0x002c2cff));
-    _creditsButton->setColour(juce::TextButton::textColourOffId, juce::Colour(0xffb0b0b6));
-    _creditsButton->setColour(juce::TextButton::textColourOnId, juce::Colour(0xffb0b0b6));
-
     _resetButton.reset(new juce::TextButton(juce::String()));
     addAndMakeVisible(_resetButton.get());
     _resetButton->setTooltip(TRANS("Reset all parameters"));
@@ -320,31 +264,8 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     customLookAndFeel->theme = _theme;
     setLookAndFeel(customLookAndFeel);
 
-    _creditsWindowOptions.reset(new juce::DialogWindow::LaunchOptions());
-    _creditsWindowOptions->dialogTitle = "Credits";
-    _creditsWindowOptions->dialogBackgroundColour = _theme.background;
-    _creditsWindowOptions->componentToCentreAround = this;
-    _creditsWindowOptions->useNativeTitleBar = false;
-
-    _creditsButton->onClick = [&]() {
-        const juce::String versionString = buildVersionString(getAudioProcessor()->wrapperType);
-
-        const juce::String credits(juce::CharPointer_UTF8(
-            "Concept and IR design: The Sound of Merlin\n"
-            "Programming: White Elephant Audio\n"
-            "Support: info@thesoundofmerlin.com\n"
-            "\n"
-            "Body & Soul: Intro is open source software (GPLv3) and is based on Klangfalter from HiFi-LoFi.\n"
-            "\n"
-            "This convolution reverb was conceived to be used as a module in White Elephant Audio's plugin host Syndicate but can also be used separately from it.\n"
-            "\n"
-            "A special thank you goes to Eirik Gr\xc3\xb8nner from Demningen Studios in Norway for his wonderful suggestions and support.\n"
-            "\n"));
-
-        _creditsWindowOptions->content.set(new juce::Label("Credits", credits + versionString), true);
-        juce::DialogWindow* window = _creditsWindowOptions->launchAsync();
-        window->centreWithSize(500, 300);
-    };
+    _title.reset(new Title(_theme, getAudioProcessor()->wrapperType));
+    addAndMakeVisible(_title.get());
     //[/UserPreSize]
 
     const juce::Rectangle<int> bounds = _processor.getUIBounds();
@@ -433,10 +354,8 @@ KlangFalterEditor::~KlangFalterEditor()
     _levelMeterOut = nullptr;
     _levelMeterOutLabelButton = nullptr;
     _levelMeterDryLabel = nullptr;
-    _titleLabel = nullptr;
-    _subtitleLabel = nullptr;
-    _creditsButton = nullptr;
     _resetButton = nullptr;
+    _title = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -504,51 +423,17 @@ void KlangFalterEditor::resized()
         label->setFont(label->getFont().withHeight(height));
     };
 
-    setFontHeight(_titleLabel.get(), scaledFloat(35.30f));
-    setFontHeight(_subtitleLabel.get(), scaledFloat(35.30f));
-
     juce::Rectangle<int> availableArea = getLocalBounds();
 
     // Title row
     {
-        const int TITLE_ROW_HEIGHT {scaled(51)};
-        const int BUTTON_SPACE_WIDTH {scaled(10)};
-        const int BUTTON_WIDTH {scaled(52)};
+        const int TITLE_ROW_HEIGHT {scaled(61)};
+        const int TITLE_WIDTH {scaled(240)};
 
-        juce::Rectangle<int> titleRow = availableArea.removeFromTop(TITLE_ROW_HEIGHT).withTrimmedTop(scaled(4));
-        titleRow.reduce(scaled(16), scaled(14));
+        juce::Rectangle<int> titleRow = availableArea.removeFromTop(TITLE_ROW_HEIGHT);
+        titleRow.reduce(scaled(10), scaled(10));
 
-        _resetButton->setBounds(titleRow.removeFromLeft(BUTTON_WIDTH));
-        titleRow.removeFromLeft(BUTTON_SPACE_WIDTH);
-        _saveButton->setBounds(titleRow.removeFromLeft(BUTTON_WIDTH));
-        titleRow.removeFromLeft(BUTTON_SPACE_WIDTH);
-        _loadButton->setBounds(titleRow.removeFromLeft(BUTTON_WIDTH));
-
-        const int titleRowYCentre {availableArea.getWidth() / 2};
-        const int titleTextWidth {_titleLabel->getFont().getStringWidth(_titleLabel->getText())};
-        const int titleTextTotalWidth {
-            titleTextWidth + _subtitleLabel->getFont().getStringWidth(_subtitleLabel->getText())
-        };
-
-        const int TITLE_TEXT_HEIGHT {scaled(40)};
-
-        _titleLabel->setBounds(
-            titleRowYCentre - titleTextTotalWidth / 2,
-            scaled(4),
-            titleTextWidth,
-            TITLE_TEXT_HEIGHT);
-
-        _subtitleLabel->setBounds(
-            titleRowYCentre - titleTextTotalWidth / 2 + titleTextWidth,
-            scaled(4),
-            titleTextTotalWidth - titleTextWidth,
-            TITLE_TEXT_HEIGHT);
-
-        _creditsButton->setBounds(
-            _titleLabel->getX(),
-            _titleLabel->getY(),
-            titleTextTotalWidth,
-            TITLE_TEXT_HEIGHT);
+        _title->setBounds(titleRow.removeFromRight(TITLE_WIDTH).reduced(0, scaled(5)));
     }
 
     // Imager row
