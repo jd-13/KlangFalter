@@ -600,6 +600,7 @@ void KlangFalterEditor::updateUI()
   _highEqSliderGroup->onUpdate(irAvailable);
 //   _shimmerSliderGroup->onUpdate(irAvailable);
   _chorusSliderGroup->onUpdate(irAvailable, numOutputChannels);
+  _saveLoadComponent->refresh();
   {
     const float db = _processor.getParameter(Parameters::DryDecibels);
     const float scale = DecibelScaling::Db2Scale(db);

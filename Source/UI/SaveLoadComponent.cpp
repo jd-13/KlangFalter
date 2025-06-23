@@ -115,9 +115,14 @@ void SaveLoadComponent::resized() {
     _nameLabel->setFont(_nameLabel->getFont().withHeight(_nameLabel->getHeight() * 0.8));
 }
 
+void SaveLoadComponent::refresh() {
+    _nameLabel->setText(_processor.getPresetName(), juce::dontSendNotification);
+}
+
 void SaveLoadComponent::_onSaveToFile(juce::File file) {
     std::unique_ptr<juce::XmlElement> element = _processor.writeToXml();
     element->writeTo(file);
+    _processor.setPresetName(file.getFileNameWithoutExtension());
 }
 
 void SaveLoadComponent::_onLoadFromFile(juce::File file) {
@@ -125,6 +130,7 @@ void SaveLoadComponent::_onLoadFromFile(juce::File file) {
         std::unique_ptr<juce::XmlElement> element = juce::XmlDocument::parse(file);
         if (element != nullptr) {
             _processor.restoreFromXml(std::move(element));
+            _processor.setPresetName(file.getFileNameWithoutExtension());
         }
     }
 }

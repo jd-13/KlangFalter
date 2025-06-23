@@ -12,6 +12,8 @@ public:
 
     void resized() override;
 
+    void refresh();
+
 private:
     std::unique_ptr<UIUtils::ToggleButtonLookAndFeel> _toggleButtonLookAndFeel;
     std::unique_ptr<juce::TextButton> _resetButton;

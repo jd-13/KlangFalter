@@ -100,6 +100,7 @@ XmlElement* SaveState(const File& irDirectory, Processor& processor)
   convolutionElement->setAttribute("reverse", processor.getReverse());
   convolutionElement->setAttribute("irBrowserOpen", processor.getIrBrowserOpen());
   convolutionElement->setAttribute("uiBounds", processor.getUIBounds().toString());
+  convolutionElement->setAttribute("presetName", processor.getPresetName());
 
   // IRs
   auto irAgents = processor.getAgents();
@@ -159,6 +160,7 @@ bool LoadState(const File& irDirectory, XmlElement& element, Processor& processo
   double chorusDepth = element.getDoubleAttribute("chorusDepth", Parameters::ChorusDepth.getDefaultValue());
   bool reverse = element.getBoolAttribute("reverse", false);
   const bool irBrowserOpen = element.getBoolAttribute("irBrowserOpen", false);
+  const juce::String presetName = element.getStringAttribute("presetName", juce::String());
 
   if (element.hasAttribute("uiBounds")) {
     processor.setUIBounds(juce::Rectangle<int>::fromString(element.getStringAttribute("uiBounds")), false);
@@ -227,6 +229,7 @@ bool LoadState(const File& irDirectory, XmlElement& element, Processor& processo
   processor.setStretch(stretch);
   processor.setReverse(reverse);
   processor.setIrBrowserOpen(irBrowserOpen);
+  processor.setPresetName(presetName);
   for (auto it=irConfigurations.begin(); it!=irConfigurations.end(); ++it)
   {
     IRAgent* irAgent = it->_irAgent;

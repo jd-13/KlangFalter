@@ -1024,3 +1024,12 @@ void Processor::setUIBounds(const juce::Rectangle<int>& bounds, bool shouldUpdat
 juce::Rectangle<int> Processor::getUIBounds() const {
   return _uiBounds;
 }
+
+void Processor::setPresetName(const juce::String& name) {
+  _presetName = name;
+  notifyAboutChange();
+}
+
+juce::String Processor::getPresetName() const {
+  return _presetName;
+}

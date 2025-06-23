@@ -170,6 +170,9 @@ public:
   void setUIBounds(const juce::Rectangle<int>& bounds, bool shouldUpdateInSettings);
   juce::Rectangle<int> getUIBounds() const;
 
+  void setPresetName(const juce::String& name);
+  juce::String getPresetName() const;
+
 private:
   juce::AudioSampleBuffer _wetBuffer;
   juce::AudioSampleBuffer _shimmerBuffer;
@@ -204,6 +207,7 @@ private:
   std::unique_ptr<juce::Thread> _irCalculation;
 
   bool _irBrowserOpen;
+  juce::String _presetName;
 
   // Shimmer _shimmer;
   Chorus _chorus;
