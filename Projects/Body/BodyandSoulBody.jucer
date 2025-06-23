@@ -105,10 +105,16 @@
             file="../../Source/UI/KlangFalterEditor.h"/>
       <FILE id="VEaG8F" name="LevelMeter.cpp" compile="1" resource="0" file="../../Source/UI/LevelMeter.cpp"/>
       <FILE id="zRwaj0" name="LevelMeter.h" compile="0" resource="0" file="../../Source/UI/LevelMeter.h"/>
+      <FILE id="o3y17r" name="SaveLoadComponent.cpp" compile="1" resource="0"
+            file="../../Source/UI/SaveLoadComponent.cpp"/>
+      <FILE id="zPU5Ng" name="SaveLoadComponent.hpp" compile="0" resource="0"
+            file="../../Source/UI/SaveLoadComponent.hpp"/>
       <FILE id="EHhfnf" name="SliderGroupComponents.cpp" compile="1" resource="0"
             file="../../Source/UI/SliderGroupComponents.cpp"/>
       <FILE id="fPHWuW" name="SliderGroupComponents.hpp" compile="0" resource="0"
             file="../../Source/UI/SliderGroupComponents.hpp"/>
+      <FILE id="HpsKfN" name="Title.cpp" compile="1" resource="0" file="../../Source/UI/Title.cpp"/>
+      <FILE id="hBxEa3" name="Title.hpp" compile="0" resource="0" file="../../Source/UI/Title.hpp"/>
       <FILE id="atIeXr" name="UIUtils.cpp" compile="1" resource="0" file="../../Source/UI/UIUtils.cpp"/>
       <FILE id="NpWwBu" name="UIUtils.hpp" compile="0" resource="0" file="../../Source/UI/UIUtils.hpp"/>
       <FILE id="xM5QfR" name="WaveformComponent.cpp" compile="1" resource="0"
@@ -152,8 +158,6 @@
     <FILE id="FjlYnw" name="Processor.h" compile="0" resource="0" file="../../Source/Processor.h"/>
     <FILE id="dxea9X" name="Settings.cpp" compile="1" resource="0" file="../../Source/Settings.cpp"/>
     <FILE id="OsElLF" name="Settings.h" compile="0" resource="0" file="../../Source/Settings.h"/>
-    <FILE id="YKpZOr" name="Shimmer.cpp" compile="1" resource="0" file="../../Source/Shimmer.cpp"/>
-    <FILE id="TfqFm1" name="Shimmer.hpp" compile="0" resource="0" file="../../Source/Shimmer.hpp"/>
     <FILE id="pWwoGQ" name="SmoothValue.h" compile="0" resource="0" file="../../Source/SmoothValue.h"/>
     <FILE id="e4ayW0" name="StereoWidth.cpp" compile="1" resource="0" file="../../Source/StereoWidth.cpp"/>
     <FILE id="snyExm" name="StereoWidth.h" compile="0" resource="0" file="../../Source/StereoWidth.h"/>
