@@ -3,8 +3,8 @@
 #include <JuceHeader.h>
 
 namespace UIUtils {
-    inline constexpr float NOMINAL_WIDTH {760};
-    inline constexpr float NOMINAL_HEIGHT {421};
+    inline constexpr float NOMINAL_WIDTH {654};
+    inline constexpr float NOMINAL_HEIGHT {431};
 
     struct Theme {
         juce::String productName;

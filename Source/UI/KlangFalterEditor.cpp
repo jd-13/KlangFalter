@@ -261,6 +261,12 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _chorusSliderGroup.reset(new ChorusSliderGroup(_processor, _theme));
     addAndMakeVisible(_chorusSliderGroup.get());
 
+    _tomLogo.reset(new Logo(juce::ImageCache::getFromMemory(BinaryData::tom_png, BinaryData::tom_pngSize)));
+    addAndMakeVisible(_tomLogo.get());
+
+    _weaLogo.reset(new Logo(juce::ImageCache::getFromMemory(BinaryData::wea_png, BinaryData::wea_pngSize)));
+    addAndMakeVisible(_weaLogo.get());
+
     customLookAndFeel->theme = _theme;
     setLookAndFeel(customLookAndFeel);
 
@@ -371,45 +377,7 @@ void KlangFalterEditor::paint (juce::Graphics& g)
     g.fillAll (juce::Colour (0xff313131));
 
     //[UserPaint] Add your own custom painting code here..
-    // constexpr int logoHeight {36};
-    // const int xMid {getWidth() / 2};
-    // constexpr int xOffset {200};
-    // g.setColour(_theme.neutral.withAlpha(0.2f));
-    // {
-    //     juce::Image tomLogo(juce::ImageCache::getFromMemory(BinaryData::tom_png, BinaryData::tom_pngSize));
-    //     const float aspect {tomLogo.getWidth() / static_cast<float>(tomLogo.getHeight())};
-    //     const int width {static_cast<int>(logoHeight * aspect)};
-    //     g.drawImage(tomLogo, xMid - xOffset - width / 2, 8, width, logoHeight, 0, 0, tomLogo.getWidth(), tomLogo.getHeight(), true);
-    // }
-    // {
-    //     juce::Image weaLogo(juce::ImageCache::getFromMemory(BinaryData::wea_png, BinaryData::wea_pngSize));
-    //     const float aspect {weaLogo.getWidth() / static_cast<float>(weaLogo.getHeight())};
-    //     const int width {static_cast<int>(logoHeight * aspect)};
-    //     g.drawImage(weaLogo, xMid + xOffset - width / 2, 8, width, logoHeight, 0, 0, weaLogo.getWidth(), weaLogo.getHeight(), true);
-    // }
-
-    const int logoAreaWidth {_decibelScaleDry->getX() - _irTabComponent->getRight()};
-    const int xMid {_irTabComponent->getRight() + logoAreaWidth / 2};
     g.fillAll(juce::Colour(_theme.background));
-    {
-        const int logoWidth {scaled(35)};
-        juce::Image tomLogo(juce::ImageCache::getFromMemory(BinaryData::tom_png, BinaryData::tom_pngSize));
-        const float aspect {tomLogo.getWidth() / static_cast<float>(tomLogo.getHeight())};
-        const int logoHeight {static_cast<int>(logoWidth / aspect)};
-        g.drawImage(tomLogo,
-                    xMid - logoWidth / 2, scaled(60), logoWidth, logoHeight,
-                    0, 0, tomLogo.getWidth(), tomLogo.getHeight());
-    }
-    {
-        const int logoWidth {scaled(80)};
-        juce::Image weaLogo(juce::ImageCache::getFromMemory(BinaryData::wea_png, BinaryData::wea_pngSize));
-        const float aspect {weaLogo.getWidth() / static_cast<float>(weaLogo.getHeight())};
-        const int logoHeight {static_cast<int>(logoWidth / aspect)};
-        g.drawImage(weaLogo,
-                    xMid - logoWidth / 2, scaled(170), logoWidth, logoHeight,
-                    0, 0, weaLogo.getWidth(), weaLogo.getHeight());
-    }
-
     //[/UserPaint]
 }
 
@@ -439,12 +407,12 @@ void KlangFalterEditor::resized()
     // Imager row
     const int METERS_TOTAL_WIDTH {scaled(160)};
     {
-        const int IMAGER_ROW_HEIGHT {scaled(176)};
+        const int IMAGER_ROW_HEIGHT {scaled(166)};
         const int IMAGER_ROW_MARGIN {scaled(16)};
         juce::Rectangle<int> imagerRow = availableArea.removeFromTop(IMAGER_ROW_HEIGHT);
         imagerRow.reduce(IMAGER_ROW_MARGIN, 0);
 
-        juce::Rectangle<int> metersArea = imagerRow.removeFromRight(METERS_TOTAL_WIDTH);
+        juce::Rectangle<int> metersArea = imagerRow.removeFromLeft(METERS_TOTAL_WIDTH);
 
         auto getMeterSliderBounds = [&](juce::Rectangle<int> bounds, const juce::Rectangle<int>& metersArea) {
             return bounds.withBottomY(metersArea.getBottom() - scaled(8)).withHeight(metersArea.getHeight() + scaled(16));
@@ -453,15 +421,18 @@ void KlangFalterEditor::resized()
         juce::Rectangle<int> meterButtonsArea = metersArea.removeFromTop(scaled(18));
 
         const int METER_WIDTH {scaled(12)};
-        const int METER_SLIDER_WIDTH {METER_WIDTH * 2};
-        const int METER_SCALE_WIDTH {METER_WIDTH * 3};
-        _levelMeterOut->setBounds(metersArea.removeFromRight(METER_WIDTH));
-        _wetSlider->setBounds(getMeterSliderBounds(metersArea.removeFromRight(METER_SLIDER_WIDTH), metersArea));
-        _decibelScaleOut->setBounds(metersArea.removeFromRight(METER_SCALE_WIDTH));
+        const float METER_SLIDER_WIDTH {METER_WIDTH * 2.0f};
+        const float METER_SCALE_WIDTH {METER_WIDTH * 1.5f};
 
         _decibelScaleDry->setBounds(metersArea.removeFromLeft(METER_SCALE_WIDTH));
         _drySlider->setBounds(getMeterSliderBounds(metersArea.removeFromLeft(METER_SLIDER_WIDTH), metersArea));
         _levelMeterDry->setBounds(metersArea.removeFromLeft(METER_WIDTH));
+
+        const int SPACE_WIDTH {scaled(30)};
+        metersArea.removeFromLeft(SPACE_WIDTH);
+        _decibelScaleOut->setBounds(metersArea.removeFromLeft(METER_SCALE_WIDTH));
+        _wetSlider->setBounds(getMeterSliderBounds(metersArea.removeFromLeft(METER_SLIDER_WIDTH), metersArea));
+        _levelMeterOut->setBounds(metersArea.removeFromLeft(METER_WIDTH));
 
         auto positionMeterButton = [&](juce::Component* button, const std::unique_ptr<LevelMeter>& meter) {
             const int BUTTON_WIDTH {scaled(28)};
@@ -472,10 +443,9 @@ void KlangFalterEditor::resized()
         positionMeterButton(_levelMeterOutLabelButton.get(), _levelMeterOut);
         setFontHeight(_levelMeterDryLabel.get(), scaledFloat(14.0f));
 
-        imagerRow.removeFromRight(scaled(106));
         _irTabComponent->setBounds(imagerRow);
 
-        _reverseButton->setBounds(scaled(20), scaled(198), scaled(72), scaled(24));
+        _reverseButton->setBounds(_irTabComponent->getX() + scaled(6), scaled(198), scaled(72), scaled(24));
     }
 
     // Sliders row
@@ -484,7 +454,7 @@ void KlangFalterEditor::resized()
 
     // Gain buttons
     {
-        juce::Rectangle<int> gainButtonsArea = slidersTopRow.removeFromRight(METERS_TOTAL_WIDTH);
+        juce::Rectangle<int> gainButtonsArea = slidersTopRow.removeFromLeft(METERS_TOTAL_WIDTH);
         juce::Rectangle<int> gainButtonLabelsRow = gainButtonsArea.removeFromTop(scaled(24));
 
         const int LEVEL_LABEL_WIDTH {scaled(60)};
@@ -508,12 +478,32 @@ void KlangFalterEditor::resized()
         flexBox.performLayout(gainButtonsArea.toFloat());
     }
 
-    slidersTopRow.removeFromTop(scaled(4));
-    slidersTopRow.removeFromBottom(scaled(4));
-    slidersTopRow.removeFromLeft(scaled(12));
+    // Logos
+    {
+        juce::Rectangle<int> logoArea = slidersBottomRow.removeFromLeft(METERS_TOTAL_WIDTH);
+        logoArea.reduce(scaled(4), scaled(16));
 
+        juce::FlexBox flexBox;
+        flexBox.flexDirection = juce::FlexBox::Direction::row;
+        flexBox.flexWrap = juce::FlexBox::Wrap::wrap;
+        flexBox.justifyContent = juce::FlexBox::JustifyContent::spaceAround;
+        flexBox.alignContent = juce::FlexBox::AlignContent::flexStart;
+
+        const int height {logoArea.getHeight()};
+        flexBox.items.add(juce::FlexItem(*_tomLogo.get()).withMinWidth(scaled(50)).withMinHeight(height));
+        flexBox.items.add(juce::FlexItem(*_weaLogo.get()).withMinWidth(scaled(50)).withMinHeight(height));
+        flexBox.performLayout(logoArea.toFloat());
+    }
+
+    slidersTopRow.removeFromTop(scaled(4));
+    slidersTopRow.removeFromBottom(scaled(2));
+    slidersTopRow.removeFromLeft(scaled(20));
+    slidersTopRow.removeFromRight(scaled(20));
+
+    slidersBottomRow.removeFromTop(scaled(2));
     slidersBottomRow.removeFromBottom(scaled(4));
-    slidersBottomRow.removeFromLeft(scaled(12));
+    slidersBottomRow.removeFromLeft(scaled(20));
+    slidersBottomRow.removeFromRight(scaled(20));
 
     // Sliders
     {

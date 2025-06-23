@@ -30,6 +30,7 @@
 #include "../Processor.h"
 #include "UIUtils.hpp"
 #include "SliderGroupComponents.hpp"
+#include "Logo.hpp"
 #include "Title.hpp"
 //[/Headers]
 
@@ -89,6 +90,8 @@ private:
     // std::unique_ptr<ShimmerSliderGroup> _shimmerSliderGroup;
     std::unique_ptr<ChorusSliderGroup> _chorusSliderGroup;
     std::unique_ptr<Title> _title;
+    std::unique_ptr<Logo> _tomLogo;
+    std::unique_ptr<Logo> _weaLogo;
     std::unique_ptr<juce::ComponentBoundsConstrainer> _constrainer;
     UIUtils::Theme _theme;
     std::unique_ptr<juce::FileChooser> _fileChooser;
