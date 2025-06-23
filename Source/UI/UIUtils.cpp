@@ -118,7 +118,7 @@ namespace UIUtils {
             g.setColour(textButton.findColour(offColour));
         }
 
-        g.setFont(g.getCurrentFont().withHeight(scaled(textButton.getParentWidth(), 14.0f)));
+        g.setFont(g.getCurrentFont().withHeight(scaled(textButton.getTopLevelComponent()->getWidth(), 14.0f)));
 
         constexpr int MARGIN {0};
         g.drawFittedText(textButton.getButtonText(),
