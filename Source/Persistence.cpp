@@ -92,8 +92,8 @@ XmlElement* SaveState(const File& irDirectory, Processor& processor)
   convolutionElement->setAttribute("attackShape", processor.getAttackShape());
   convolutionElement->setAttribute("decayShape", processor.getDecayShape());
   convolutionElement->setAttribute("stereoWidth", processor.getParameter(Parameters::StereoWidth));
-  convolutionElement->setAttribute("shimmerWetGain", processor.getParameter(Parameters::ShimmerWetGain));
-  convolutionElement->setAttribute("shimmerFeedback", processor.getParameter(Parameters::ShimmerFeedback));
+  // convolutionElement->setAttribute("shimmerWetGain", processor.getParameter(Parameters::ShimmerWetGain));
+  // convolutionElement->setAttribute("shimmerFeedback", processor.getParameter(Parameters::ShimmerFeedback));
   convolutionElement->setAttribute("chorusWetGain", processor.getParameter(Parameters::ChorusWetGain));
   convolutionElement->setAttribute("chorusFrequency", processor.getParameter(Parameters::ChorusFrequency));
   convolutionElement->setAttribute("chorusDepth", processor.getParameter(Parameters::ChorusDepth));
@@ -152,8 +152,8 @@ bool LoadState(const File& irDirectory, XmlElement& element, Processor& processo
   double attackShape = element.getDoubleAttribute("attackShape", 0.0);
   double decayShape = element.getDoubleAttribute("decayShape", 0.0);
   double stereoWidth = element.getDoubleAttribute("stereoWidth", Parameters::StereoWidth.getDefaultValue());
-  double shimmerWetGain = element.getDoubleAttribute("shimmerWetGain", Parameters::ShimmerWetGain.getDefaultValue());
-  double shimmerFeedback = element.getDoubleAttribute("shimmerFeedback", Parameters::ShimmerFeedback.getDefaultValue());
+  // double shimmerWetGain = element.getDoubleAttribute("shimmerWetGain", Parameters::ShimmerWetGain.getDefaultValue());
+  // double shimmerFeedback = element.getDoubleAttribute("shimmerFeedback", Parameters::ShimmerFeedback.getDefaultValue());
   double chorusWetGain = element.getDoubleAttribute("chorusWetGain", Parameters::ChorusWetGain.getDefaultValue());
   double chorusFrequency = element.getDoubleAttribute("chorusFrequency", Parameters::ChorusFrequency.getDefaultValue());
   double chorusDepth = element.getDoubleAttribute("chorusDepth", Parameters::ChorusDepth.getDefaultValue());
@@ -213,8 +213,8 @@ bool LoadState(const File& irDirectory, XmlElement& element, Processor& processo
   processor.setParameterNotifyingHost(Parameters::EqHighShelfFreq, static_cast<float>(eqHiShelfFreq));
   processor.setParameterNotifyingHost(Parameters::EqHighShelfDecibels, static_cast<float>(eqHiShelfDecibels));
   processor.setParameterNotifyingHost(Parameters::StereoWidth, static_cast<float>(stereoWidth));
-  processor.setParameterNotifyingHost(Parameters::ShimmerWetGain, static_cast<float>(shimmerWetGain));
-  processor.setParameterNotifyingHost(Parameters::ShimmerFeedback, static_cast<float>(shimmerFeedback));
+  // processor.setParameterNotifyingHost(Parameters::ShimmerWetGain, static_cast<float>(shimmerWetGain));
+  // processor.setParameterNotifyingHost(Parameters::ShimmerFeedback, static_cast<float>(shimmerFeedback));
   processor.setParameterNotifyingHost(Parameters::ChorusWetGain, static_cast<float>(chorusWetGain));
   processor.setParameterNotifyingHost(Parameters::ChorusFrequency, static_cast<float>(chorusFrequency));
   processor.setParameterNotifyingHost(Parameters::ChorusDepth, static_cast<float>(chorusDepth));

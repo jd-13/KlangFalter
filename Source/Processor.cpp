@@ -91,8 +91,8 @@ Processor::Processor() :
   _parameterSet.registerParameter(Parameters::EqHighShelfFreq);
   _parameterSet.registerParameter(Parameters::EqHighShelfDecibels);
   _parameterSet.registerParameter(Parameters::StereoWidth);
-  _parameterSet.registerParameter(Parameters::ShimmerWetGain);
-  _parameterSet.registerParameter(Parameters::ShimmerFeedback);
+  // _parameterSet.registerParameter(Parameters::ShimmerWetGain);
+  // _parameterSet.registerParameter(Parameters::ShimmerFeedback);
   _parameterSet.registerParameter(Parameters::ChorusWetGain);
   _parameterSet.registerParameter(Parameters::ChorusFrequency);
   _parameterSet.registerParameter(Parameters::ChorusDepth);
@@ -284,7 +284,7 @@ void Processor::prepareToPlay(double sampleRate, int samplesPerBlock)
   notifyAboutChange();
   updateConvolvers();
 
-  _shimmer.prepareToPlay(sampleRate, samplesPerBlock, getTotalNumOutputChannels());
+  // _shimmer.prepareToPlay(sampleRate, samplesPerBlock, getTotalNumOutputChannels());
   _chorus.prepareToPlay(sampleRate, samplesPerBlock, getTotalNumOutputChannels());
 }
 
@@ -324,9 +324,9 @@ void Processor::processBlock(AudioSampleBuffer& buffer, MidiBuffer& /*midiMessag
   // Determine channel data
   _shimmerBuffer.clear();
   _shimmerBuffer.makeCopyOf(buffer, true);
-  _shimmer.setWetGain(getParameter(Parameters::ShimmerWetGain));
-  _shimmer.setFeedback(getParameter(Parameters::ShimmerFeedback));
-  _shimmer.processBlock(_shimmerBuffer);
+  // _shimmer.setWetGain(getParameter(Parameters::ShimmerWetGain));
+  // _shimmer.setFeedback(getParameter(Parameters::ShimmerFeedback));
+  // _shimmer.processBlock(_shimmerBuffer);
 
   _chorus.setWetGain(getParameter(Parameters::ChorusWetGain));
   _chorus.setFrequency(getParameter(Parameters::ChorusFrequency));

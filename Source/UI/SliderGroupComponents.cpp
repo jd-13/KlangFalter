@@ -731,94 +731,94 @@ void HighEqSliderGroup::onUpdate(bool enableSliders) {
     _hiGainSlider->setValue(shelfGainDb, juce::dontSendNotification);
 }
 
-ShimmerSliderGroup::ShimmerSliderGroup(Processor& processor, UIUtils::Theme theme) :
-        _processor(processor),
-        _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()) {
-    _rotarySliderLookAndFeel->theme = theme;
+// ShimmerSliderGroup::ShimmerSliderGroup(Processor& processor, UIUtils::Theme theme) :
+//         _processor(processor),
+//         _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()) {
+//     _rotarySliderLookAndFeel->theme = theme;
 
-    _shimmerHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Shimmer")));
-    addAndMakeVisible(_shimmerHeaderLabel.get());
-    styleLabel(_shimmerHeaderLabel.get(), theme, GROUP_HEADER_FONT_SIZE);
+//     _shimmerHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Shimmer")));
+//     addAndMakeVisible(_shimmerHeaderLabel.get());
+//     styleLabel(_shimmerHeaderLabel.get(), theme, GROUP_HEADER_FONT_SIZE);
 
-    _shimmerWetGainHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Wet")));
-    addAndMakeVisible(_shimmerWetGainHeaderLabel.get());
-    styleLabel(_shimmerWetGainHeaderLabel.get(), theme, LABEL_FONT_SIZE);
+//     _shimmerWetGainHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Wet")));
+//     addAndMakeVisible(_shimmerWetGainHeaderLabel.get());
+//     styleLabel(_shimmerWetGainHeaderLabel.get(), theme, LABEL_FONT_SIZE);
 
-    _shimmerWetGainSlider.reset(new juce::Slider(juce::String()));
-    addAndMakeVisible(_shimmerWetGainSlider.get());
-    styleSlider(_shimmerWetGainSlider.get(), _rotarySliderLookAndFeel.get());
-    _shimmerWetGainSlider->setRange(0, 1, 0);
-    _shimmerWetGainSlider->setDoubleClickReturnValue(true, Parameters::ShimmerFeedback.getDefaultValue());
-    _shimmerWetGainSlider->onValueChange = [this] {
-        _processor.setParameterNotifyingHost(Parameters::ShimmerWetGain, SnapValue(static_cast<float>(_shimmerWetGainSlider->getValue()), 0.0f, 0.01f));
-    };
+//     _shimmerWetGainSlider.reset(new juce::Slider(juce::String()));
+//     addAndMakeVisible(_shimmerWetGainSlider.get());
+//     styleSlider(_shimmerWetGainSlider.get(), _rotarySliderLookAndFeel.get());
+//     _shimmerWetGainSlider->setRange(0, 1, 0);
+//     _shimmerWetGainSlider->setDoubleClickReturnValue(true, Parameters::ShimmerFeedback.getDefaultValue());
+//     _shimmerWetGainSlider->onValueChange = [this] {
+//         _processor.setParameterNotifyingHost(Parameters::ShimmerWetGain, SnapValue(static_cast<float>(_shimmerWetGainSlider->getValue()), 0.0f, 0.01f));
+//     };
 
-    _shimmerWetGainLabel.reset(new juce::Label(juce::String(), TRANS("0.0")));
-    addAndMakeVisible(_shimmerWetGainLabel.get());
-    styleLabel(_shimmerWetGainLabel.get(), theme, LABEL_FONT_SIZE);
+//     _shimmerWetGainLabel.reset(new juce::Label(juce::String(), TRANS("0.0")));
+//     addAndMakeVisible(_shimmerWetGainLabel.get());
+//     styleLabel(_shimmerWetGainLabel.get(), theme, LABEL_FONT_SIZE);
 
-    _shimmerFeedbackHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Feedback")));
-    addAndMakeVisible(_shimmerFeedbackHeaderLabel.get());
-    styleLabel(_shimmerFeedbackHeaderLabel.get(), theme, LABEL_FONT_SIZE);
+//     _shimmerFeedbackHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Feedback")));
+//     addAndMakeVisible(_shimmerFeedbackHeaderLabel.get());
+//     styleLabel(_shimmerFeedbackHeaderLabel.get(), theme, LABEL_FONT_SIZE);
 
-    _shimmerFeedbackSlider.reset(new juce::Slider(juce::String()));
-    addAndMakeVisible(_shimmerFeedbackSlider.get());
-    styleSlider(_shimmerFeedbackSlider.get(), _rotarySliderLookAndFeel.get());
-    _shimmerFeedbackSlider->setRange(0, 1, 0);
-    _shimmerFeedbackSlider->setDoubleClickReturnValue(true, Parameters::ShimmerFeedback.getDefaultValue());
-    _shimmerFeedbackSlider->onValueChange = [this] {
-        _processor.setParameterNotifyingHost(Parameters::ShimmerFeedback, SnapValue(static_cast<float>(_shimmerFeedbackSlider->getValue()), 0.0f, 0.01f));
-    };
+//     _shimmerFeedbackSlider.reset(new juce::Slider(juce::String()));
+//     addAndMakeVisible(_shimmerFeedbackSlider.get());
+//     styleSlider(_shimmerFeedbackSlider.get(), _rotarySliderLookAndFeel.get());
+//     _shimmerFeedbackSlider->setRange(0, 1, 0);
+//     _shimmerFeedbackSlider->setDoubleClickReturnValue(true, Parameters::ShimmerFeedback.getDefaultValue());
+//     _shimmerFeedbackSlider->onValueChange = [this] {
+//         _processor.setParameterNotifyingHost(Parameters::ShimmerFeedback, SnapValue(static_cast<float>(_shimmerFeedbackSlider->getValue()), 0.0f, 0.01f));
+//     };
 
-    _shimmerFeedbackLabel.reset(new juce::Label(juce::String(), TRANS("0.0")));
-    addAndMakeVisible(_shimmerFeedbackLabel.get());
-    styleLabel(_shimmerFeedbackLabel.get(), theme, LABEL_FONT_SIZE);
-}
+//     _shimmerFeedbackLabel.reset(new juce::Label(juce::String(), TRANS("0.0")));
+//     addAndMakeVisible(_shimmerFeedbackLabel.get());
+//     styleLabel(_shimmerFeedbackLabel.get(), theme, LABEL_FONT_SIZE);
+// }
 
-ShimmerSliderGroup::~ShimmerSliderGroup() {
-    _shimmerHeaderLabel = nullptr;
+// ShimmerSliderGroup::~ShimmerSliderGroup() {
+//     _shimmerHeaderLabel = nullptr;
 
-    _shimmerWetGainHeaderLabel = nullptr;
-    _shimmerWetGainSlider = nullptr;
-    _shimmerWetGainLabel = nullptr;
+//     _shimmerWetGainHeaderLabel = nullptr;
+//     _shimmerWetGainSlider = nullptr;
+//     _shimmerWetGainLabel = nullptr;
 
-    _shimmerFeedbackHeaderLabel = nullptr;
-    _shimmerFeedbackSlider = nullptr;
-    _shimmerFeedbackLabel = nullptr;
-}
+//     _shimmerFeedbackHeaderLabel = nullptr;
+//     _shimmerFeedbackSlider = nullptr;
+//     _shimmerFeedbackLabel = nullptr;
+// }
 
-void ShimmerSliderGroup::resized() {
-    constexpr float NOMINAL_WIDTH {72};
+// void ShimmerSliderGroup::resized() {
+//     constexpr float NOMINAL_WIDTH {72};
 
-    setFontHeight(_shimmerHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), GROUP_HEADER_FONT_SIZE));
+//     setFontHeight(_shimmerHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), GROUP_HEADER_FONT_SIZE));
 
-    setFontHeight(_shimmerWetGainHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
-    setFontHeight(_shimmerWetGainLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+//     setFontHeight(_shimmerWetGainHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+//     setFontHeight(_shimmerWetGainLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
 
-    setFontHeight(_shimmerFeedbackHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
-    setFontHeight(_shimmerFeedbackLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+//     setFontHeight(_shimmerFeedbackHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+//     setFontHeight(_shimmerFeedbackLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
 
-    juce::Rectangle<int> availableArea = getLocalBounds();
+//     juce::Rectangle<int> availableArea = getLocalBounds();
 
-    _shimmerHeaderLabel->setBounds(availableArea.withHeight(scaled(NOMINAL_WIDTH, getWidth(), 24)));
-    availableArea.removeFromTop(scaled(NOMINAL_WIDTH, getWidth(), 16));
+//     _shimmerHeaderLabel->setBounds(availableArea.withHeight(scaled(NOMINAL_WIDTH, getWidth(), 24)));
+//     availableArea.removeFromTop(scaled(NOMINAL_WIDTH, getWidth(), 16));
 
-    const int sliderAreaWidth {availableArea.getWidth() / 2};
-    layoutSlider(availableArea.removeFromLeft(sliderAreaWidth), _shimmerWetGainHeaderLabel.get(), _shimmerWetGainSlider.get(), _shimmerWetGainLabel.get(), NOMINAL_WIDTH, getWidth());
-    layoutSlider(availableArea, _shimmerFeedbackHeaderLabel.get(), _shimmerFeedbackSlider.get(), _shimmerFeedbackLabel.get(), NOMINAL_WIDTH, getWidth());
-}
+//     const int sliderAreaWidth {availableArea.getWidth() / 2};
+//     layoutSlider(availableArea.removeFromLeft(sliderAreaWidth), _shimmerWetGainHeaderLabel.get(), _shimmerWetGainSlider.get(), _shimmerWetGainLabel.get(), NOMINAL_WIDTH, getWidth());
+//     layoutSlider(availableArea, _shimmerFeedbackHeaderLabel.get(), _shimmerFeedbackSlider.get(), _shimmerFeedbackLabel.get(), NOMINAL_WIDTH, getWidth());
+// }
 
-void ShimmerSliderGroup::onUpdate(bool enableSliders) {
-    const float wetGain = _processor.getParameter(Parameters::ShimmerWetGain);
-    _shimmerWetGainSlider->setValue(wetGain, juce::dontSendNotification);
-    _shimmerWetGainSlider->setEnabled(enableSliders);
-    _shimmerWetGainLabel->setText(juce::String(wetGain, 2), juce::sendNotification);
+// void ShimmerSliderGroup::onUpdate(bool enableSliders) {
+//     const float wetGain = _processor.getParameter(Parameters::ShimmerWetGain);
+//     _shimmerWetGainSlider->setValue(wetGain, juce::dontSendNotification);
+//     _shimmerWetGainSlider->setEnabled(enableSliders);
+//     _shimmerWetGainLabel->setText(juce::String(wetGain, 2), juce::sendNotification);
 
-    const float feedback = _processor.getParameter(Parameters::ShimmerFeedback);
-    _shimmerFeedbackSlider->setValue(feedback, juce::dontSendNotification);
-    _shimmerFeedbackSlider->setEnabled(enableSliders);
-    _shimmerFeedbackLabel->setText(juce::String(feedback, 2), juce::sendNotification);
-}
+//     const float feedback = _processor.getParameter(Parameters::ShimmerFeedback);
+//     _shimmerFeedbackSlider->setValue(feedback, juce::dontSendNotification);
+//     _shimmerFeedbackSlider->setEnabled(enableSliders);
+//     _shimmerFeedbackLabel->setText(juce::String(feedback, 2), juce::sendNotification);
+// }
 
 ChorusSliderGroup::ChorusSliderGroup(Processor& processor, UIUtils::Theme theme) :
         _processor(processor),

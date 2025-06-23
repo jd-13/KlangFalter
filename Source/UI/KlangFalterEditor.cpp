@@ -311,8 +311,8 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _highEqSliderGroup.reset(new HighEqSliderGroup(_processor, _theme));
     addAndMakeVisible(_highEqSliderGroup.get());
 
-    _shimmerSliderGroup.reset(new ShimmerSliderGroup(_processor, _theme));
-    addAndMakeVisible(_shimmerSliderGroup.get());
+    // _shimmerSliderGroup.reset(new ShimmerSliderGroup(_processor, _theme));
+    // addAndMakeVisible(_shimmerSliderGroup.get());
 
     _chorusSliderGroup.reset(new ChorusSliderGroup(_processor, _theme));
     addAndMakeVisible(_chorusSliderGroup.get());
@@ -380,8 +380,8 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
         _processor.setParameterNotifyingHost(Parameters::EqHighShelfFreq, Parameters::EqHighShelfFreq.getDefaultValue());
         _processor.setParameterNotifyingHost(Parameters::EqHighShelfDecibels, Parameters::EqHighShelfDecibels.getDefaultValue());
 
-        _processor.setParameterNotifyingHost(Parameters::ShimmerWetGain, Parameters::ShimmerWetGain.getDefaultValue());
-        _processor.setParameterNotifyingHost(Parameters::ShimmerFeedback, Parameters::ShimmerFeedback.getDefaultValue());
+        // _processor.setParameterNotifyingHost(Parameters::ShimmerWetGain, Parameters::ShimmerWetGain.getDefaultValue());
+        // _processor.setParameterNotifyingHost(Parameters::ShimmerFeedback, Parameters::ShimmerFeedback.getDefaultValue());
 
         _processor.setParameterNotifyingHost(Parameters::ChorusWetGain, Parameters::ChorusWetGain.getDefaultValue());
         _processor.setParameterNotifyingHost(Parameters::ChorusFrequency, Parameters::ChorusFrequency.getDefaultValue());
@@ -410,7 +410,7 @@ KlangFalterEditor::~KlangFalterEditor()
     _stereoSliderGroup = nullptr;
     _lowEqSliderGroup = nullptr;
     _highEqSliderGroup = nullptr;
-    _shimmerSliderGroup = nullptr;
+    // _shimmerSliderGroup = nullptr;
     _chorusSliderGroup = nullptr;
 
     _processor.setUIBounds(getBounds(), true);
@@ -650,8 +650,8 @@ void KlangFalterEditor::resized()
 
         _highEqSliderGroup->setBounds(slidersTopRow.removeFromLeft(scaled(72)));
 
-        _shimmerSliderGroup->setBounds(slidersBottomRow.removeFromLeft(scaled(72)));
-        slidersBottomRow.removeFromLeft(SPACE_WIDTH);
+        // _shimmerSliderGroup->setBounds(slidersBottomRow.removeFromLeft(scaled(72)));
+        // slidersBottomRow.removeFromLeft(SPACE_WIDTH);
 
         _chorusSliderGroup->setBounds(slidersBottomRow.removeFromLeft(scaled(108)));
     }
@@ -771,7 +771,7 @@ void KlangFalterEditor::updateUI()
   _stereoSliderGroup->onUpdate(irAvailable, numOutputChannels);
   _lowEqSliderGroup->onUpdate(irAvailable);
   _highEqSliderGroup->onUpdate(irAvailable);
-  _shimmerSliderGroup->onUpdate(irAvailable);
+//   _shimmerSliderGroup->onUpdate(irAvailable);
   _chorusSliderGroup->onUpdate(irAvailable, numOutputChannels);
   {
     const float db = _processor.getParameter(Parameters::DryDecibels);

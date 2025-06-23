@@ -27,7 +27,7 @@
 #include "Settings.h"
 #include "SmoothValue.h"
 #include "StereoWidth.h"
-#include "Shimmer.hpp"
+// #include "Shimmer.hpp"
 #include "Chorus.hpp"
 
 #include <map>
@@ -205,7 +205,7 @@ private:
 
   bool _irBrowserOpen;
 
-  Shimmer _shimmer;
+  // Shimmer _shimmer;
   Chorus _chorus;
 
   //==============================================================================

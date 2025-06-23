@@ -165,30 +165,30 @@ private:
     std::unique_ptr<juce::Label> _hiGainLabel;
 };
 
-class ShimmerSliderGroup : public juce::Component {
-public:
-    ShimmerSliderGroup(Processor& processor, UIUtils::Theme theme);
-    virtual ~ShimmerSliderGroup();
+// class ShimmerSliderGroup : public juce::Component {
+// public:
+//     ShimmerSliderGroup(Processor& processor, UIUtils::Theme theme);
+//     virtual ~ShimmerSliderGroup();
 
-    void resized() override;
+//     void resized() override;
 
-    void onUpdate(bool enableSliders);
+//     void onUpdate(bool enableSliders);
 
-private:
-    Processor& _processor;
+// private:
+//     Processor& _processor;
 
-    std::unique_ptr<UIUtils::RotarySliderLookAndFeel> _rotarySliderLookAndFeel;
+//     std::unique_ptr<UIUtils::RotarySliderLookAndFeel> _rotarySliderLookAndFeel;
 
-    std::unique_ptr<juce::Label> _shimmerHeaderLabel;
+//     std::unique_ptr<juce::Label> _shimmerHeaderLabel;
 
-    std::unique_ptr<juce::Label> _shimmerWetGainHeaderLabel;
-    std::unique_ptr<juce::Slider> _shimmerWetGainSlider;
-    std::unique_ptr<juce::Label> _shimmerWetGainLabel;
+//     std::unique_ptr<juce::Label> _shimmerWetGainHeaderLabel;
+//     std::unique_ptr<juce::Slider> _shimmerWetGainSlider;
+//     std::unique_ptr<juce::Label> _shimmerWetGainLabel;
 
-    std::unique_ptr<juce::Label> _shimmerFeedbackHeaderLabel;
-    std::unique_ptr<juce::Slider> _shimmerFeedbackSlider;
-    std::unique_ptr<juce::Label> _shimmerFeedbackLabel;
-};
+//     std::unique_ptr<juce::Label> _shimmerFeedbackHeaderLabel;
+//     std::unique_ptr<juce::Slider> _shimmerFeedbackSlider;
+//     std::unique_ptr<juce::Label> _shimmerFeedbackLabel;
+// };
 
 class ChorusSliderGroup : public juce::Component {
 public:

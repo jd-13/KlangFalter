@@ -52,8 +52,8 @@ struct Parameters
 
   static const FloatParameterDescriptor StereoWidth;
 
-  static const FloatParameterDescriptor ShimmerWetGain;
-  static const FloatParameterDescriptor ShimmerFeedback;
+  // static const FloatParameterDescriptor ShimmerWetGain;
+  // static const FloatParameterDescriptor ShimmerFeedback;
 
   static const FloatParameterDescriptor ChorusWetGain;
   static const FloatParameterDescriptor ChorusFrequency;
