@@ -197,44 +197,6 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _levelMeterDryLabel->setColour(juce::TextEditor::textColourId, juce::Colour(0xffb0b0b6));
     _levelMeterDryLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
 
-    _resetButton.reset(new juce::TextButton(juce::String()));
-    addAndMakeVisible(_resetButton.get());
-    _resetButton->setTooltip(TRANS("Reset all parameters"));
-    _resetButton->setButtonText(TRANS("Reset"));
-    _resetButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, _theme.neutral);
-    _resetButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, _theme.neutral);
-    _resetButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
-
-    _saveButton.reset(new juce::TextButton(juce::String()));
-    addAndMakeVisible(_saveButton.get());
-    _saveButton->setTooltip(TRANS("Save all parameters to a preset file"));
-    _saveButton->setButtonText(TRANS("Save"));
-    _saveButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, _theme.neutral);
-    _saveButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, _theme.neutral);
-    _saveButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
-    _saveButton->onClick = [&]() {
-        const int flags {juce::FileBrowserComponent::canSelectFiles | juce::FileBrowserComponent::saveMode | juce::FileBrowserComponent::warnAboutOverwriting};
-        _fileChooser.reset(new juce::FileChooser("Save Body and Soul Preset", juce::File(), "*.bas"));
-        _fileChooser->launchAsync(flags, [&](const juce::FileChooser& chooser) {
-            _onExportToFile(chooser.getResult());
-        });
-    };
-
-    _loadButton.reset(new juce::TextButton(juce::String()));
-    addAndMakeVisible(_loadButton.get());
-    _loadButton->setTooltip(TRANS("Load parameters from a preset file"));
-    _loadButton->setButtonText(TRANS("Load"));
-    _loadButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, _theme.neutral);
-    _loadButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, _theme.neutral);
-    _loadButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
-    _loadButton->onClick = [&]() {
-        const int flags {juce::FileBrowserComponent::canSelectFiles | juce::FileBrowserComponent::openMode};
-        _fileChooser.reset(new juce::FileChooser("Load Body and Soul Preset", juce::File(), "*.bas"));
-        _fileChooser->launchAsync(flags, [&](const juce::FileChooser& chooser) {
-            _onImportFromFile(chooser.getResult());
-        });
-    };
-
     //[UserPreSize]
     _rotarySliderLookAndFeel->theme = _theme;
     _irSliderGroup.reset(new IRSliderGroup(_processor, _theme));
@@ -264,6 +226,9 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _chorusSliderGroup.reset(new ChorusSliderGroup(_processor, _theme));
     addAndMakeVisible(_chorusSliderGroup.get());
 
+    _saveLoadComponent.reset(new SaveLoadComponent(_processor, _theme));
+    addAndMakeVisible(_saveLoadComponent.get());
+
     _tomLogo.reset(new Logo(juce::ImageCache::getFromMemory(BinaryData::tom_png, BinaryData::tom_pngSize)));
     addAndMakeVisible(_tomLogo.get());
 
@@ -287,36 +252,6 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     setConstrainer(_constrainer.get());
 
     _irTabComponent->clearTabs(); // Remove placeholder only used as dummy in the Jucer
-
-    _resetButton->onClick = [&]() {
-        _processor.setPredelayMs(0.0);
-        _processor.setIRBegin(0.0);
-        _processor.setIREnd(1.0);
-        _processor.setStretch(1.0);
-        _processor.setAttackLength(0.0);
-        _processor.setAttackShape(0.0);
-        _processor.setDecayShape(0.0);
-        _processor.setParameterNotifyingHost(Parameters::StereoWidth, Parameters::StereoWidth.getDefaultValue());
-
-        _processor.setReverse(false);
-
-        _processor.setParameterNotifyingHost(Parameters::EqLowType, Parameters::EqLowType.getDefaultValue());
-        _processor.setParameterNotifyingHost(Parameters::EqLowCutFreq, Parameters::EqLowCutFreq.getDefaultValue());
-        _processor.setParameterNotifyingHost(Parameters::EqLowShelfFreq, Parameters::EqLowShelfFreq.getDefaultValue());
-        _processor.setParameterNotifyingHost(Parameters::EqLowShelfDecibels, Parameters::EqLowShelfDecibels.getDefaultValue());
-
-        _processor.setParameterNotifyingHost(Parameters::EqHighType, Parameters::EqHighType.getDefaultValue());
-        _processor.setParameterNotifyingHost(Parameters::EqHighCutFreq, Parameters::EqHighCutFreq.getDefaultValue());
-        _processor.setParameterNotifyingHost(Parameters::EqHighShelfFreq, Parameters::EqHighShelfFreq.getDefaultValue());
-        _processor.setParameterNotifyingHost(Parameters::EqHighShelfDecibels, Parameters::EqHighShelfDecibels.getDefaultValue());
-
-        // _processor.setParameterNotifyingHost(Parameters::ShimmerWetGain, Parameters::ShimmerWetGain.getDefaultValue());
-        // _processor.setParameterNotifyingHost(Parameters::ShimmerFeedback, Parameters::ShimmerFeedback.getDefaultValue());
-
-        _processor.setParameterNotifyingHost(Parameters::ChorusWetGain, Parameters::ChorusWetGain.getDefaultValue());
-        _processor.setParameterNotifyingHost(Parameters::ChorusFrequency, Parameters::ChorusFrequency.getDefaultValue());
-        _processor.setParameterNotifyingHost(Parameters::ChorusDepth, Parameters::ChorusDepth.getDefaultValue());
-    };
 
     _processor.addNotificationListener(this);
     _processor.getSettings().addChangeListener(this);
@@ -343,6 +278,7 @@ KlangFalterEditor::~KlangFalterEditor()
     _highEqSliderGroup = nullptr;
     // _shimmerSliderGroup = nullptr;
     _chorusSliderGroup = nullptr;
+    _saveLoadComponent = nullptr;
 
     _processor.setUIBounds(getBounds(), true);
     //[/Destructor_pre]
@@ -364,7 +300,6 @@ KlangFalterEditor::~KlangFalterEditor()
     _levelMeterOut = nullptr;
     _levelMeterOutLabelButton = nullptr;
     _levelMeterDryLabel = nullptr;
-    _resetButton = nullptr;
     _title = nullptr;
 
 
@@ -406,6 +341,8 @@ void KlangFalterEditor::resized()
         titleRow.reduce(scaled(10), scaled(10));
 
         _title->setBounds(titleRow.removeFromRight(TITLE_WIDTH).reduced(0, scaled(5)));
+
+        _saveLoadComponent->setBounds(titleRow);
     }
 
     // Imager row
@@ -783,19 +720,6 @@ float KlangFalterEditor::scaledFloat(float value) const {
     return getWidth() / (UIUtils::NOMINAL_WIDTH / value);
 }
 
-void KlangFalterEditor::_onExportToFile(juce::File file) {
-    std::unique_ptr<juce::XmlElement> element = _processor.writeToXml();
-    element->writeTo(file);
-}
-
-void KlangFalterEditor::_onImportFromFile(juce::File file) {
-    if (file.existsAsFile()) {
-        std::unique_ptr<juce::XmlElement> element = juce::XmlDocument::parse(file);
-        if (element != nullptr) {
-            _processor.restoreFromXml(std::move(element));
-        }
-    }
-}
 
 //[/MiscUserCode]
 

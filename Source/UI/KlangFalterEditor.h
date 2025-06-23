@@ -30,6 +30,7 @@
 #include "../Processor.h"
 #include "UIUtils.hpp"
 #include "SliderGroupComponents.hpp"
+#include "SaveLoadComponent.hpp"
 #include "Logo.hpp"
 #include "Title.hpp"
 //[/Headers]
@@ -90,18 +91,16 @@ private:
     std::unique_ptr<HighEqSliderGroup> _highEqSliderGroup;
     // std::unique_ptr<ShimmerSliderGroup> _shimmerSliderGroup;
     std::unique_ptr<ChorusSliderGroup> _chorusSliderGroup;
+    std::unique_ptr<SaveLoadComponent> _saveLoadComponent;
     std::unique_ptr<Title> _title;
     std::unique_ptr<Logo> _tomLogo;
     std::unique_ptr<Logo> _weaLogo;
     std::unique_ptr<juce::ComponentBoundsConstrainer> _constrainer;
     UIUtils::Theme _theme;
-    std::unique_ptr<juce::FileChooser> _fileChooser;
 
     void _updateIRBrowserOpen(bool isOpen);
     int scaled(float value) const;
     float scaledFloat(float value) const;
-    void _onExportToFile(juce::File file);
-    void _onImportFromFile(juce::File file);
     //[/UserVariables]
 
     //==============================================================================
@@ -122,9 +121,6 @@ private:
     std::unique_ptr<LevelMeter> _levelMeterOut;
     std::unique_ptr<juce::TextButton> _levelMeterOutLabelButton;
     std::unique_ptr<juce::Label> _levelMeterDryLabel;
-    std::unique_ptr<juce::TextButton> _resetButton;
-    std::unique_ptr<juce::TextButton> _saveButton;
-    std::unique_ptr<juce::TextButton> _loadButton;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KlangFalterEditor)
