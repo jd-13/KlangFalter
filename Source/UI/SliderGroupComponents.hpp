@@ -32,10 +32,27 @@ private:
     std::unique_ptr<juce::Label> _endHeaderLabel;
     std::unique_ptr<juce::Slider> _endSlider;
     std::unique_ptr<juce::Label> _endLabel;
+};
 
-    std::unique_ptr<juce::Label> _stretchHeaderLabel;
-    std::unique_ptr<juce::Slider> _stretchSlider;
-    std::unique_ptr<juce::Label> _stretchLabel;
+class TuneSliderGroup : public juce::Component {
+public:
+    TuneSliderGroup(Processor& processor, UIUtils::Theme theme);
+    virtual ~TuneSliderGroup();
+
+    void resized() override;
+
+    void onUpdate(bool enableSliders);
+
+private:
+    Processor& _processor;
+
+    std::unique_ptr<UIUtils::RotarySliderLookAndFeel> _rotarySliderLookAndFeel;
+
+    std::unique_ptr<juce::Label> _tuneHeaderLabel;
+
+    std::unique_ptr<juce::Label> _amountHeaderLabel;
+    std::unique_ptr<juce::Slider> _amountSlider;
+    std::unique_ptr<juce::Label> _amountLabel;
 };
 
 class AttackSliderGroup : public juce::Component {

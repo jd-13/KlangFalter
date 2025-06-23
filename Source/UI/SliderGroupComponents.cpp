@@ -123,30 +123,6 @@ IRSliderGroup::IRSliderGroup(Processor& processor, UIUtils::Theme theme) :
     _endLabel.reset(new juce::Label(juce::String(), TRANS("100%")));
     addAndMakeVisible(_endLabel.get());
     styleLabel(_endLabel.get(), theme, LABEL_FONT_SIZE);
-
-    _stretchHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Tune")));
-    addAndMakeVisible(_stretchHeaderLabel.get());
-    styleLabel(_stretchHeaderLabel.get(), theme, LABEL_FONT_SIZE);
-
-    _stretchSlider.reset(new juce::Slider(juce::String()));
-    addAndMakeVisible(_stretchSlider.get());
-    styleSlider(_stretchSlider.get(), _rotarySliderLookAndFeel.get());
-    _stretchSlider->setRange(0, 2, 0);
-    _stretchSlider->setDoubleClickReturnValue(true, 1);
-    _stretchSlider->onValueChange = [this] {
-        // Invert as we're treating stretch as tune
-        double sliderVal = 2 - _stretchSlider->getValue();
-        if (::fabs(sliderVal-1.0) < 0.025)
-        {
-          sliderVal = 1.0;
-          _stretchSlider->setValue(1.0, juce::dontSendNotification);
-        }
-        _processor.setStretch(sliderVal);
-    };
-
-    _stretchLabel.reset(new juce::Label(juce::String(), TRANS("100%")));
-    addAndMakeVisible(_stretchLabel.get());
-    styleLabel(_stretchLabel.get(), theme, LABEL_FONT_SIZE);
 }
 
 IRSliderGroup::~IRSliderGroup() {
@@ -155,9 +131,6 @@ IRSliderGroup::~IRSliderGroup() {
     _predelayLabel = nullptr;
     _predelayHeaderLabel = nullptr;
     _predelaySlider = nullptr;
-    _stretchLabel = nullptr;
-    _stretchHeaderLabel = nullptr;
-    _stretchSlider = nullptr;
 
     _endHeaderLabel = nullptr;
     _beginLabel = nullptr;
@@ -169,7 +142,7 @@ IRSliderGroup::~IRSliderGroup() {
 }
 
 void IRSliderGroup::resized() {
-    constexpr float NOMINAL_WIDTH {144};
+    constexpr float NOMINAL_WIDTH {108};
 
     setFontHeight(_impulseResponseHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), GROUP_HEADER_FONT_SIZE));
 
@@ -182,15 +155,12 @@ void IRSliderGroup::resized() {
     setFontHeight(_endHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
     setFontHeight(_endLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
 
-    setFontHeight(_stretchHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
-    setFontHeight(_stretchLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
-
     juce::Rectangle<int> availableArea = getLocalBounds();
 
     _impulseResponseHeaderLabel->setBounds(availableArea.withHeight(scaled(NOMINAL_WIDTH, getWidth(), 24)));
     availableArea.removeFromTop(scaled(NOMINAL_WIDTH, getWidth(), 16));
 
-    const int sliderAreaWidth {availableArea.getWidth() / 4};
+    const int sliderAreaWidth {availableArea.getWidth() / 3};
     juce::Rectangle<int> predelayArea = availableArea.removeFromLeft(sliderAreaWidth);
     layoutSlider(predelayArea, _predelayHeaderLabel.get(), _predelaySlider.get(), _predelayLabel.get(), NOMINAL_WIDTH, getWidth());
 
@@ -199,9 +169,6 @@ void IRSliderGroup::resized() {
 
     juce::Rectangle<int> endArea = availableArea.removeFromLeft(sliderAreaWidth);
     layoutSlider(endArea, _endHeaderLabel.get(), _endSlider.get(), _endLabel.get(), NOMINAL_WIDTH, getWidth());
-
-    juce::Rectangle<int> stretchArea = availableArea.removeFromLeft(sliderAreaWidth);
-    layoutSlider(stretchArea, _stretchHeaderLabel.get(), _stretchSlider.get(), _stretchLabel.get(), NOMINAL_WIDTH, getWidth());
 }
 
 void IRSliderGroup::onUpdate(bool enableSliders) {
@@ -219,13 +186,73 @@ void IRSliderGroup::onUpdate(bool enableSliders) {
     _endSlider->setEnabled(enableSliders);
     _endSlider->setValue(irEnd, juce::dontSendNotification);
     _endLabel->setText(juce::String(100.0 * irEnd, 1) + juce::String("%"), juce::sendNotification);
+}
 
+TuneSliderGroup::TuneSliderGroup(Processor& processor, UIUtils::Theme theme) :
+        _processor(processor),
+        _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()) {
+    _rotarySliderLookAndFeel->theme = theme;
+
+    _tuneHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Tune")));
+    addAndMakeVisible(_tuneHeaderLabel.get());
+    styleLabel(_tuneHeaderLabel.get(), theme, GROUP_HEADER_FONT_SIZE);
+
+    _amountHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Amount")));
+    addAndMakeVisible(_amountHeaderLabel.get());
+    styleLabel(_amountHeaderLabel.get(), theme, LABEL_FONT_SIZE);
+
+    _amountSlider.reset(new juce::Slider(juce::String()));
+    addAndMakeVisible(_amountSlider.get());
+    styleSlider(_amountSlider.get(), _rotarySliderLookAndFeel.get());
+    _amountSlider->setRange(0, 2, 0);
+    _amountSlider->setDoubleClickReturnValue(true, 1);
+    _amountSlider->onValueChange = [this] {
+        // Invert as we're treating stretch as tune
+        double sliderVal = 2 - _amountSlider->getValue();
+        if (::fabs(sliderVal-1.0) < 0.025)
+        {
+          sliderVal = 1.0;
+          _amountSlider->setValue(1.0, juce::dontSendNotification);
+        }
+        _processor.setStretch(sliderVal);
+    };
+
+    _amountLabel.reset(new juce::Label(juce::String(), TRANS("100%")));
+    addAndMakeVisible(_amountLabel.get());
+    styleLabel(_amountLabel.get(), theme, LABEL_FONT_SIZE);
+}
+
+TuneSliderGroup::~TuneSliderGroup() {
+    _tuneHeaderLabel = nullptr;
+
+    _amountHeaderLabel = nullptr;
+    _amountSlider = nullptr;
+    _amountLabel = nullptr;
+}
+
+void TuneSliderGroup::resized() {
+    constexpr float NOMINAL_WIDTH {52};
+
+    setFontHeight(_tuneHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), GROUP_HEADER_FONT_SIZE));
+
+    setFontHeight(_amountHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+    setFontHeight(_amountLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+
+    juce::Rectangle<int> availableArea = getLocalBounds();
+
+    _tuneHeaderLabel->setBounds(availableArea.withHeight(scaled(NOMINAL_WIDTH, getWidth(), 24)));
+    availableArea.removeFromTop(scaled(NOMINAL_WIDTH, getWidth(), 16));
+
+    layoutSlider(availableArea, _amountHeaderLabel.get(), _amountSlider.get(), _amountLabel.get(), NOMINAL_WIDTH, getWidth());
+}
+
+void TuneSliderGroup::onUpdate(bool enableSliders) {
     const double stretch = _processor.getStretch();
     const double tune = 2 - stretch;
-    _stretchSlider->setEnabled(enableSliders);
-    _stretchSlider->setRange(0.5, 1.5);
-    _stretchSlider->setValue(tune, juce::dontSendNotification);
-    _stretchLabel->setText(String(static_cast<int>(100.0*tune)) + String("%"), juce::sendNotification);
+    _amountSlider->setEnabled(enableSliders);
+    _amountSlider->setRange(0.5, 1.5);
+    _amountSlider->setValue(tune, juce::dontSendNotification);
+    _amountLabel->setText(String(static_cast<int>(100.0*tune)) + String("%"), juce::sendNotification);
 }
 
 AttackSliderGroup::AttackSliderGroup(Processor& processor, UIUtils::Theme theme) :

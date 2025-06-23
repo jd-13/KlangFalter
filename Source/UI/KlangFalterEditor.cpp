@@ -240,6 +240,9 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _irSliderGroup.reset(new IRSliderGroup(_processor, _theme));
     addAndMakeVisible(_irSliderGroup.get());
 
+    _tuneSliderGroup.reset(new TuneSliderGroup(_processor, _theme));
+    addAndMakeVisible(_tuneSliderGroup.get());
+
     _attackSliderGroup.reset(new AttackSliderGroup(_processor, _theme));
     addAndMakeVisible(_attackSliderGroup.get());
 
@@ -332,6 +335,7 @@ KlangFalterEditor::~KlangFalterEditor()
     _processor.getSettings().removeChangeListener(this);
     setConstrainer(nullptr);
     _irSliderGroup = nullptr;
+    _tuneSliderGroup = nullptr;
     _attackSliderGroup = nullptr;
     _decaySliderGroup = nullptr;
     _stereoSliderGroup = nullptr;
@@ -508,27 +512,37 @@ void KlangFalterEditor::resized()
     // Sliders
     {
         const int SPACE_WIDTH {scaled(20)};
-        _irSliderGroup->setBounds(slidersTopRow.removeFromLeft(scaled(144)));
-        slidersTopRow.removeFromLeft(SPACE_WIDTH);
+        const juce::FlexItem::Margin marginRight(0, scaled(SPACE_WIDTH), 0, 0);
+        // Top row
+        {
+            juce::FlexBox flexBox;
+            flexBox.flexDirection = juce::FlexBox::Direction::row;
+            flexBox.flexWrap = juce::FlexBox::Wrap::wrap;
+            flexBox.justifyContent = juce::FlexBox::JustifyContent::spaceBetween;
+            flexBox.alignContent = juce::FlexBox::AlignContent::center;
 
-        _attackSliderGroup->setBounds(slidersTopRow.removeFromLeft(scaled(88)));
-        slidersTopRow.removeFromLeft(SPACE_WIDTH);
+            flexBox.items.add(juce::FlexItem(*_irSliderGroup.get()).withMinWidth(scaled(108)).withMinHeight(slidersTopRow.getHeight()).withMargin(marginRight));
+            flexBox.items.add(juce::FlexItem(*_tuneSliderGroup.get()).withMinWidth(scaled(52)).withMinHeight(slidersTopRow.getHeight()).withMargin(marginRight));
+            flexBox.items.add(juce::FlexItem(*_attackSliderGroup.get()).withMinWidth(scaled(88)).withMinHeight(slidersTopRow.getHeight()).withMargin(marginRight));
+            flexBox.items.add(juce::FlexItem(*_decaySliderGroup.get()).withMinWidth(scaled(52)).withMinHeight(slidersTopRow.getHeight()));
+            flexBox.performLayout(slidersTopRow.toFloat());
+        }
 
-        _decaySliderGroup->setBounds(slidersTopRow.removeFromLeft(scaled(52)));
-        slidersTopRow.removeFromLeft(SPACE_WIDTH);
+        // Bottom row
+        {
+            juce::FlexBox flexBox;
+            flexBox.flexDirection = juce::FlexBox::Direction::row;
+            flexBox.flexWrap = juce::FlexBox::Wrap::wrap;
+            flexBox.justifyContent = juce::FlexBox::JustifyContent::spaceBetween;
+            flexBox.alignContent = juce::FlexBox::AlignContent::center;
 
-        _stereoSliderGroup->setBounds(slidersTopRow.removeFromLeft(scaled(52)));
-        slidersTopRow.removeFromLeft(SPACE_WIDTH);
-
-        _lowEqSliderGroup->setBounds(slidersTopRow.removeFromLeft(scaled(88)));
-        slidersTopRow.removeFromLeft(SPACE_WIDTH);
-
-        _highEqSliderGroup->setBounds(slidersTopRow.removeFromLeft(scaled(88)));
-
-        // _shimmerSliderGroup->setBounds(slidersBottomRow.removeFromLeft(scaled(72)));
-        // slidersBottomRow.removeFromLeft(SPACE_WIDTH);
-
-        _chorusSliderGroup->setBounds(slidersBottomRow.removeFromLeft(scaled(108)));
+            flexBox.items.add(juce::FlexItem(*_chorusSliderGroup.get()).withMinWidth(scaled(108)).withMinHeight(slidersBottomRow.getHeight()).withMargin(marginRight));
+            flexBox.items.add(juce::FlexItem(*_stereoSliderGroup.get()).withMinWidth(scaled(52)).withMinHeight(slidersBottomRow.getHeight()).withMargin(marginRight));
+            flexBox.items.add(juce::FlexItem(*_lowEqSliderGroup.get()).withMinWidth(scaled(88)).withMinHeight(slidersBottomRow.getHeight()));
+            flexBox.items.add(juce::FlexItem(*_highEqSliderGroup.get()).withMinWidth(scaled(88)).withMinHeight(slidersBottomRow.getHeight()));
+            // flexBox.items.add(juce::FlexItem(*_shimmerSliderGroup.get()).withMinWidth(scaled(72)).withMinHeight(slidersTopRow.getHeight()).withMargin(marginRight));
+            flexBox.performLayout(slidersBottomRow.toFloat());
+        }
     }
 
     // IR Browser
@@ -641,6 +655,7 @@ void KlangFalterEditor::updateUI()
   const size_t numInputChannels = static_cast<size_t>(std::min(_processor.getTotalNumInputChannels(), 2));
   const size_t numOutputChannels = static_cast<size_t>(std::min(_processor.getTotalNumOutputChannels(), 2));
   _irSliderGroup->onUpdate(irAvailable);
+  _tuneSliderGroup->onUpdate(irAvailable);
   _attackSliderGroup->onUpdate(irAvailable);
   _decaySliderGroup->onUpdate(irAvailable);
   _stereoSliderGroup->onUpdate(irAvailable, numOutputChannels);

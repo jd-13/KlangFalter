@@ -82,6 +82,7 @@ private:
     juce::Component::SafePointer<juce::DialogWindow> _settingsDialogWindow;
     std::map<std::pair<size_t, size_t>, IRComponent*> _irComponents;
     std::unique_ptr<IRSliderGroup> _irSliderGroup;
+    std::unique_ptr<TuneSliderGroup> _tuneSliderGroup;
     std::unique_ptr<AttackSliderGroup> _attackSliderGroup;
     std::unique_ptr<DecaySliderGroup> _decaySliderGroup;
     std::unique_ptr<StereoSliderGroup> _stereoSliderGroup;
