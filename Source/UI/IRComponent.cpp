@@ -104,8 +104,13 @@ void IRComponent::resized()
         return static_cast<int>(getWidth() / (NOMINAL_WIDTH / value));
     };
 
-    _waveformComponent->setBounds(scaled(4), scaled(4), scaled(454), scaled(140));
-    _loadButton->setBounds(scaled(80), scaled(148), scaled(378), scaled(24));
+    juce::Rectangle<int> availableArea = getLocalBounds();
+    availableArea.reduce(scaled(4), scaled(4));
+
+    _waveformComponent->setBounds(availableArea.removeFromTop(scaled(140)));
+    availableArea.removeFromTop(scaled(4));
+    availableArea.removeFromLeft(scaled(76));
+    _loadButton->setBounds(availableArea);
     //[/UserResized]
 }
 
