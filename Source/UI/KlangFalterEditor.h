@@ -117,7 +117,6 @@ private:
     std::unique_ptr<juce::TextButton> _wetButton;
     std::unique_ptr<juce::TextButton> _dryButton;
     std::unique_ptr<juce::TextButton> _autogainButton;
-    std::unique_ptr<juce::TextButton> _reverseButton;
     std::unique_ptr<LevelMeter> _levelMeterOut;
 
     //==============================================================================

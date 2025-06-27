@@ -66,7 +66,7 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _irTabComponent.reset(new juce::TabbedComponent(juce::TabbedButtonBar::TabsAtTop));
     addAndMakeVisible(_irTabComponent.get());
     _irTabComponent->setTabBarDepth(0);
-    _irTabComponent->addTab(TRANS ("Placeholder"), juce::Colour(0xffb0b0b6), new IRComponent(_theme), true);
+    _irTabComponent->addTab(TRANS ("Placeholder"), juce::Colour(0xffb0b0b6), new IRComponent(_theme, _processor), true);
     _irTabComponent->setCurrentTabIndex(0);
     _irTabComponent->setColour(juce::TabbedComponent::backgroundColourId, _theme.waveformContainerBackground);
 
@@ -161,16 +161,6 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     setButtonColours(_autogainButton.get());
     _autogainButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
     _autogainButton->setClickingTogglesState(true);
-
-    _reverseButton.reset(new juce::TextButton(juce::String()));
-    addAndMakeVisible(_reverseButton.get());
-    _reverseButton->setTooltip(TRANS("Reverse Impulse Response"));
-    _reverseButton->setButtonText(TRANS("Reverse"));
-    _reverseButton->addListener(this);
-    setButtonColours(_reverseButton.get());
-    _reverseButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, _theme.waveformContainerNeutral);
-    _reverseButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
-    _reverseButton->setClickingTogglesState(true);
 
     _levelMeterOut.reset(new LevelMeter(_theme));
     addAndMakeVisible(_levelMeterOut.get());
@@ -274,7 +264,6 @@ KlangFalterEditor::~KlangFalterEditor()
     _wetButton = nullptr;
     _dryButton = nullptr;
     _autogainButton = nullptr;
-    _reverseButton = nullptr;
     _levelMeterOut = nullptr;
     _title = nullptr;
 
@@ -351,8 +340,6 @@ void KlangFalterEditor::resized()
         _decibelScaleOut->setBounds(metersArea.removeFromRight(METER_SCALE_WIDTH));
 
         _irTabComponent->setBounds(imagerRow);
-
-        _reverseButton->setBounds(_irTabComponent->getX() + scaled(6), scaled(198), scaled(72), scaled(24));
     }
 
     // Sliders row
@@ -529,12 +516,6 @@ void KlangFalterEditor::buttonClicked (juce::Button* buttonThatWasClicked)
         _processor.setParameterNotifyingHost(Parameters::AutoGainOn, _autogainButton->getToggleState());
         //[/UserButtonCode__autogainButton]
     }
-    else if (buttonThatWasClicked == _reverseButton.get())
-    {
-        //[UserButtonCode__reverseButton] -- add your button handler code here..
-        _processor.setReverse(_reverseButton->getToggleState());
-        //[/UserButtonCode__reverseButton]
-    }
 
     //[UserbuttonClicked_Post]
     //[/UserbuttonClicked_Post]
@@ -578,10 +559,6 @@ void KlangFalterEditor::updateUI()
     _wetButton->setToggleState(_processor.getParameter(Parameters::WetOn), juce::dontSendNotification);
   }
   {
-    _reverseButton->setEnabled(true);
-    _reverseButton->setToggleState(_processor.getReverse(), juce::dontSendNotification);
-  }
-  {
     const float autoGainDecibels = _processor.getParameter(Parameters::AutoGainDecibels);
     const bool autoGainOn = _processor.getParameter(Parameters::AutoGainOn);
     const juce::String autoGainText = DecibelScaling::DecibelString(autoGainDecibels);
@@ -609,7 +586,7 @@ void KlangFalterEditor::updateUI()
           jassert(agent);
           if (agent)
           {
-            IRComponent* irComponent = new IRComponent(_theme);
+            IRComponent* irComponent = new IRComponent(_theme, _processor);
             irComponent->init(_processor.getAgent(input, output));
             _irTabComponent->addTab(juce::String(static_cast<int>(input+1)) + juce::String("-") + juce::String(static_cast<int>(output+1)),
                                     juce::Colour(0xffb0b0b6),

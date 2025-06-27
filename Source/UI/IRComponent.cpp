@@ -29,8 +29,10 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-IRComponent::IRComponent (UIUtils::Theme theme) : _simpleButtonLookAndFeel(new UIUtils::SimpleButtonLookAndFeel())
-{
+IRComponent::IRComponent (UIUtils::Theme theme, Processor& processor)
+        : _simpleButtonLookAndFeel(new UIUtils::SimpleButtonLookAndFeel()),
+          _toggleButtonLookAndFeel(new UIUtils::ToggleButtonLookAndFeel()),
+          _processor(processor) {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
@@ -51,9 +53,22 @@ IRComponent::IRComponent (UIUtils::Theme theme) : _simpleButtonLookAndFeel(new U
     _loadButton->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0x004444ff));
     _loadButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xff202020));
     _loadButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xff202020));
+    _loadButton->setLookAndFeel(_simpleButtonLookAndFeel.get());
 
-    _loadButton->setBounds (80, 148, 378, 24);
-
+    _reverseButton.reset(new juce::TextButton(juce::String()));
+    addAndMakeVisible(_reverseButton.get());
+    _reverseButton->setTooltip(TRANS("Reverse Impulse Response"));
+    _reverseButton->setButtonText(TRANS("Reverse"));
+    _reverseButton->addListener(this);
+    _reverseButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, theme.neutral);
+    _reverseButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, theme.highlight);
+    _reverseButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, theme.waveformContainerNeutral);
+    _reverseButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
+    _reverseButton->setClickingTogglesState(true);
+    _reverseButton->onClick = [&]() {
+        _processor.setReverse(_reverseButton->getToggleState());
+    };
+    _reverseButton->setToggleState(_processor.getReverse(), juce::dontSendNotification);
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -63,22 +78,16 @@ IRComponent::IRComponent (UIUtils::Theme theme) : _simpleButtonLookAndFeel(new U
 
     //[Constructor] You can add your own custom stuff here..
     _irAgent = nullptr;
-    _loadButton->setLookAndFeel(_simpleButtonLookAndFeel.get());
     //[/Constructor]
 }
 
 IRComponent::~IRComponent()
 {
-    //[Destructor_pre]. You can add your own custom destruction code here..
     IRComponent::init(nullptr);
-    //[/Destructor_pre]
 
     _waveformComponent = nullptr;
     _loadButton = nullptr;
-
-
-    //[Destructor]. You can add your own custom destruction code here..
-    //[/Destructor]
+    _reverseButton = nullptr;
 }
 
 //==============================================================================
@@ -109,7 +118,8 @@ void IRComponent::resized()
 
     _waveformComponent->setBounds(availableArea.removeFromTop(scaled(140)));
     availableArea.removeFromTop(scaled(4));
-    availableArea.removeFromLeft(scaled(76));
+    _reverseButton->setBounds(availableArea.removeFromLeft(scaled(72)));
+    availableArea.removeFromLeft(scaled(4));
     _loadButton->setBounds(availableArea);
     //[/UserResized]
 }
@@ -187,41 +197,3 @@ void IRComponent::changeNotification()
 {
   irChanged();
 }
-
-
-//[/MiscUserCode]
-
-
-//==============================================================================
-#if 0
-/*  -- Projucer information section --
-
-    This is where the Projucer stores the metadata that describe this GUI layout, so
-    make changes in here at your peril!
-
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="IRComponent" componentName="IRComponent"
-                 parentClasses="public Component, public ChangeNotifier::Listener"
-                 constructorParams="UIUtils::Theme colours" variableInitialisers=""
-                 snapPixels="4" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="462" initialHeight="176">
-  <BACKGROUND backgroundColour="ffb0b0b6"/>
-  <GENERICCOMPONENT name="WaveformComponent" id="c9f33b0ee0917f49" memberName="_waveformComponent"
-                    virtualName="" explicitFocusOrder="0" pos="4 4 454 140" class="WaveformComponent"
-                    params="colours"/>
-  <TEXTBUTTON name="LoadButton" id="5798b8525a699c54" memberName="_loadButton"
-              virtualName="" explicitFocusOrder="0" pos="80 148 378 24" tooltip="Current impulse response information"
-              bgColOff="bbbbff" bgColOn="4444ff" textCol="ff202020" textColOn="ff202020"
-              buttonText="No Impulse Response" connectedEdges="3" needsCallback="1"
-              radioGroupId="0"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
-//[EndFile] You can add extra defines here...
-//[/EndFile]
-

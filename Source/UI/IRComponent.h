@@ -44,7 +44,7 @@ class IRComponent  : public Component,
 {
 public:
     //==============================================================================
-    IRComponent (UIUtils::Theme theme);
+    IRComponent(UIUtils::Theme theme, Processor& processor);
     ~IRComponent() override;
 
     //==============================================================================
@@ -60,17 +60,18 @@ public:
     void resized() override;
     void buttonClicked (juce::Button* buttonThatWasClicked) override;
 
-
-
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     IRAgent* _irAgent;
     std::unique_ptr<UIUtils::SimpleButtonLookAndFeel> _simpleButtonLookAndFeel;
+    std::unique_ptr<UIUtils::ToggleButtonLookAndFeel> _toggleButtonLookAndFeel;
+    Processor& _processor;
     //[/UserVariables]
 
     //==============================================================================
     std::unique_ptr<WaveformComponent> _waveformComponent;
     std::unique_ptr<juce::TextButton> _loadButton;
+    std::unique_ptr<juce::TextButton> _reverseButton;
 
 
     //==============================================================================
