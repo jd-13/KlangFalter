@@ -4,7 +4,7 @@
 
 namespace {
     float scaled(float width, float value) {
-        return width / ((UIUtils::NOMINAL_WIDTH - 260) / value);
+        return width / ((UIUtils::NOMINAL_WIDTH - 270) / value);
     };
 }
 
@@ -102,13 +102,15 @@ void SaveLoadComponent::resized() {
 
     const int BUTTON_SPACE_WIDTH {static_cast<int>(scaled(getWidth(), 10))};
     const juce::FlexItem::Margin marginRight(0, BUTTON_SPACE_WIDTH, 0, 0);
+    const int LABEL_SPACE_WIDTH {static_cast<int>(scaled(getWidth(), 24))};
+    const juce::FlexItem::Margin marginRightLabel(0, LABEL_SPACE_WIDTH, 0, 0);
 
-    const int BUTTON_WIDTH {static_cast<int>(scaled(getWidth(), 52))};
-    const int BUTTON_HEIGHT {static_cast<int>(scaled(getWidth(), 24))};
+    const int BUTTON_WIDTH {static_cast<int>(scaled(getWidth(), 40))};
+    const int BUTTON_HEIGHT {static_cast<int>(scaled(getWidth(), 16))};
 
     flexBox.items.add(juce::FlexItem(*_resetButton.get()).withMinWidth(BUTTON_WIDTH).withMinHeight(BUTTON_HEIGHT).withMargin(marginRight));
     flexBox.items.add(juce::FlexItem(*_saveButton.get()).withMinWidth(BUTTON_WIDTH).withMinHeight(BUTTON_HEIGHT).withMargin(marginRight));
-    flexBox.items.add(juce::FlexItem(*_loadButton.get()).withMinWidth(BUTTON_WIDTH).withMinHeight(BUTTON_HEIGHT).withMargin(marginRight));
+    flexBox.items.add(juce::FlexItem(*_loadButton.get()).withMinWidth(BUTTON_WIDTH).withMinHeight(BUTTON_HEIGHT).withMargin(marginRightLabel));
     flexBox.items.add(juce::FlexItem(*_nameLabel.get()).withFlex(1).withMinHeight(BUTTON_HEIGHT));
     flexBox.performLayout(availableArea.toFloat());
 

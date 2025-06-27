@@ -37,7 +37,7 @@ namespace {
 }
 
 Title::Title(UIUtils::Theme& theme, juce::AudioProcessor::WrapperType pluginFormat) : _theme(theme) {
-    _titleLabel.reset(new juce::Label("Title Label", TRANS("Body & Soul: ")));
+    _titleLabel.reset(new juce::Label("Title Label", TRANS("Body & Soul:")));
     addAndMakeVisible(_titleLabel.get());
     _titleLabel->setFont(juce::Font(35.30f, juce::Font::plain).withTypefaceStyle("Regular"));
     _titleLabel->setJustificationType(juce::Justification::centred);
@@ -89,8 +89,9 @@ Title::Title(UIUtils::Theme& theme, juce::AudioProcessor::WrapperType pluginForm
 void Title::resized() {
     juce::Rectangle<int> availableArea = getLocalBounds();
 
-    _titleLabel->setFont(_titleLabel->getFont().withHeight(availableArea.getHeight()));
-    _subtitleLabel->setFont(_subtitleLabel->getFont().withHeight(availableArea.getHeight()));
+    const juce::Font titleFont = _titleLabel->getFont().withHeight(std::floor(availableArea.getHeight()));
+    _titleLabel->setFont(titleFont);
+    _subtitleLabel->setFont(titleFont);
 
     juce::FlexBox flexBox;
     flexBox.flexDirection = juce::FlexBox::Direction::row;

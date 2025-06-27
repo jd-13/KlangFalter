@@ -119,8 +119,6 @@ private:
     std::unique_ptr<juce::TextButton> _autogainButton;
     std::unique_ptr<juce::TextButton> _reverseButton;
     std::unique_ptr<LevelMeter> _levelMeterOut;
-    std::unique_ptr<juce::TextButton> _levelMeterOutLabelButton;
-    std::unique_ptr<juce::Label> _levelMeterDryLabel;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KlangFalterEditor)

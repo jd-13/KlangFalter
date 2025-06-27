@@ -67,30 +67,6 @@ juce::File Settings::getImpulseResponseDirectory()
   return juce::File::getSpecialLocation(juce::File::currentExecutableFile).getParentDirectory().getSiblingFile("Resources").getChildFile("IRs");
 }
 
-Settings::ResultLevelMeterDisplay Settings::getResultLevelMeterDisplay()
-{
-  ResultLevelMeterDisplay resultDisplay = Out;
-  juce::PropertiesFile* propertiesFile = _properties.getUserSettings();
-  if (propertiesFile)
-  {
-    const juce::String resultDisplayStr = propertiesFile->getValue("ResultLevelMeterDisplay");
-    resultDisplay = (resultDisplayStr == juce::String("Out")) ? Out : Wet;
-  }
-  return resultDisplay;
-}
-
-
-void Settings::setResultLevelMeterDisplay(ResultLevelMeterDisplay resultDisplay)
-{
-  juce::PropertiesFile* propertiesFile = _properties.getUserSettings();
-  if (propertiesFile)
-  {
-    propertiesFile->setValue("ResultLevelMeterDisplay", (resultDisplay == Out) ? "Out" : "Wet");
-    propertiesFile->saveIfNeeded();
-  }
-}
-
-
 Settings::TimelineUnit Settings::getTimelineUnit()
 {
   TimelineUnit timelineUnit = Seconds;

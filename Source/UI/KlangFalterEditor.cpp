@@ -175,28 +175,6 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _levelMeterOut.reset(new LevelMeter(_theme));
     addAndMakeVisible(_levelMeterOut.get());
 
-    _levelMeterOutLabelButton.reset(new juce::TextButton(juce::String()));
-    addAndMakeVisible(_levelMeterOutLabelButton.get());
-    _levelMeterOutLabelButton->setTooltip(TRANS("Switches Between Out/Wet Level Measurement"));
-    _levelMeterOutLabelButton->setButtonText(TRANS("Out"));
-    _levelMeterOutLabelButton->setConnectedEdges(juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
-    _levelMeterOutLabelButton->addListener(this);
-    _levelMeterOutLabelButton->setColour(juce::TextButton::buttonColourId, juce::Colour(0x00bbbbff));
-    _levelMeterOutLabelButton->setColour(juce::TextButton::buttonOnColourId, juce::Colour(0x00bcbcff));
-    _levelMeterOutLabelButton->setColour(juce::TextButton::textColourOffId, _theme.neutral);
-    _levelMeterOutLabelButton->setColour(juce::TextButton::textColourOnId, _theme.neutral);
-    _levelMeterOutLabelButton->setLookAndFeel(_simpleButtonLookAndFeel.get());
-    _levelMeterOutLabelButton->setClickingTogglesState(true);
-
-    _levelMeterDryLabel.reset(new juce::Label(juce::String(), TRANS("Dry")));
-    addAndMakeVisible(_levelMeterDryLabel.get());
-    _levelMeterDryLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _levelMeterDryLabel->setJustificationType(juce::Justification::centred);
-    _levelMeterDryLabel->setEditable(false, false, false);
-    _levelMeterDryLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
-    _levelMeterDryLabel->setColour(juce::TextEditor::textColourId, juce::Colour(0xffb0b0b6));
-    _levelMeterDryLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
-
     //[UserPreSize]
     _rotarySliderLookAndFeel->theme = _theme;
     _irSliderGroup.reset(new IRSliderGroup(_processor, _theme));
@@ -298,8 +276,6 @@ KlangFalterEditor::~KlangFalterEditor()
     _autogainButton = nullptr;
     _reverseButton = nullptr;
     _levelMeterOut = nullptr;
-    _levelMeterOutLabelButton = nullptr;
-    _levelMeterDryLabel = nullptr;
     _title = nullptr;
 
 
@@ -335,7 +311,7 @@ void KlangFalterEditor::resized()
     // Title row
     {
         const int TITLE_ROW_HEIGHT {scaled(61)};
-        const int TITLE_WIDTH {scaled(240)};
+        const int TITLE_WIDTH {scaled(250)};
 
         juce::Rectangle<int> titleRow = availableArea.removeFromTop(TITLE_ROW_HEIGHT);
         titleRow.reduce(scaled(10), scaled(10));
@@ -354,35 +330,25 @@ void KlangFalterEditor::resized()
         imagerRow.reduce(IMAGER_ROW_MARGIN, 0);
 
         juce::Rectangle<int> metersArea = imagerRow.removeFromLeft(METERS_TOTAL_WIDTH);
+        metersArea.reduce(0, scaled(8));
+        metersArea.removeFromLeft(scaled(4));
+        metersArea.removeFromRight(scaled(14));
 
         auto getMeterSliderBounds = [&](juce::Rectangle<int> bounds, const juce::Rectangle<int>& metersArea) {
             return bounds.withBottomY(metersArea.getBottom() - scaled(8)).withHeight(metersArea.getHeight() + scaled(16));
         };
 
-        juce::Rectangle<int> meterButtonsArea = metersArea.removeFromTop(scaled(18));
-
         const int METER_WIDTH {scaled(12)};
         const float METER_SLIDER_WIDTH {METER_WIDTH * 2.0f};
-        const float METER_SCALE_WIDTH {METER_WIDTH * 1.5f};
+        const float METER_SCALE_WIDTH {METER_WIDTH * 2.4f};
 
         _decibelScaleDry->setBounds(metersArea.removeFromLeft(METER_SCALE_WIDTH));
         _drySlider->setBounds(getMeterSliderBounds(metersArea.removeFromLeft(METER_SLIDER_WIDTH), metersArea));
         _levelMeterDry->setBounds(metersArea.removeFromLeft(METER_WIDTH));
 
-        const int SPACE_WIDTH {scaled(30)};
-        metersArea.removeFromLeft(SPACE_WIDTH);
-        _decibelScaleOut->setBounds(metersArea.removeFromLeft(METER_SCALE_WIDTH));
-        _wetSlider->setBounds(getMeterSliderBounds(metersArea.removeFromLeft(METER_SLIDER_WIDTH), metersArea));
-        _levelMeterOut->setBounds(metersArea.removeFromLeft(METER_WIDTH));
-
-        auto positionMeterButton = [&](juce::Component* button, const std::unique_ptr<LevelMeter>& meter) {
-            const int BUTTON_WIDTH {scaled(28)};
-            const int xPos {meter->getX() + meter->getWidth() / 2 - BUTTON_WIDTH / 2};
-            button->setBounds(xPos, meterButtonsArea.getY(), BUTTON_WIDTH, meterButtonsArea.getHeight());
-        };
-        positionMeterButton(_levelMeterDryLabel.get(), _levelMeterDry);
-        positionMeterButton(_levelMeterOutLabelButton.get(), _levelMeterOut);
-        setFontHeight(_levelMeterDryLabel.get(), scaledFloat(14.0f));
+        _levelMeterOut->setBounds(metersArea.removeFromRight(METER_WIDTH));
+        _wetSlider->setBounds(getMeterSliderBounds(metersArea.removeFromRight(METER_SLIDER_WIDTH), metersArea));
+        _decibelScaleOut->setBounds(metersArea.removeFromRight(METER_SCALE_WIDTH));
 
         _irTabComponent->setBounds(imagerRow);
 
@@ -399,30 +365,28 @@ void KlangFalterEditor::resized()
         juce::Rectangle<int> gainButtonLabelsRow = gainButtonsArea.removeFromTop(scaled(24));
 
         const int LEVEL_LABEL_WIDTH {scaled(60)};
-        _dryLevelLabel->setBounds(_drySlider->getRight() - LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getY(), LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getHeight());
-        _wetLevelLabel->setBounds(_wetSlider->getRight() - LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getY(), LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getHeight());
+        const int LEVEL_LABEL_OFFSET {scaled(4)};
+        _dryLevelLabel->setBounds(_drySlider->getRight() - LEVEL_LABEL_WIDTH + LEVEL_LABEL_OFFSET, gainButtonLabelsRow.getY(), LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getHeight());
+        _wetLevelLabel->setBounds(_wetSlider->getRight() - LEVEL_LABEL_WIDTH + LEVEL_LABEL_OFFSET, gainButtonLabelsRow.getY(), LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getHeight());
 
         setFontHeight(_dryLevelLabel.get(), scaledFloat(11.0f));
         setFontHeight(_wetLevelLabel.get(), scaledFloat(11.0f));
 
-        juce::FlexBox flexBox;
-        flexBox.flexDirection = juce::FlexBox::Direction::row;
-        flexBox.flexWrap = juce::FlexBox::Wrap::wrap;
-        flexBox.justifyContent = juce::FlexBox::JustifyContent::spaceAround;
-        flexBox.alignContent = juce::FlexBox::AlignContent::flexStart;
+        const int BUTTON_WIDTH {scaled(44)};
+        const int BUTTON_HEIGHT {scaled(24)};
+        const int ROW_MARGIN {scaled(8)};
+        const int BUTTON_OFFSET {scaled(2)};
+        _dryButton->setBounds(_drySlider->getBounds().getCentreX() - BUTTON_WIDTH / 2 - BUTTON_OFFSET, gainButtonsArea.getY(), BUTTON_WIDTH, BUTTON_HEIGHT);
+        _wetButton->setBounds(_wetSlider->getBounds().getCentreX() - BUTTON_WIDTH / 2 - BUTTON_OFFSET, gainButtonsArea.getY(), BUTTON_WIDTH, BUTTON_HEIGHT);
 
-        const juce::FlexItem::Margin marginRight(0, scaled(16), 0, 0);
-        const juce::FlexItem::Margin marginTop(scaled(8), 0, 0, 0);
-        flexBox.items.add(juce::FlexItem(*_dryButton.get()).withMinWidth(scaled(44)).withMinHeight(scaled(24)).withMargin(marginRight));
-        flexBox.items.add(juce::FlexItem(*_wetButton.get()).withMinWidth(scaled(44)).withMinHeight(scaled(24)));
-        flexBox.items.add(juce::FlexItem(*_autogainButton.get()).withMinWidth(scaled(132)).withMinHeight(scaled(24)).withMargin(marginTop));
-        flexBox.performLayout(gainButtonsArea.toFloat());
+        _autogainButton->setBounds(_dryButton->getX(), _dryButton->getBottom() + ROW_MARGIN, _wetButton->getRight() - _dryButton->getX(), BUTTON_HEIGHT);
     }
 
     // Logos
     {
         juce::Rectangle<int> logoArea = slidersBottomRow.removeFromLeft(METERS_TOTAL_WIDTH);
-        logoArea.reduce(scaled(4), scaled(16));
+        logoArea.reduce(0, scaled(16));
+        logoArea.removeFromLeft(scaled(4));
 
         juce::FlexBox flexBox;
         flexBox.flexDirection = juce::FlexBox::Direction::row;
@@ -431,8 +395,8 @@ void KlangFalterEditor::resized()
         flexBox.alignContent = juce::FlexBox::AlignContent::flexStart;
 
         const int height {logoArea.getHeight()};
-        flexBox.items.add(juce::FlexItem(*_tomLogo.get()).withMinWidth(scaled(50)).withMinHeight(height));
-        flexBox.items.add(juce::FlexItem(*_weaLogo.get()).withMinWidth(scaled(50)).withMinHeight(height));
+        flexBox.items.add(juce::FlexItem(*_tomLogo.get()).withMinWidth(scaled(60)).withMinHeight(height));
+        flexBox.items.add(juce::FlexItem(*_weaLogo.get()).withMinWidth(scaled(60)).withMinHeight(height));
         flexBox.performLayout(logoArea.toFloat());
     }
 
@@ -571,12 +535,6 @@ void KlangFalterEditor::buttonClicked (juce::Button* buttonThatWasClicked)
         _processor.setReverse(_reverseButton->getToggleState());
         //[/UserButtonCode__reverseButton]
     }
-    else if (buttonThatWasClicked == _levelMeterOutLabelButton.get())
-    {
-        //[UserButtonCode__levelMeterOutLabelButton] -- add your button handler code here..
-        _processor.getSettings().setResultLevelMeterDisplay(_levelMeterOutLabelButton->getToggleState() ? Settings::Out : Settings::Wet);
-        //[/UserButtonCode__levelMeterOutLabelButton]
-    }
 
     //[UserbuttonClicked_Post]
     //[/UserbuttonClicked_Post]
@@ -633,9 +591,6 @@ void KlangFalterEditor::updateUI()
   {
     _levelMeterDry->setChannelCount(numInputChannels);
     _levelMeterOut->setChannelCount(numOutputChannels);
-    Settings::ResultLevelMeterDisplay resultDisplay = _processor.getSettings().getResultLevelMeterDisplay();
-    _levelMeterOutLabelButton->setToggleState(resultDisplay == Settings::Out, juce::dontSendNotification);
-    _levelMeterOutLabelButton->setButtonText((resultDisplay == Settings::Out) ? juce::String("Out") : juce::String("Wet"));
   }
   {
     const size_t numTabs = static_cast<size_t>(_irTabComponent->getNumTabs());
@@ -686,11 +641,10 @@ void KlangFalterEditor::changeNotification()
 
 void KlangFalterEditor::timerCallback()
 {
-  Settings::ResultLevelMeterDisplay resultDisplay = _processor.getSettings().getResultLevelMeterDisplay();
   _levelMeterDry->setLevel(0, _processor.getLevelDry(0));
   _levelMeterDry->setLevel(1, _processor.getLevelDry(1));
-  _levelMeterOut->setLevel(0, (resultDisplay == Settings::Out) ? _processor.getLevelOut(0) : _processor.getLevelWet(0));
-  _levelMeterOut->setLevel(1, (resultDisplay == Settings::Out) ? _processor.getLevelOut(1) : _processor.getLevelWet(1));
+  _levelMeterOut->setLevel(0, _processor.getLevelWet(0));
+  _levelMeterOut->setLevel(1, _processor.getLevelWet(1));
 }
 
 void KlangFalterEditor::_updateIRBrowserOpen(bool isOpen) {
