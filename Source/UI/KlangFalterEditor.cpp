@@ -324,7 +324,7 @@ void KlangFalterEditor::resized()
         metersArea.removeFromRight(scaled(14));
 
         auto getMeterSliderBounds = [&](juce::Rectangle<int> bounds, const juce::Rectangle<int>& metersArea) {
-            return bounds.withBottomY(metersArea.getBottom() - scaled(8)).withHeight(metersArea.getHeight() + scaled(16));
+            return bounds.withBottomY(metersArea.getBottom() - scaled(5)).withHeight(metersArea.getHeight() + scaled(10));
         };
 
         const int METER_WIDTH {scaled(12)};
@@ -373,18 +373,11 @@ void KlangFalterEditor::resized()
     {
         juce::Rectangle<int> logoArea = slidersBottomRow.removeFromLeft(METERS_TOTAL_WIDTH);
         logoArea.reduce(0, scaled(16));
-        logoArea.removeFromLeft(scaled(4));
+        logoArea.removeFromLeft(scaled(25));
+        logoArea.removeFromRight(scaled(10));
 
-        juce::FlexBox flexBox;
-        flexBox.flexDirection = juce::FlexBox::Direction::row;
-        flexBox.flexWrap = juce::FlexBox::Wrap::wrap;
-        flexBox.justifyContent = juce::FlexBox::JustifyContent::spaceAround;
-        flexBox.alignContent = juce::FlexBox::AlignContent::flexStart;
-
-        const int height {logoArea.getHeight()};
-        flexBox.items.add(juce::FlexItem(*_tomLogo.get()).withMinWidth(scaled(60)).withMinHeight(height));
-        flexBox.items.add(juce::FlexItem(*_weaLogo.get()).withMinWidth(scaled(60)).withMinHeight(height));
-        flexBox.performLayout(logoArea.toFloat());
+        _tomLogo->setBounds(logoArea.removeFromLeft(scaled(60)));
+        _weaLogo->setBounds(logoArea.removeFromRight(scaled(60)));
     }
 
     slidersTopRow.removeFromTop(scaled(4));
@@ -626,10 +619,10 @@ void KlangFalterEditor::timerCallback()
 void KlangFalterEditor::_updateIRBrowserOpen(bool isOpen) {
     if (isOpen) {
         _constrainer->setFixedAspectRatio(UIUtils::NOMINAL_WIDTH / (UIUtils::NOMINAL_HEIGHT + IR_BROWSER_AREA_HEIGHT));
-        _browseButton->setButtonText("Hide Browser");
+        _browseButton->setButtonText("Hide IR Browser");
     } else {
         _constrainer->setFixedAspectRatio(UIUtils::NOMINAL_WIDTH / UIUtils::NOMINAL_HEIGHT);
-        _browseButton->setButtonText("Show Browser");
+        _browseButton->setButtonText("Show IR Browser");
     }
 
     // Make sure state is always consistent
