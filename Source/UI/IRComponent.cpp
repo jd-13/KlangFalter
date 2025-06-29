@@ -55,21 +55,14 @@ IRComponent::IRComponent (UIUtils::Theme theme, Processor& processor)
     _loadButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xff202020));
     _loadButton->setLookAndFeel(_simpleButtonLookAndFeel.get());
 
-    _reverseButton.reset(new juce::TextButton(juce::String()));
-    addAndMakeVisible(_reverseButton.get());
-    _reverseButton->setTooltip(TRANS("Reverse Impulse Response"));
-    _reverseButton->setButtonText(TRANS("Reverse"));
-    _reverseButton->addListener(this);
-    _reverseButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, theme.neutral);
-    _reverseButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, theme.highlight);
-    _reverseButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, theme.waveformContainerNeutral);
-    _reverseButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
-    _reverseButton->setClickingTogglesState(true);
-    _reverseButton->onClick = [&]() {
-        _processor.setReverse(_reverseButton->getToggleState());
-    };
-    _reverseButton->setToggleState(_processor.getReverse(), juce::dontSendNotification);
-
+    _directionButtons.reset(new UIUtils::IRDirectionButtons(
+      [&]() { _processor.setReverse(false); },
+      [&]() { _processor.setReverse(true); },
+      [&]() { return !_processor.getReverse(); },
+      [&]() { return _processor.getReverse(); },
+      theme
+    ));
+    addAndMakeVisible(_directionButtons.get());
     //[UserPreSize]
     //[/UserPreSize]
 
@@ -87,7 +80,7 @@ IRComponent::~IRComponent()
 
     _waveformComponent = nullptr;
     _loadButton = nullptr;
-    _reverseButton = nullptr;
+    _directionButtons = nullptr;
 }
 
 //==============================================================================
@@ -118,7 +111,7 @@ void IRComponent::resized()
 
     _waveformComponent->setBounds(availableArea.removeFromTop(scaled(140)));
     availableArea.removeFromTop(scaled(4));
-    _reverseButton->setBounds(availableArea.removeFromLeft(scaled(72)));
+    _directionButtons->setBounds(availableArea.removeFromLeft(scaled(72)));
     availableArea.removeFromLeft(scaled(4));
     _loadButton->setBounds(availableArea);
     //[/UserResized]

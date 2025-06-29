@@ -71,7 +71,7 @@ private:
     //==============================================================================
     std::unique_ptr<WaveformComponent> _waveformComponent;
     std::unique_ptr<juce::TextButton> _loadButton;
-    std::unique_ptr<juce::TextButton> _reverseButton;
+    std::unique_ptr<UIUtils::IRDirectionButtons> _directionButtons;
 
 
     //==============================================================================

@@ -113,4 +113,25 @@ namespace UIUtils {
                                 int itemIndex,
                                 juce::DirectoryContentsDisplayComponent& dcc) override;
     };
+
+    class IRDirectionButtons : public juce::Component {
+    public:
+        IRDirectionButtons(std::function<void()> onForwardClick,
+                           std::function<void()> onReverseClick,
+                           std::function<bool()> getForwardState,
+                           std::function<bool()> getReverseState,
+                           Theme& theme);
+        virtual ~IRDirectionButtons() override;
+
+        void resized() override;
+
+    private:
+        std::function<void()> _onForwardClick;
+        std::function<void()> _onReverseClick;
+
+        UIUtils::ToggleButtonLookAndFeel _buttonLookAndFeel;
+
+        std::unique_ptr<juce::TextButton> _forwardButton;
+        std::unique_ptr<juce::TextButton> _reverseButton;
+    };
 }

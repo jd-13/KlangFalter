@@ -100,10 +100,10 @@ namespace UIUtils {
                               height - 2 * indent,
                               static_cast<float>(cornerSize),
                               static_cast<float>(cornerSize),
-                              true,
-                              true,
-                              !button.isConnectedOnBottom(),
-                              !button.isConnectedOnBottom());
+                              !button.isConnectedOnLeft(),
+                              !button.isConnectedOnRight(),
+                              !(button.isConnectedOnLeft() || button.isConnectedOnBottom()),
+                              !(button.isConnectedOnRight() || button.isConnectedOnBottom()));
 
         g.strokePath(p, pStroke);
     }
@@ -317,5 +317,63 @@ namespace UIUtils {
         g.drawFittedText (filename,
                             x, 0, width - x, height,
                             Justification::centredLeft, 1);
+    }
+
+    IRDirectionButtons::IRDirectionButtons(std::function<void()> onForwardClick,
+                                           std::function<void()> onReverseClick,
+                                           std::function<bool()> getForwardState,
+                                           std::function<bool()> getReverseState,
+                                           Theme& theme) :
+                _onForwardClick(onForwardClick),
+                _onReverseClick(onReverseClick) {
+        _forwardButton.reset(new juce::TextButton("Forward Button"));
+        addAndMakeVisible(_forwardButton.get());
+        _forwardButton->setTooltip(TRANS("Set the output mode to unipolar"));
+        _forwardButton->setButtonText(TRANS("Fwd"));
+        _forwardButton->setLookAndFeel(&_buttonLookAndFeel);
+        _forwardButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, theme.background);
+        _forwardButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, theme.background.withAlpha(0.5f));
+        _forwardButton->onClick = [&]() {
+            if (!_forwardButton->getToggleState()) {
+                _forwardButton->setToggleState(true, juce::dontSendNotification);
+                _reverseButton->setToggleState(false, juce::dontSendNotification);
+                _onForwardClick();
+            }
+        };
+        _forwardButton->setConnectedEdges(juce::Button::ConnectedOnRight);
+
+        _reverseButton.reset(new juce::TextButton("Bipolar Button"));
+        addAndMakeVisible(_reverseButton.get());
+        _reverseButton->setTooltip(TRANS("Set the output mode to bipolar"));
+        _reverseButton->setButtonText(TRANS("Rev"));
+        _reverseButton->setLookAndFeel(&_buttonLookAndFeel);
+        _reverseButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, theme.background);
+        _reverseButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, theme.background.withAlpha(0.5f));
+        _reverseButton->onClick = [&]() {
+            if (!_reverseButton->getToggleState()) {
+                _reverseButton->setToggleState(true, juce::dontSendNotification);
+                _forwardButton->setToggleState(false, juce::dontSendNotification);
+                _onReverseClick();
+            }
+        };
+        _reverseButton->setConnectedEdges(juce::Button::ConnectedOnLeft);
+
+        _forwardButton->setToggleState(getForwardState(), juce::dontSendNotification);
+        _reverseButton->setToggleState(getReverseState(), juce::dontSendNotification);
+    }
+
+    IRDirectionButtons::~IRDirectionButtons() {
+        _forwardButton->setLookAndFeel(nullptr);
+        _reverseButton->setLookAndFeel(nullptr);
+
+        _forwardButton = nullptr;
+        _reverseButton = nullptr;
+    }
+
+    void IRDirectionButtons::resized() {
+        juce::Rectangle<int> availableArea = getLocalBounds();
+
+        _forwardButton->setBounds(availableArea.removeFromLeft(availableArea.getWidth() / 2));
+        _reverseButton->setBounds(availableArea);
     }
 }
