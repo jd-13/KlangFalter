@@ -72,6 +72,7 @@ private:
     std::unique_ptr<WaveformComponent> _waveformComponent;
     std::unique_ptr<juce::TextButton> _loadButton;
     std::unique_ptr<UIUtils::IRDirectionButtons> _directionButtons;
+    std::unique_ptr<UIUtils::ScaleUnitButtons> _scaleUnitButtons;
 
 
     //==============================================================================

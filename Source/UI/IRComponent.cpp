@@ -63,6 +63,23 @@ IRComponent::IRComponent (UIUtils::Theme theme, Processor& processor)
       theme
     ));
     addAndMakeVisible(_directionButtons.get());
+
+    _scaleUnitButtons.reset(new UIUtils::ScaleUnitButtons(
+      [&]() {
+        Settings& settings = _irAgent->getProcessor().getSettings();
+        settings.setTimelineUnit(Settings::Seconds);
+        _waveformComponent->repaint();
+       },
+      [&]() {
+        Settings& settings = _irAgent->getProcessor().getSettings();
+        settings.setTimelineUnit(Settings::Beats);
+        _waveformComponent->repaint();
+      },
+      [&]() { return _processor.getSettings().getTimelineUnit() == Settings::Seconds; },
+      [&]() { return _processor.getSettings().getTimelineUnit() == Settings::Beats; },
+      theme
+    ));
+    addAndMakeVisible(_scaleUnitButtons.get());
     //[UserPreSize]
     //[/UserPreSize]
 
@@ -81,6 +98,7 @@ IRComponent::~IRComponent()
     _waveformComponent = nullptr;
     _loadButton = nullptr;
     _directionButtons = nullptr;
+    _scaleUnitButtons = nullptr;
 }
 
 //==============================================================================
@@ -112,6 +130,8 @@ void IRComponent::resized()
     _waveformComponent->setBounds(availableArea.removeFromTop(scaled(140)));
     availableArea.removeFromTop(scaled(4));
     _directionButtons->setBounds(availableArea.removeFromLeft(scaled(72)));
+    availableArea.removeFromLeft(scaled(4));
+    _scaleUnitButtons->setBounds(availableArea.removeFromLeft(scaled(72)));
     availableArea.removeFromLeft(scaled(4));
     _loadButton->setBounds(availableArea);
     //[/UserResized]
@@ -169,14 +189,11 @@ void IRComponent::irChanged()
     const File file = _irAgent->getFile();
     if (file.existsAsFile())
     {
-      const Processor& processor = _irAgent->getProcessor();
-      const unsigned fileSampleCount = static_cast<unsigned>(_irAgent->getFileSampleCount());
-      const double fileSampleRate = _irAgent->getFileSampleRate();
-      const double fileSeconds = static_cast<double>(fileSampleCount) / fileSampleRate;
-      const unsigned fileChannelCount = static_cast<unsigned>(_irAgent->getFileChannelCount());
-      fileLabelText = file.getFileName() + String(", ") + String(fileChannelCount) + String(" Channels, ") + String(fileSeconds, 2) + String(" s");
+      fileLabelText = file.getFileName();
 
+      const Processor& processor = _irAgent->getProcessor();
       sampleRate = processor.getSampleRate();
+
       constexpr int WAVEFORM_NOMINAL_WIDTH {452};
       samplesPerPx = static_cast<size_t>(1.6 * (processor.getMaxFileDuration()+1.0) * sampleRate) / WAVEFORM_NOMINAL_WIDTH;
     }

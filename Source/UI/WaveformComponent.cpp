@@ -355,17 +355,3 @@ void WaveformComponent::clear()
     updateArea();
   }
 }
-
-
-void WaveformComponent::mouseUp(const MouseEvent& mouseEvent)
-{
-  if (_irAgent)
-  {
-    if (mouseEvent.x > _area.getX() && mouseEvent.y > _area.getBottom())
-    {
-      Settings& settings = _irAgent->getProcessor().getSettings();
-      settings.setTimelineUnit((settings.getTimelineUnit() == Settings::Seconds) ? Settings::Beats : Settings::Seconds);
-      repaint();
-    }
-  }
-}

@@ -134,4 +134,25 @@ namespace UIUtils {
         std::unique_ptr<juce::TextButton> _forwardButton;
         std::unique_ptr<juce::TextButton> _reverseButton;
     };
+
+    class ScaleUnitButtons : public juce::Component {
+    public:
+        ScaleUnitButtons(std::function<void()> onSecClick,
+                           std::function<void()> onBPMClick,
+                           std::function<bool()> getSecState,
+                           std::function<bool()> getBPMState,
+                           Theme& theme);
+        virtual ~ScaleUnitButtons() override;
+
+        void resized() override;
+
+    private:
+        std::function<void()> _onSecClick;
+        std::function<void()> _onBPMClick;
+
+        UIUtils::ToggleButtonLookAndFeel _buttonLookAndFeel;
+
+        std::unique_ptr<juce::TextButton> _secButton;
+        std::unique_ptr<juce::TextButton> _BPMButton;
+    };
 }

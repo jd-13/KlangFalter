@@ -376,4 +376,62 @@ namespace UIUtils {
         _forwardButton->setBounds(availableArea.removeFromLeft(availableArea.getWidth() / 2));
         _reverseButton->setBounds(availableArea);
     }
+
+    ScaleUnitButtons::ScaleUnitButtons(std::function<void()> onSecClick,
+                                           std::function<void()> onBPMClick,
+                                           std::function<bool()> getSecState,
+                                           std::function<bool()> getBPMState,
+                                           Theme& theme) :
+                _onSecClick(onSecClick),
+                _onBPMClick(onBPMClick) {
+        _secButton.reset(new juce::TextButton("Forward Button"));
+        addAndMakeVisible(_secButton.get());
+        _secButton->setTooltip(TRANS("Set the output mode to unipolar"));
+        _secButton->setButtonText(TRANS("Sec"));
+        _secButton->setLookAndFeel(&_buttonLookAndFeel);
+        _secButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, theme.background);
+        _secButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, theme.background.withAlpha(0.5f));
+        _secButton->onClick = [&]() {
+            if (!_secButton->getToggleState()) {
+                _secButton->setToggleState(true, juce::dontSendNotification);
+                _BPMButton->setToggleState(false, juce::dontSendNotification);
+                _onSecClick();
+            }
+        };
+        _secButton->setConnectedEdges(juce::Button::ConnectedOnRight);
+
+        _BPMButton.reset(new juce::TextButton("Bipolar Button"));
+        addAndMakeVisible(_BPMButton.get());
+        _BPMButton->setTooltip(TRANS("Set the output mode to bipolar"));
+        _BPMButton->setButtonText(TRANS("BPM"));
+        _BPMButton->setLookAndFeel(&_buttonLookAndFeel);
+        _BPMButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, theme.background);
+        _BPMButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, theme.background.withAlpha(0.5f));
+        _BPMButton->onClick = [&]() {
+            if (!_BPMButton->getToggleState()) {
+                _BPMButton->setToggleState(true, juce::dontSendNotification);
+                _secButton->setToggleState(false, juce::dontSendNotification);
+                _onBPMClick();
+            }
+        };
+        _BPMButton->setConnectedEdges(juce::Button::ConnectedOnLeft);
+
+        _secButton->setToggleState(getSecState(), juce::dontSendNotification);
+        _BPMButton->setToggleState(getBPMState(), juce::dontSendNotification);
+    }
+
+    ScaleUnitButtons::~ScaleUnitButtons() {
+        _secButton->setLookAndFeel(nullptr);
+        _BPMButton->setLookAndFeel(nullptr);
+
+        _secButton = nullptr;
+        _BPMButton = nullptr;
+    }
+
+    void ScaleUnitButtons::resized() {
+        juce::Rectangle<int> availableArea = getLocalBounds();
+
+        _secButton->setBounds(availableArea.removeFromLeft(availableArea.getWidth() / 2));
+        _BPMButton->setBounds(availableArea);
+    }
 }
