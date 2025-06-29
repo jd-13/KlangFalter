@@ -132,7 +132,7 @@ void WaveformComponent::paint(Graphics& g)
       g.drawText(juce::String(_beatsPerMinute, 1) + juce::String(" BPM (1/") + juce::String(beatPerTick) + juce::String(" notes)"),
                  _area.getX(),
                  static_cast<int>(tickBottom)-1,
-                 _area.getWidth(),
+                 width - _area.getX(),
                  hTick,
                  tickJustification,
                  false);
