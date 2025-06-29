@@ -54,6 +54,7 @@ namespace UIUtils {
         };
 
         theme.productName = loadString(json, "productName");
+        theme.presetExtension = loadString(json, "presetExtension");
 
         if (json.hasProperty("colours")) {
             const juce::var& colours = json.getProperty("colours", juce::var());

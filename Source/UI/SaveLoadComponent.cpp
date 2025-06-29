@@ -57,7 +57,7 @@ _processor(processor), _theme(theme) {
     _saveButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
     _saveButton->onClick = [&]() {
         const int flags {juce::FileBrowserComponent::canSelectFiles | juce::FileBrowserComponent::saveMode | juce::FileBrowserComponent::warnAboutOverwriting};
-        _fileChooser.reset(new juce::FileChooser("Save Body and Soul Preset", juce::File(), "*.bas"));
+        _fileChooser.reset(new juce::FileChooser("Save Body and Soul Preset", juce::File(), "*." + _theme.presetExtension));
         _fileChooser->launchAsync(flags, [&](const juce::FileChooser& chooser) {
             _onSaveToFile(chooser.getResult());
         });
@@ -72,7 +72,7 @@ _processor(processor), _theme(theme) {
     _loadButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
     _loadButton->onClick = [&]() {
         const int flags {juce::FileBrowserComponent::canSelectFiles | juce::FileBrowserComponent::openMode};
-        _fileChooser.reset(new juce::FileChooser("Load Body and Soul Preset", juce::File(), "*.bas"));
+        _fileChooser.reset(new juce::FileChooser("Load Body and Soul Preset", juce::File(), "*." + _theme.presetExtension));
         _fileChooser->launchAsync(flags, [&](const juce::FileChooser& chooser) {
             _onLoadFromFile(chooser.getResult());
         });

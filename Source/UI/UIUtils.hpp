@@ -8,6 +8,7 @@ namespace UIUtils {
 
     struct Theme {
         juce::String productName;
+        juce::String presetExtension;
         juce::Colour background;
         juce::Colour neutral;
         juce::Colour highlight;
