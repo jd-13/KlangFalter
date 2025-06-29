@@ -399,8 +399,7 @@ void KlangFalterEditor::resized()
 
     // Sliders
     {
-        const int SPACE_WIDTH {scaled(20)};
-        const juce::FlexItem::Margin marginRight(0, scaled(SPACE_WIDTH), 0, 0);
+        const juce::FlexItem::Margin marginRight(0, scaled(38), 0, 0);
         // Top row
         {
             juce::FlexBox flexBox;
