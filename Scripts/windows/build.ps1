@@ -55,11 +55,11 @@ msbuild -version
 cd "$PROJECT_DIR\Projects\Intro\Builds\VisualStudio2019"
 msbuild "Body and Soul Intro.sln" /p:Configuration=Release /p:Platform=x64
 
-# cd "$PROJECT_DIR\Projects\Body\Builds\VisualStudio2019"
-# msbuild "Body and Soul Body.sln" /p:Configuration=Release /p:Platform=x64
+cd "$PROJECT_DIR\Projects\Body\Builds\VisualStudio2019"
+msbuild "Body and Soul Body.sln" /p:Configuration=Release /p:Platform=x64
 
-# cd "$PROJECT_DIR\Projects\Soul\Builds\VisualStudio2019"
-# msbuild "Body and Soul Soul.sln" /p:Configuration=Release /p:Platform=x64
+cd "$PROJECT_DIR\Projects\Soul\Builds\VisualStudio2019"
+msbuild "Body and Soul Soul.sln" /p:Configuration=Release /p:Platform=x64
 
 # cd "$PROJECT_DIR\Projects\FX\Builds\VisualStudio2019"
 # msbuild "Body and Soul FX.sln" /p:Configuration=Release /p:Platform=x64
@@ -118,9 +118,9 @@ function CollectCLAP {
 
 CollectVST "dist\BodyandSoulIntro" "Intro"
 # CollectCLAP "dist\BodyandSoulIntro" "Intro"
-# CollectVST "dist\BodyandSoul" "Body"
+CollectVST "dist\BodyandSoul" "Body"
 # CollectCLAP "dist\BodyandSoul" "Body"
-# CollectVST "dist\BodyandSoul" "Soul"
+CollectVST "dist\BodyandSoul" "Soul"
 # CollectCLAP "dist\BodyandSoul" "Soul"
 # CollectVST "dist\BodyandSoul" "FX"
 
