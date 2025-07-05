@@ -73,7 +73,7 @@ Title::Title(UIUtils::Theme& theme, juce::AudioProcessor::WrapperType pluginForm
             "Programming: White Elephant Audio\n"
             "Support: info@thesoundofmerlin.com\n"
             "\n"
-            "Body & Soul: Intro is open source software (GPLv3) and is based on Klangfalter from HiFi-LoFi.\n"
+            "Our Body & Soul plugins are open source software (GPLv3) and are based on Klangfalter from HiFi-LoFi.\n"
             "\n"
             "This convolution reverb was conceived to be used as a module in White Elephant Audio's plugin host Syndicate but can also be used separately from it.\n"
             "\n"
