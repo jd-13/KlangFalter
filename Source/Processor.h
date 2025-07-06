@@ -27,6 +27,8 @@
 #include "Settings.h"
 #include "SmoothValue.h"
 #include "StereoWidth.h"
+// #include "Shimmer.hpp"
+#include "Chorus.hpp"
 
 #include <map>
 #include <vector>
@@ -108,7 +110,10 @@ public:
   void changeProgramName (int index, const juce::String& newName);
 
   void getStateInformation(juce::MemoryBlock& destData);
+  std::unique_ptr<juce::XmlElement> writeToXml();
+
   void setStateInformation(const void* data, int sizeInBytes);
+  void restoreFromXml(std::unique_ptr<juce::XmlElement> element);
 
   float getLevelDry(size_t channel) const;
   float getLevelWet(size_t channel) const;
@@ -165,8 +170,12 @@ public:
   void setUIBounds(const juce::Rectangle<int>& bounds, bool shouldUpdateInSettings);
   juce::Rectangle<int> getUIBounds() const;
 
+  void setPresetName(const juce::String& name);
+  juce::String getPresetName() const;
+
 private:
   juce::AudioSampleBuffer _wetBuffer;
+  juce::AudioSampleBuffer _shimmerBuffer;
   std::vector<float> _convolutionBuffer;
   ParameterSet _parameterSet;
   std::array<LevelMeasurement, 2> _levelMeasurementsDry;
@@ -198,6 +207,10 @@ private:
   std::unique_ptr<juce::Thread> _irCalculation;
 
   bool _irBrowserOpen;
+  juce::String _presetName;
+
+  // Shimmer _shimmer;
+  Chorus _chorus;
 
   //==============================================================================
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Processor);

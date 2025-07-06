@@ -33,10 +33,10 @@ struct Parameters
 
   static const BoolParameterDescriptor WetOn;
   static const FloatParameterDescriptor WetDecibels;
-  
+
   static const BoolParameterDescriptor DryOn;
   static const FloatParameterDescriptor DryDecibels;
-  
+
   static const BoolParameterDescriptor AutoGainOn;
   static const FloatParameterDescriptor AutoGainDecibels;
 
@@ -44,13 +44,20 @@ struct Parameters
   static const FloatParameterDescriptor EqLowCutFreq;
   static const FloatParameterDescriptor EqLowShelfFreq;
   static const FloatParameterDescriptor EqLowShelfDecibels;
-  
+
   static const IntParameterDescriptor EqHighType;
   static const FloatParameterDescriptor EqHighCutFreq;
   static const FloatParameterDescriptor EqHighShelfFreq;
   static const FloatParameterDescriptor EqHighShelfDecibels;
 
   static const FloatParameterDescriptor StereoWidth;
+
+  // static const FloatParameterDescriptor ShimmerWetGain;
+  // static const FloatParameterDescriptor ShimmerFeedback;
+
+  static const FloatParameterDescriptor ChorusWetGain;
+  static const FloatParameterDescriptor ChorusFrequency;
+  static const FloatParameterDescriptor ChorusDepth;
 };
 
 #endif // Header guard

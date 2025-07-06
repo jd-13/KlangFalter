@@ -83,9 +83,8 @@ void WaveformComponent::paint(Graphics& g)
   {
     g.setColour(scaleColour);
 
-    constexpr float NOMINAL_WIDTH {760};
     juce::Font placeholderFont;
-    placeholderFont.setHeight(placeholderFont.getHeight() * (getTopLevelComponent()->getWidth() / NOMINAL_WIDTH));
+    placeholderFont.setHeight(placeholderFont.getHeight() * (getTopLevelComponent()->getWidth() / UIUtils::NOMINAL_WIDTH));
     g.setFont(placeholderFont);
 
     g.drawText("No Impulse Response", 0, 0, width, height, Justification(Justification::centred), false);
@@ -133,7 +132,7 @@ void WaveformComponent::paint(Graphics& g)
       g.drawText(juce::String(_beatsPerMinute, 1) + juce::String(" BPM (1/") + juce::String(beatPerTick) + juce::String(" notes)"),
                  _area.getX(),
                  static_cast<int>(tickBottom)-1,
-                 _area.getWidth(),
+                 width - _area.getX(),
                  hTick,
                  tickJustification,
                  false);
@@ -354,19 +353,5 @@ void WaveformComponent::clear()
     _attackShape = 0.0;
     _decayShape = 0.0;
     updateArea();
-  }
-}
-
-
-void WaveformComponent::mouseUp(const MouseEvent& mouseEvent)
-{
-  if (_irAgent)
-  {
-    if (mouseEvent.x > _area.getX() && mouseEvent.y > _area.getBottom())
-    {
-      Settings& settings = _irAgent->getProcessor().getSettings();
-      settings.setTimelineUnit((settings.getTimelineUnit() == Settings::Seconds) ? Settings::Beats : Settings::Seconds);
-      repaint();
-    }
   }
 }

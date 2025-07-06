@@ -8,8 +8,7 @@ namespace {
     constexpr double DOUBLE_TAU {static_cast<double>(LONG_TAU)};
 
     float scaled(int currentParentWidth, float value) {
-        constexpr float NOMINAL_WIDTH {760};
-        return currentParentWidth / (NOMINAL_WIDTH / value);
+        return currentParentWidth / (UIUtils::NOMINAL_WIDTH / value);
     }
 }
 
@@ -55,6 +54,7 @@ namespace UIUtils {
         };
 
         theme.productName = loadString(json, "productName");
+        theme.presetExtension = loadString(json, "presetExtension");
 
         if (json.hasProperty("colours")) {
             const juce::var& colours = json.getProperty("colours", juce::var());
@@ -101,10 +101,10 @@ namespace UIUtils {
                               height - 2 * indent,
                               static_cast<float>(cornerSize),
                               static_cast<float>(cornerSize),
-                              true,
-                              true,
-                              !button.isConnectedOnBottom(),
-                              !button.isConnectedOnBottom());
+                              !button.isConnectedOnLeft(),
+                              !button.isConnectedOnRight(),
+                              !(button.isConnectedOnLeft() || button.isConnectedOnBottom()),
+                              !(button.isConnectedOnRight() || button.isConnectedOnBottom()));
 
         g.strokePath(p, pStroke);
     }
@@ -119,7 +119,7 @@ namespace UIUtils {
             g.setColour(textButton.findColour(offColour));
         }
 
-        g.setFont(g.getCurrentFont().withHeight(scaled(textButton.getParentWidth(), 14.0f)));
+        g.setFont(g.getCurrentFont().withHeight(scaled(textButton.getTopLevelComponent()->getWidth(), 11.0f)));
 
         constexpr int MARGIN {0};
         g.drawFittedText(textButton.getButtonText(),
@@ -318,5 +318,121 @@ namespace UIUtils {
         g.drawFittedText (filename,
                             x, 0, width - x, height,
                             Justification::centredLeft, 1);
+    }
+
+    IRDirectionButtons::IRDirectionButtons(std::function<void()> onForwardClick,
+                                           std::function<void()> onReverseClick,
+                                           std::function<bool()> getForwardState,
+                                           std::function<bool()> getReverseState,
+                                           Theme& theme) :
+                _onForwardClick(onForwardClick),
+                _onReverseClick(onReverseClick) {
+        _forwardButton.reset(new juce::TextButton("Forward Button"));
+        addAndMakeVisible(_forwardButton.get());
+        _forwardButton->setTooltip(TRANS("Set the output mode to unipolar"));
+        _forwardButton->setButtonText(TRANS("Fwd"));
+        _forwardButton->setLookAndFeel(&_buttonLookAndFeel);
+        _forwardButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, theme.background);
+        _forwardButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, theme.background.withAlpha(0.5f));
+        _forwardButton->onClick = [&]() {
+            if (!_forwardButton->getToggleState()) {
+                _forwardButton->setToggleState(true, juce::dontSendNotification);
+                _reverseButton->setToggleState(false, juce::dontSendNotification);
+                _onForwardClick();
+            }
+        };
+        _forwardButton->setConnectedEdges(juce::Button::ConnectedOnRight);
+
+        _reverseButton.reset(new juce::TextButton("Bipolar Button"));
+        addAndMakeVisible(_reverseButton.get());
+        _reverseButton->setTooltip(TRANS("Set the output mode to bipolar"));
+        _reverseButton->setButtonText(TRANS("Rev"));
+        _reverseButton->setLookAndFeel(&_buttonLookAndFeel);
+        _reverseButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, theme.background);
+        _reverseButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, theme.background.withAlpha(0.5f));
+        _reverseButton->onClick = [&]() {
+            if (!_reverseButton->getToggleState()) {
+                _reverseButton->setToggleState(true, juce::dontSendNotification);
+                _forwardButton->setToggleState(false, juce::dontSendNotification);
+                _onReverseClick();
+            }
+        };
+        _reverseButton->setConnectedEdges(juce::Button::ConnectedOnLeft);
+
+        _forwardButton->setToggleState(getForwardState(), juce::dontSendNotification);
+        _reverseButton->setToggleState(getReverseState(), juce::dontSendNotification);
+    }
+
+    IRDirectionButtons::~IRDirectionButtons() {
+        _forwardButton->setLookAndFeel(nullptr);
+        _reverseButton->setLookAndFeel(nullptr);
+
+        _forwardButton = nullptr;
+        _reverseButton = nullptr;
+    }
+
+    void IRDirectionButtons::resized() {
+        juce::Rectangle<int> availableArea = getLocalBounds();
+
+        _forwardButton->setBounds(availableArea.removeFromLeft(availableArea.getWidth() / 2));
+        _reverseButton->setBounds(availableArea);
+    }
+
+    ScaleUnitButtons::ScaleUnitButtons(std::function<void()> onSecClick,
+                                           std::function<void()> onBPMClick,
+                                           std::function<bool()> getSecState,
+                                           std::function<bool()> getBPMState,
+                                           Theme& theme) :
+                _onSecClick(onSecClick),
+                _onBPMClick(onBPMClick) {
+        _secButton.reset(new juce::TextButton("Forward Button"));
+        addAndMakeVisible(_secButton.get());
+        _secButton->setTooltip(TRANS("Set the output mode to unipolar"));
+        _secButton->setButtonText(TRANS("Sec"));
+        _secButton->setLookAndFeel(&_buttonLookAndFeel);
+        _secButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, theme.background);
+        _secButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, theme.background.withAlpha(0.5f));
+        _secButton->onClick = [&]() {
+            if (!_secButton->getToggleState()) {
+                _secButton->setToggleState(true, juce::dontSendNotification);
+                _BPMButton->setToggleState(false, juce::dontSendNotification);
+                _onSecClick();
+            }
+        };
+        _secButton->setConnectedEdges(juce::Button::ConnectedOnRight);
+
+        _BPMButton.reset(new juce::TextButton("Bipolar Button"));
+        addAndMakeVisible(_BPMButton.get());
+        _BPMButton->setTooltip(TRANS("Set the output mode to bipolar"));
+        _BPMButton->setButtonText(TRANS("BPM"));
+        _BPMButton->setLookAndFeel(&_buttonLookAndFeel);
+        _BPMButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, theme.background);
+        _BPMButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, theme.background.withAlpha(0.5f));
+        _BPMButton->onClick = [&]() {
+            if (!_BPMButton->getToggleState()) {
+                _BPMButton->setToggleState(true, juce::dontSendNotification);
+                _secButton->setToggleState(false, juce::dontSendNotification);
+                _onBPMClick();
+            }
+        };
+        _BPMButton->setConnectedEdges(juce::Button::ConnectedOnLeft);
+
+        _secButton->setToggleState(getSecState(), juce::dontSendNotification);
+        _BPMButton->setToggleState(getBPMState(), juce::dontSendNotification);
+    }
+
+    ScaleUnitButtons::~ScaleUnitButtons() {
+        _secButton->setLookAndFeel(nullptr);
+        _BPMButton->setLookAndFeel(nullptr);
+
+        _secButton = nullptr;
+        _BPMButton = nullptr;
+    }
+
+    void ScaleUnitButtons::resized() {
+        juce::Rectangle<int> availableArea = getLocalBounds();
+
+        _secButton->setBounds(availableArea.removeFromLeft(availableArea.getWidth() / 2));
+        _BPMButton->setBounds(availableArea);
     }
 }

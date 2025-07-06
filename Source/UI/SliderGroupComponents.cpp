@@ -10,10 +10,15 @@ namespace {
         return juce::String(seconds, 2) + juce::String("s");
     }
 
-    juce::String FormatFrequency(float freq) {
+    juce::String FormatFrequency(float freq, int decimalPlaces) {
         if (freq < 1000.0f) {
-            return juce::String(static_cast<int>(freq+0.5f)) + juce::String("Hz");
+            if (decimalPlaces == 0) {
+                return juce::String(static_cast<int>(freq+0.5f)) + juce::String("Hz");
+            } else {
+                return juce::String(freq, decimalPlaces) + juce::String("Hz");
+            }
         }
+
         return juce::String(freq/1000.0f, (freq < 1500.0f) ? 2 : 1) + juce::String("kHz");
     }
 
@@ -43,6 +48,19 @@ namespace {
 
     constexpr int GROUP_HEADER_FONT_SIZE {15};
     constexpr int LABEL_FONT_SIZE {11};
+
+    void styleLabel(juce::Label* label, UIUtils::Theme& theme, int fontSize) {
+        label->setFont(juce::Font(fontSize, juce::Font::plain).withTypefaceStyle("Regular"));
+        label->setJustificationType(juce::Justification::centred);
+        label->setEditable(false, false, false);
+        label->setColour(juce::Label::textColourId, theme.neutral);
+    }
+
+    void styleSlider(juce::Slider* slider, UIUtils::RotarySliderLookAndFeel* lookAndFeel) {
+        slider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
+        slider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
+        slider->setLookAndFeel(lookAndFeel);
+    }
 }
 
 IRSliderGroup::IRSliderGroup(Processor& processor, UIUtils::Theme theme) :
@@ -52,26 +70,16 @@ IRSliderGroup::IRSliderGroup(Processor& processor, UIUtils::Theme theme) :
 
     _impulseResponseHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Impulse Response")));
     addAndMakeVisible(_impulseResponseHeaderLabel.get());
-    _impulseResponseHeaderLabel->setFont(juce::Font(15.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _impulseResponseHeaderLabel->setJustificationType(juce::Justification::centred);
-    _impulseResponseHeaderLabel->setEditable(false, false, false);
-    _impulseResponseHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
+    styleLabel(_impulseResponseHeaderLabel.get(), theme, GROUP_HEADER_FONT_SIZE);
 
     _predelayHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Gap")));
     addAndMakeVisible(_predelayHeaderLabel.get());
-    _predelayHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _predelayHeaderLabel->setJustificationType(juce::Justification::centred);
-    _predelayHeaderLabel->setEditable(false, false, false);
-    _predelayHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
+    styleLabel(_predelayHeaderLabel.get(), theme, LABEL_FONT_SIZE);
 
     _predelaySlider.reset(new juce::Slider (juce::String()));
     addAndMakeVisible(_predelaySlider.get());
+    styleSlider(_predelaySlider.get(), _rotarySliderLookAndFeel.get());
     _predelaySlider->setRange(0, 1000, 0);
-    _predelaySlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
-    _predelaySlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
-    _predelaySlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
-    _predelaySlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
-    _predelaySlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _predelaySlider->setDoubleClickReturnValue(true, 0);
     _predelaySlider->onValueChange = [this] {
         _processor.setPredelayMs(_predelaySlider->getValue());
@@ -79,27 +87,17 @@ IRSliderGroup::IRSliderGroup(Processor& processor, UIUtils::Theme theme) :
 
     _predelayLabel.reset(new juce::Label(juce::String(), TRANS("0ms")));
     addAndMakeVisible(_predelayLabel.get());
-    _predelayLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _predelayLabel->setJustificationType(juce::Justification::centred);
-    _predelayLabel->setEditable(false, false, false);
-    _predelayLabel->setColour(juce::Label::textColourId, theme.neutral);
+    styleLabel(_predelayLabel.get(), theme, LABEL_FONT_SIZE);
 
-    _beginHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Begin")));
+    _beginHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Start")));
     addAndMakeVisible(_beginHeaderLabel.get());
-    _beginHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _beginHeaderLabel->setJustificationType(juce::Justification::centred);
-    _beginHeaderLabel->setEditable(false, false, false);
-    _beginHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
+    styleLabel(_beginHeaderLabel.get(), theme, LABEL_FONT_SIZE);
 
     _beginSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_beginSlider.get());
+    styleSlider(_beginSlider.get(), _rotarySliderLookAndFeel.get());
     _beginSlider->setRange(0, 1, 0.001);
-    _beginSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
-    _beginSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
-    _beginSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
-    _beginSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
     _beginSlider->setSkewFactor(0.5);
-    _beginSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _beginSlider->setDoubleClickReturnValue(true, 0);
     _beginSlider->onValueChange = [this] {
         _processor.setIRBegin(_beginSlider->getValue());
@@ -107,26 +105,16 @@ IRSliderGroup::IRSliderGroup(Processor& processor, UIUtils::Theme theme) :
 
     _beginLabel.reset(new juce::Label(juce::String(), TRANS("100%")));
     addAndMakeVisible(_beginLabel.get());
-    _beginLabel->setFont(juce::Font (11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _beginLabel->setJustificationType(juce::Justification::centred);
-    _beginLabel->setEditable(false, false, false);
-    _beginLabel->setColour(juce::Label::textColourId, theme.neutral);
+    styleLabel(_beginLabel.get(), theme, LABEL_FONT_SIZE);
 
     _endHeaderLabel.reset(new juce::Label(juce::String(), TRANS("End")));
     addAndMakeVisible(_endHeaderLabel.get());
-    _endHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _endHeaderLabel->setJustificationType(juce::Justification::centred);
-    _endHeaderLabel->setEditable(false, false, false);
-    _endHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
+    styleLabel(_endHeaderLabel.get(), theme, LABEL_FONT_SIZE);
 
     _endSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_endSlider.get());
+    styleSlider(_endSlider.get(), _rotarySliderLookAndFeel.get());
     _endSlider->setRange(0, 1, 0.001);
-    _endSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
-    _endSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
-    _endSlider->setColour(juce::Slider::thumbColourId, juce::Colour (0xffafafff));
-    _endSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour (0xb1606060));
-    _endSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _endSlider->setDoubleClickReturnValue(true, 1);
     _endSlider->onValueChange = [this] {
         _processor.setIREnd(_endSlider->getValue());
@@ -134,44 +122,7 @@ IRSliderGroup::IRSliderGroup(Processor& processor, UIUtils::Theme theme) :
 
     _endLabel.reset(new juce::Label(juce::String(), TRANS("100%")));
     addAndMakeVisible(_endLabel.get());
-    _endLabel->setFont(juce::Font (11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _endLabel->setJustificationType(juce::Justification::centred);
-    _endLabel->setEditable(false, false, false);
-    _endLabel->setColour(juce::Label::textColourId, theme.neutral);
-
-    _stretchHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Tune")));
-    addAndMakeVisible(_stretchHeaderLabel.get());
-    _stretchHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _stretchHeaderLabel->setJustificationType(juce::Justification::centred);
-    _stretchHeaderLabel->setEditable(false, false, false);
-    _stretchHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
-
-    _stretchSlider.reset(new juce::Slider(juce::String()));
-    addAndMakeVisible(_stretchSlider.get());
-    _stretchSlider->setRange(0, 2, 0);
-    _stretchSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
-    _stretchSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
-    _stretchSlider->setColour(juce::Slider::thumbColourId, juce::Colour (0xffafafff));
-    _stretchSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour (0xb1606060));
-    _stretchSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
-    _stretchSlider->setDoubleClickReturnValue(true, 1);
-    _stretchSlider->onValueChange = [this] {
-        // Invert as we're treating stretch as tune
-        double sliderVal = 2 - _stretchSlider->getValue();
-        if (::fabs(sliderVal-1.0) < 0.025)
-        {
-          sliderVal = 1.0;
-          _stretchSlider->setValue(1.0, juce::dontSendNotification);
-        }
-        _processor.setStretch(sliderVal);
-    };
-
-    _stretchLabel.reset(new juce::Label(juce::String(), TRANS("100%")));
-    addAndMakeVisible(_stretchLabel.get());
-    _stretchLabel->setFont(juce::Font (11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _stretchLabel->setJustificationType(juce::Justification::centred);
-    _stretchLabel->setEditable(false, false, false);
-    _stretchLabel->setColour(juce::Label::textColourId, theme.neutral);
+    styleLabel(_endLabel.get(), theme, LABEL_FONT_SIZE);
 }
 
 IRSliderGroup::~IRSliderGroup() {
@@ -180,9 +131,6 @@ IRSliderGroup::~IRSliderGroup() {
     _predelayLabel = nullptr;
     _predelayHeaderLabel = nullptr;
     _predelaySlider = nullptr;
-    _stretchLabel = nullptr;
-    _stretchHeaderLabel = nullptr;
-    _stretchSlider = nullptr;
 
     _endHeaderLabel = nullptr;
     _beginLabel = nullptr;
@@ -194,7 +142,7 @@ IRSliderGroup::~IRSliderGroup() {
 }
 
 void IRSliderGroup::resized() {
-    constexpr float NOMINAL_WIDTH {144};
+    constexpr float NOMINAL_WIDTH {108};
 
     setFontHeight(_impulseResponseHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), GROUP_HEADER_FONT_SIZE));
 
@@ -207,15 +155,12 @@ void IRSliderGroup::resized() {
     setFontHeight(_endHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
     setFontHeight(_endLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
 
-    setFontHeight(_stretchHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
-    setFontHeight(_stretchLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
-
     juce::Rectangle<int> availableArea = getLocalBounds();
 
     _impulseResponseHeaderLabel->setBounds(availableArea.withHeight(scaled(NOMINAL_WIDTH, getWidth(), 24)));
     availableArea.removeFromTop(scaled(NOMINAL_WIDTH, getWidth(), 16));
 
-    const int sliderAreaWidth {availableArea.getWidth() / 4};
+    const int sliderAreaWidth {availableArea.getWidth() / 3};
     juce::Rectangle<int> predelayArea = availableArea.removeFromLeft(sliderAreaWidth);
     layoutSlider(predelayArea, _predelayHeaderLabel.get(), _predelaySlider.get(), _predelayLabel.get(), NOMINAL_WIDTH, getWidth());
 
@@ -224,9 +169,6 @@ void IRSliderGroup::resized() {
 
     juce::Rectangle<int> endArea = availableArea.removeFromLeft(sliderAreaWidth);
     layoutSlider(endArea, _endHeaderLabel.get(), _endSlider.get(), _endLabel.get(), NOMINAL_WIDTH, getWidth());
-
-    juce::Rectangle<int> stretchArea = availableArea.removeFromLeft(sliderAreaWidth);
-    layoutSlider(stretchArea, _stretchHeaderLabel.get(), _stretchSlider.get(), _stretchLabel.get(), NOMINAL_WIDTH, getWidth());
 }
 
 void IRSliderGroup::onUpdate(bool enableSliders) {
@@ -244,13 +186,73 @@ void IRSliderGroup::onUpdate(bool enableSliders) {
     _endSlider->setEnabled(enableSliders);
     _endSlider->setValue(irEnd, juce::dontSendNotification);
     _endLabel->setText(juce::String(100.0 * irEnd, 1) + juce::String("%"), juce::sendNotification);
+}
 
+TuneSliderGroup::TuneSliderGroup(Processor& processor, UIUtils::Theme theme) :
+        _processor(processor),
+        _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()) {
+    _rotarySliderLookAndFeel->theme = theme;
+
+    _tuneHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Tune")));
+    addAndMakeVisible(_tuneHeaderLabel.get());
+    styleLabel(_tuneHeaderLabel.get(), theme, GROUP_HEADER_FONT_SIZE);
+
+    _amountHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Amount")));
+    addAndMakeVisible(_amountHeaderLabel.get());
+    styleLabel(_amountHeaderLabel.get(), theme, LABEL_FONT_SIZE);
+
+    _amountSlider.reset(new juce::Slider(juce::String()));
+    addAndMakeVisible(_amountSlider.get());
+    styleSlider(_amountSlider.get(), _rotarySliderLookAndFeel.get());
+    _amountSlider->setRange(0, 2, 0);
+    _amountSlider->setDoubleClickReturnValue(true, 1);
+    _amountSlider->onValueChange = [this] {
+        // Invert as we're treating stretch as tune
+        double sliderVal = 2 - _amountSlider->getValue();
+        if (::fabs(sliderVal-1.0) < 0.025)
+        {
+          sliderVal = 1.0;
+          _amountSlider->setValue(1.0, juce::dontSendNotification);
+        }
+        _processor.setStretch(sliderVal);
+    };
+
+    _amountLabel.reset(new juce::Label(juce::String(), TRANS("100%")));
+    addAndMakeVisible(_amountLabel.get());
+    styleLabel(_amountLabel.get(), theme, LABEL_FONT_SIZE);
+}
+
+TuneSliderGroup::~TuneSliderGroup() {
+    _tuneHeaderLabel = nullptr;
+
+    _amountHeaderLabel = nullptr;
+    _amountSlider = nullptr;
+    _amountLabel = nullptr;
+}
+
+void TuneSliderGroup::resized() {
+    constexpr float NOMINAL_WIDTH {52};
+
+    setFontHeight(_tuneHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), GROUP_HEADER_FONT_SIZE));
+
+    setFontHeight(_amountHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+    setFontHeight(_amountLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+
+    juce::Rectangle<int> availableArea = getLocalBounds();
+
+    _tuneHeaderLabel->setBounds(availableArea.withHeight(scaled(NOMINAL_WIDTH, getWidth(), 24)));
+    availableArea.removeFromTop(scaled(NOMINAL_WIDTH, getWidth(), 16));
+
+    layoutSlider(availableArea, _amountHeaderLabel.get(), _amountSlider.get(), _amountLabel.get(), NOMINAL_WIDTH, getWidth());
+}
+
+void TuneSliderGroup::onUpdate(bool enableSliders) {
     const double stretch = _processor.getStretch();
     const double tune = 2 - stretch;
-    _stretchSlider->setEnabled(enableSliders);
-    _stretchSlider->setRange(0.5, 1.5);
-    _stretchSlider->setValue(tune, juce::dontSendNotification);
-    _stretchLabel->setText(String(static_cast<int>(100.0*tune)) + String("%"), juce::sendNotification);
+    _amountSlider->setEnabled(enableSliders);
+    _amountSlider->setRange(0.5, 1.5);
+    _amountSlider->setValue(tune, juce::dontSendNotification);
+    _amountLabel->setText(String(static_cast<int>(100.0*tune)) + String("%"), juce::sendNotification);
 }
 
 AttackSliderGroup::AttackSliderGroup(Processor& processor, UIUtils::Theme theme) :
@@ -260,27 +262,17 @@ AttackSliderGroup::AttackSliderGroup(Processor& processor, UIUtils::Theme theme)
 
     _attackHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Attack")));
     addAndMakeVisible(_attackHeaderLabel.get());
-    _attackHeaderLabel->setFont(juce::Font(15.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _attackHeaderLabel->setJustificationType(juce::Justification::centred);
-    _attackHeaderLabel->setEditable(false, false, false);
-    _attackHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
+    styleLabel(_attackHeaderLabel.get(), theme, GROUP_HEADER_FONT_SIZE);
 
     _attackLengthHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Length")));
     addAndMakeVisible(_attackLengthHeaderLabel.get());
-    _attackLengthHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _attackLengthHeaderLabel->setJustificationType(juce::Justification::centred);
-    _attackLengthHeaderLabel->setEditable(false, false, false);
-    _attackLengthHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
+    styleLabel(_attackLengthHeaderLabel.get(), theme, LABEL_FONT_SIZE);
 
     _attackLengthSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_attackLengthSlider.get());
+    styleSlider(_attackLengthSlider.get(), _rotarySliderLookAndFeel.get());
     _attackLengthSlider->setRange(0, 1, 0);
-    _attackLengthSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
-    _attackLengthSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
-    _attackLengthSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
-    _attackLengthSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
     _attackLengthSlider->setSkewFactor(0.5);
-    _attackLengthSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _attackLengthSlider->setDoubleClickReturnValue(true, 0);
     _attackLengthSlider->onValueChange = [this] {
         _processor.setAttackLength(_attackLengthSlider->getValue());
@@ -288,27 +280,17 @@ AttackSliderGroup::AttackSliderGroup(Processor& processor, UIUtils::Theme theme)
 
     _attackLengthLabel.reset(new juce::Label(juce::String(), TRANS("0ms")));
     addAndMakeVisible (_attackLengthLabel.get());
-    _attackLengthLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _attackLengthLabel->setJustificationType (juce::Justification::centred);
-    _attackLengthLabel->setEditable (false, false, false);
-    _attackLengthLabel->setColour(juce::Label::textColourId, theme.neutral);
+    styleLabel(_attackLengthLabel.get(), theme, LABEL_FONT_SIZE);
 
     _attackShapeHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Shape")));
     addAndMakeVisible(_attackShapeHeaderLabel.get());
-    _attackShapeHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _attackShapeHeaderLabel->setJustificationType(juce::Justification::centred);
-    _attackShapeHeaderLabel->setEditable(false, false, false);
-    _attackShapeHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
+    styleLabel(_attackShapeHeaderLabel.get(), theme, LABEL_FONT_SIZE);
 
     _attackShapeSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_attackShapeSlider.get());
+    styleSlider(_attackShapeSlider.get(), _rotarySliderLookAndFeel.get());
     _attackShapeSlider->setRange(0, 10, 0);
-    _attackShapeSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
-    _attackShapeSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
-    _attackShapeSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
-    _attackShapeSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
     _attackShapeSlider->setSkewFactor(0.5);
-    _attackShapeSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _attackShapeSlider->setDoubleClickReturnValue(true, 0);
     _attackShapeSlider->onValueChange = [this] {
         _processor.setAttackShape(_attackShapeSlider->getValue());
@@ -316,10 +298,7 @@ AttackSliderGroup::AttackSliderGroup(Processor& processor, UIUtils::Theme theme)
 
     _attackShapeLabel.reset(new juce::Label(juce::String(), TRANS("1.0")));
     addAndMakeVisible(_attackShapeLabel.get());
-    _attackShapeLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _attackShapeLabel->setJustificationType(juce::Justification::centred);
-    _attackShapeLabel->setEditable(false, false, false);
-    _attackShapeLabel->setColour(juce::Label::textColourId, theme.neutral);
+    styleLabel(_attackShapeLabel.get(), theme, LABEL_FONT_SIZE);
 }
 
 AttackSliderGroup::~AttackSliderGroup() {
@@ -377,31 +356,17 @@ DecaySliderGroup::DecaySliderGroup(Processor& processor, UIUtils::Theme theme) :
 
     _decayHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Decay")));
     addAndMakeVisible(_decayHeaderLabel.get());
-    _decayHeaderLabel->setFont(juce::Font(15.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _decayHeaderLabel->setJustificationType(juce::Justification::centred);
-    _decayHeaderLabel->setEditable(false, false, false);
-    _decayHeaderLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
-    _decayHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colour(0xffb0b0b6));
-    _decayHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+    styleLabel(_decayHeaderLabel.get(), theme, GROUP_HEADER_FONT_SIZE);
 
     _decayShapeHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Shape")));
     addAndMakeVisible(_decayShapeHeaderLabel.get());
-    _decayShapeHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _decayShapeHeaderLabel->setJustificationType(juce::Justification::centred);
-    _decayShapeHeaderLabel->setEditable(false, false, false);
-    _decayShapeHeaderLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
-    _decayShapeHeaderLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
-    _decayShapeHeaderLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+    styleLabel(_decayShapeHeaderLabel.get(), theme, LABEL_FONT_SIZE);
 
     _decayShapeSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_decayShapeSlider.get());
+    styleSlider(_decayShapeSlider.get(), _rotarySliderLookAndFeel.get());
     _decayShapeSlider->setRange(0, 10, 0);
-    _decayShapeSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
-    _decayShapeSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
-    _decayShapeSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
-    _decayShapeSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
     _decayShapeSlider->setSkewFactor(0.5);
-    _decayShapeSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _decayShapeSlider->setDoubleClickReturnValue(true, 0);
     _decayShapeSlider->onValueChange = [this] {
         _processor.setDecayShape(_decayShapeSlider->getValue());
@@ -409,12 +374,7 @@ DecaySliderGroup::DecaySliderGroup(Processor& processor, UIUtils::Theme theme) :
 
     _decayShapeLabel.reset(new juce::Label(juce::String(), TRANS("1.0")));
     addAndMakeVisible(_decayShapeLabel.get());
-    _decayShapeLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _decayShapeLabel->setJustificationType(juce::Justification::centred);
-    _decayShapeLabel->setEditable(false, false, false);
-    _decayShapeLabel->setColour(juce::Label::textColourId, juce::Colour(0xffb0b0b6));
-    _decayShapeLabel->setColour(juce::TextEditor::textColourId, juce::Colours::black);
-    _decayShapeLabel->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
+    styleLabel(_decayShapeLabel.get(), theme, LABEL_FONT_SIZE);
 }
 
 DecaySliderGroup::~DecaySliderGroup() {
@@ -455,27 +415,17 @@ StereoSliderGroup::StereoSliderGroup(Processor& processor, UIUtils::Theme theme)
 
     _stereoHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Stereo")));
     addAndMakeVisible(_stereoHeaderLabel.get());
-    _stereoHeaderLabel->setFont(juce::Font(15.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _stereoHeaderLabel->setJustificationType(juce::Justification::centred);
-    _stereoHeaderLabel->setEditable(false, false, false);
-    _stereoHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
+    styleLabel(_stereoHeaderLabel.get(), theme, GROUP_HEADER_FONT_SIZE);
 
     _widthHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Width")));
     addAndMakeVisible(_widthHeaderLabel.get());
-    _widthHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _widthHeaderLabel->setJustificationType(juce::Justification::centred);
-    _widthHeaderLabel->setEditable(false, false, false);
-    _widthHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
+    styleLabel(_widthHeaderLabel.get(), theme, LABEL_FONT_SIZE);
 
     _widthSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_widthSlider.get());
+    styleSlider(_widthSlider.get(), _rotarySliderLookAndFeel.get());
     _widthSlider->setRange(0, 10, 0);
-    _widthSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
-    _widthSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
-    _widthSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
-    _widthSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
     _widthSlider->setSkewFactor(0.30102);
-    _widthSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _widthSlider->setDoubleClickReturnValue(true, Parameters::StereoWidth.getDefaultValue());
     _widthSlider->onValueChange = [this] {
         _processor.setParameterNotifyingHost(Parameters::StereoWidth, SnapValue(static_cast<float>(_widthSlider->getValue()), 1.0f, 0.05f));
@@ -483,10 +433,7 @@ StereoSliderGroup::StereoSliderGroup(Processor& processor, UIUtils::Theme theme)
 
     _widthLabel.reset(new juce::Label(juce::String(), TRANS("1.0")));
     addAndMakeVisible(_widthLabel.get());
-    _widthLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _widthLabel->setJustificationType(juce::Justification::centred);
-    _widthLabel->setEditable(false, false, false);
-    _widthLabel->setColour(juce::Label::textColourId, theme.neutral);
+    styleLabel(_widthLabel.get(), theme, LABEL_FONT_SIZE);
 }
 
 StereoSliderGroup::~StereoSliderGroup() {
@@ -542,20 +489,13 @@ LowEqSliderGroup::LowEqSliderGroup(Processor& processor, UIUtils::Theme theme) :
 
     _lowCutFreqHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Freq")));
     addAndMakeVisible(_lowCutFreqHeaderLabel.get());
-    _lowCutFreqHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _lowCutFreqHeaderLabel->setJustificationType(juce::Justification::centred);
-    _lowCutFreqHeaderLabel->setEditable(false, false, false);
-    _lowCutFreqHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
+    styleLabel(_lowCutFreqHeaderLabel.get(), theme, LABEL_FONT_SIZE);
 
     _lowCutFreqSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_lowCutFreqSlider.get());
+    styleSlider(_lowCutFreqSlider.get(), _rotarySliderLookAndFeel.get());
     _lowCutFreqSlider->setRange(20, 2000, 0);
-    _lowCutFreqSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
-    _lowCutFreqSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
-    _lowCutFreqSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
-    _lowCutFreqSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
     _lowCutFreqSlider->setSkewFactor(0.5);
-    _lowCutFreqSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _lowCutFreqSlider->setRange(Parameters::EqLowCutFreq.getMinValue(), Parameters::EqLowCutFreq.getMaxValue());
     _lowCutFreqSlider->setDoubleClickReturnValue(true, Parameters::EqLowCutFreq.getDefaultValue());
     _lowCutFreqSlider->onValueChange = [this] {
@@ -564,27 +504,17 @@ LowEqSliderGroup::LowEqSliderGroup(Processor& processor, UIUtils::Theme theme) :
 
     _lowCutFreqLabel.reset(new juce::Label(juce::String(), TRANS("1234Hz")));
     addAndMakeVisible(_lowCutFreqLabel.get());
-    _lowCutFreqLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _lowCutFreqLabel->setJustificationType(juce::Justification::centred);
-    _lowCutFreqLabel->setEditable(false, false, false);
-    _lowCutFreqLabel->setColour(juce::Label::textColourId, theme.neutral);
+    styleLabel(_lowCutFreqLabel.get(), theme, LABEL_FONT_SIZE);
 
     _loFreqHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Freq")));
     addAndMakeVisible(_loFreqHeaderLabel.get());
-    _loFreqHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _loFreqHeaderLabel->setJustificationType(juce::Justification::centred);
-    _loFreqHeaderLabel->setEditable(false, false, false);
-    _loFreqHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
+    styleLabel(_loFreqHeaderLabel.get(), theme, LABEL_FONT_SIZE);
 
     _loFreqSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_loFreqSlider.get());
+    styleSlider(_loFreqSlider.get(), _rotarySliderLookAndFeel.get());
     _loFreqSlider->setRange(20, 2000, 0);
-    _loFreqSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
-    _loFreqSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
-    _loFreqSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
-    _loFreqSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
     _loFreqSlider->setSkewFactor(0.5);
-    _loFreqSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _loFreqSlider->setRange(Parameters::EqLowShelfFreq.getMinValue(), Parameters::EqLowShelfFreq.getMaxValue());
     _loFreqSlider->setDoubleClickReturnValue(true, Parameters::EqLowShelfFreq.getDefaultValue());
     _loFreqSlider->onValueChange = [this] {
@@ -593,26 +523,16 @@ LowEqSliderGroup::LowEqSliderGroup(Processor& processor, UIUtils::Theme theme) :
 
     _loFreqLabel.reset(new juce::Label(juce::String(), TRANS("1234Hz")));
     addAndMakeVisible(_loFreqLabel.get());
-    _loFreqLabel->setFont(juce::Font (11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _loFreqLabel->setJustificationType(juce::Justification::centred);
-    _loFreqLabel->setEditable(false, false, false);
-    _loFreqLabel->setColour(juce::Label::textColourId, theme.neutral);
+    styleLabel(_loFreqLabel.get(), theme, LABEL_FONT_SIZE);
 
     _loGainHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Gain")));
     addAndMakeVisible(_loGainHeaderLabel.get());
-    _loGainHeaderLabel->setFont(juce::Font (11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _loGainHeaderLabel->setJustificationType(juce::Justification::centred);
-    _loGainHeaderLabel->setEditable(false, false, false);
-    _loGainHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
+    styleLabel(_loGainHeaderLabel.get(), theme, LABEL_FONT_SIZE);
 
     _loGainSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_loGainSlider.get());
+    styleSlider(_loGainSlider.get(), _rotarySliderLookAndFeel.get());
     _loGainSlider->setRange(-30, 30, 0);
-    _loGainSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
-    _loGainSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
-    _loGainSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
-    _loGainSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
-    _loGainSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _loGainSlider->setRange(Parameters::EqLowShelfDecibels.getMinValue(), Parameters::EqLowShelfDecibels.getMaxValue());
     _loGainSlider->setDoubleClickReturnValue(true, Parameters::EqLowShelfDecibels.getDefaultValue());
     _loGainSlider->onValueChange = [this] {
@@ -621,10 +541,7 @@ LowEqSliderGroup::LowEqSliderGroup(Processor& processor, UIUtils::Theme theme) :
 
      _loGainLabel.reset(new juce::Label (juce::String(), TRANS("0.0dB")));
     addAndMakeVisible(_loGainLabel.get());
-    _loGainLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _loGainLabel->setJustificationType(juce::Justification::centred);
-    _loGainLabel->setEditable(false, false, false);
-    _loGainLabel->setColour(juce::Label::textColourId, theme.neutral);
+    styleLabel(_loGainLabel.get(), theme, LABEL_FONT_SIZE);
 }
 
 LowEqSliderGroup::~LowEqSliderGroup() {
@@ -644,7 +561,7 @@ LowEqSliderGroup::~LowEqSliderGroup() {
 }
 
 void LowEqSliderGroup::resized() {
-    constexpr float NOMINAL_WIDTH {72};
+    constexpr float NOMINAL_WIDTH {88};
 
     setFontHeight(_lowCutFreqHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
     setFontHeight(_lowCutFreqLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
@@ -678,13 +595,13 @@ void LowEqSliderGroup::onUpdate(bool enableSliders) {
     _lowEqButton->setButtonText(lowEqType == Parameters::Shelf ? juce::String("Low Shelf") : juce::String("Low Cut"));
     _lowCutFreqHeaderLabel->setVisible(lowEqType == Parameters::Cut);
     _lowCutFreqLabel->setVisible(lowEqType == Parameters::Cut);
-    _lowCutFreqLabel->setText((::fabs(cutFreq-Parameters::EqLowCutFreq.getMinValue()) > 0.0001f) ? FormatFrequency(cutFreq) : juce::String("Off"), juce::sendNotification);
+    _lowCutFreqLabel->setText((::fabs(cutFreq-Parameters::EqLowCutFreq.getMinValue()) > 0.0001f) ? FormatFrequency(cutFreq, 0) : juce::String("Off"), juce::sendNotification);
     _lowCutFreqSlider->setVisible(lowEqType == Parameters::Cut);
     _lowCutFreqSlider->setEnabled(enableSliders);
     _lowCutFreqSlider->setValue(cutFreq, juce::dontSendNotification);
     _loFreqHeaderLabel->setVisible(lowEqType == Parameters::Shelf);
     _loFreqLabel->setVisible(lowEqType == Parameters::Shelf);
-    _loFreqLabel->setText(FormatFrequency(shelfFreq), juce::sendNotification);
+    _loFreqLabel->setText(FormatFrequency(shelfFreq, 0), juce::sendNotification);
     _loFreqSlider->setVisible(lowEqType == Parameters::Shelf);
     _loFreqSlider->setEnabled(enableSliders);
     _loFreqSlider->setValue(shelfFreq, juce::dontSendNotification);
@@ -718,20 +635,13 @@ HighEqSliderGroup::HighEqSliderGroup(Processor& processor, UIUtils::Theme theme)
 
     _highCutFreqHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Freq")));
     addAndMakeVisible(_highCutFreqHeaderLabel.get());
-    _highCutFreqHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _highCutFreqHeaderLabel->setJustificationType(juce::Justification::centred);
-    _highCutFreqHeaderLabel->setEditable(false, false, false);
-    _highCutFreqHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
+    styleLabel(_highCutFreqHeaderLabel.get(), theme, LABEL_FONT_SIZE);
 
     _highCutFreqSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_highCutFreqSlider.get());
+    styleSlider(_highCutFreqSlider.get(), _rotarySliderLookAndFeel.get());
     _highCutFreqSlider->setRange(2000, 20000, 0);
-    _highCutFreqSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
-    _highCutFreqSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
-    _highCutFreqSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
-    _highCutFreqSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
     _highCutFreqSlider->setSkewFactor(0.7);
-    _highCutFreqSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _highCutFreqSlider->setRange(Parameters::EqHighCutFreq.getMinValue(), Parameters::EqHighCutFreq.getMaxValue());
     _highCutFreqSlider->setDoubleClickReturnValue(true, Parameters::EqHighCutFreq.getDefaultValue());
     _highCutFreqSlider->onValueChange = [this] {
@@ -740,27 +650,17 @@ HighEqSliderGroup::HighEqSliderGroup(Processor& processor, UIUtils::Theme theme)
 
     _highCutFreqLabel.reset(new juce::Label(juce::String(), TRANS("15.2kHz")));
     addAndMakeVisible(_highCutFreqLabel.get());
-    _highCutFreqLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _highCutFreqLabel->setJustificationType(juce::Justification::centred);
-    _highCutFreqLabel->setEditable(false, false, false);
-    _highCutFreqLabel->setColour(juce::Label::textColourId, theme.neutral);
+    styleLabel(_highCutFreqLabel.get(), theme, LABEL_FONT_SIZE);
 
     _hiFreqHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Freq")));
     addAndMakeVisible(_hiFreqHeaderLabel.get());
-    _hiFreqHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _hiFreqHeaderLabel->setJustificationType(juce::Justification::centred);
-    _hiFreqHeaderLabel->setEditable(false, false, false);
-    _hiFreqHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
+    styleLabel(_hiFreqHeaderLabel.get(), theme, LABEL_FONT_SIZE);
 
     _hiFreqSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_hiFreqSlider.get());
+    styleSlider(_hiFreqSlider.get(), _rotarySliderLookAndFeel.get());
     _hiFreqSlider->setRange(2000, 20000, 0);
-    _hiFreqSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
-    _hiFreqSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
-    _hiFreqSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
-    _hiFreqSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
     _hiFreqSlider->setSkewFactor(0.7);
-    _hiFreqSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _hiFreqSlider->setRange(Parameters::EqHighShelfFreq.getMinValue(), Parameters::EqHighShelfFreq.getMaxValue());
     _hiFreqSlider->setDoubleClickReturnValue(true, Parameters::EqHighShelfFreq.getDefaultValue());
     _hiFreqSlider->onValueChange = [this] {
@@ -769,26 +669,16 @@ HighEqSliderGroup::HighEqSliderGroup(Processor& processor, UIUtils::Theme theme)
 
     _hiFreqLabel.reset(new juce::Label(juce::String(), TRANS("15.2kHz")));
     addAndMakeVisible(_hiFreqLabel.get());
-    _hiFreqLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _hiFreqLabel->setJustificationType(juce::Justification::centred);
-    _hiFreqLabel->setEditable(false, false, false);
-    _hiFreqLabel->setColour(juce::Label::textColourId, theme.neutral);
+    styleLabel(_hiFreqLabel.get(), theme, LABEL_FONT_SIZE);
 
     _hiGainHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Gain")));
     addAndMakeVisible(_hiGainHeaderLabel.get());
-    _hiGainHeaderLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _hiGainHeaderLabel->setJustificationType(juce::Justification::centred);
-    _hiGainHeaderLabel->setEditable(false, false, false);
-    _hiGainHeaderLabel->setColour(juce::Label::textColourId, theme.neutral);
+    styleLabel(_hiGainHeaderLabel.get(), theme, LABEL_FONT_SIZE);
 
     _hiGainSlider.reset(new juce::Slider(juce::String()));
     addAndMakeVisible(_hiGainSlider.get());
+    styleSlider(_hiGainSlider.get(), _rotarySliderLookAndFeel.get());
     _hiGainSlider->setRange(-30, 30, 0);
-    _hiGainSlider->setSliderStyle(juce::Slider::RotaryVerticalDrag);
-    _hiGainSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
-    _hiGainSlider->setColour(juce::Slider::thumbColourId, juce::Colour(0xffafafff));
-    _hiGainSlider->setColour(juce::Slider::rotarySliderFillColourId, juce::Colour(0xb1606060));
-    _hiGainSlider->setLookAndFeel(_rotarySliderLookAndFeel.get());
     _hiGainSlider->setRange(Parameters::EqHighShelfDecibels.getMinValue(), Parameters::EqHighShelfDecibels.getMaxValue());
     _hiGainSlider->setDoubleClickReturnValue(true, Parameters::EqHighShelfDecibels.getDefaultValue());
     _hiGainSlider->onValueChange = [this] {
@@ -797,10 +687,7 @@ HighEqSliderGroup::HighEqSliderGroup(Processor& processor, UIUtils::Theme theme)
 
     _hiGainLabel.reset(new juce::Label(juce::String(), TRANS("0.0dB")));
     addAndMakeVisible (_hiGainLabel.get());
-    _hiGainLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
-    _hiGainLabel->setJustificationType(juce::Justification::centred);
-    _hiGainLabel->setEditable(false, false, false);
-    _hiGainLabel->setColour(juce::Label::textColourId, theme.neutral);
+    styleLabel(_hiGainLabel.get(), theme, LABEL_FONT_SIZE);
 }
 
 HighEqSliderGroup::~HighEqSliderGroup() {
@@ -820,7 +707,7 @@ HighEqSliderGroup::~HighEqSliderGroup() {
 }
 
 void HighEqSliderGroup::resized() {
-    constexpr float NOMINAL_WIDTH {72};
+    constexpr float NOMINAL_WIDTH {88};
 
     setFontHeight(_highCutFreqHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
 
@@ -853,13 +740,13 @@ void HighEqSliderGroup::onUpdate(bool enableSliders) {
     _highEqButton->setButtonText(highEqType == Parameters::Shelf ? juce::String("High Shelf") : juce::String("High Cut"));
     _highCutFreqHeaderLabel->setVisible(highEqType == Parameters::Cut);
     _highCutFreqLabel->setVisible(highEqType == Parameters::Cut);
-    _highCutFreqLabel->setText((::fabs(cutFreq-Parameters::EqHighCutFreq.getMaxValue()) > 0.0001f) ? FormatFrequency(cutFreq) : juce::String("Off"), juce::sendNotification);
+    _highCutFreqLabel->setText((::fabs(cutFreq-Parameters::EqHighCutFreq.getMaxValue()) > 0.0001f) ? FormatFrequency(cutFreq, 0) : juce::String("Off"), juce::sendNotification);
     _highCutFreqSlider->setVisible(highEqType == Parameters::Cut);
     _highCutFreqSlider->setEnabled(enableSliders);
     _highCutFreqSlider->setValue(cutFreq, juce::dontSendNotification);
     _hiFreqHeaderLabel->setVisible(highEqType == Parameters::Shelf);
     _hiFreqLabel->setVisible(highEqType == Parameters::Shelf);
-    _hiFreqLabel->setText(FormatFrequency(shelfFreq), juce::sendNotification);
+    _hiFreqLabel->setText(FormatFrequency(shelfFreq, 0), juce::sendNotification);
     _hiFreqSlider->setVisible(highEqType == Parameters::Shelf);
     _hiFreqSlider->setEnabled(enableSliders);
     _hiFreqSlider->setValue(shelfFreq, juce::dontSendNotification);
@@ -869,4 +756,213 @@ void HighEqSliderGroup::onUpdate(bool enableSliders) {
     _hiGainSlider->setVisible(highEqType == Parameters::Shelf);
     _hiGainSlider->setEnabled(enableSliders);
     _hiGainSlider->setValue(shelfGainDb, juce::dontSendNotification);
+}
+
+// ShimmerSliderGroup::ShimmerSliderGroup(Processor& processor, UIUtils::Theme theme) :
+//         _processor(processor),
+//         _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()) {
+//     _rotarySliderLookAndFeel->theme = theme;
+
+//     _shimmerHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Shimmer")));
+//     addAndMakeVisible(_shimmerHeaderLabel.get());
+//     styleLabel(_shimmerHeaderLabel.get(), theme, GROUP_HEADER_FONT_SIZE);
+
+//     _shimmerWetGainHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Wet")));
+//     addAndMakeVisible(_shimmerWetGainHeaderLabel.get());
+//     styleLabel(_shimmerWetGainHeaderLabel.get(), theme, LABEL_FONT_SIZE);
+
+//     _shimmerWetGainSlider.reset(new juce::Slider(juce::String()));
+//     addAndMakeVisible(_shimmerWetGainSlider.get());
+//     styleSlider(_shimmerWetGainSlider.get(), _rotarySliderLookAndFeel.get());
+//     _shimmerWetGainSlider->setRange(0, 1, 0);
+//     _shimmerWetGainSlider->setDoubleClickReturnValue(true, Parameters::ShimmerFeedback.getDefaultValue());
+//     _shimmerWetGainSlider->onValueChange = [this] {
+//         _processor.setParameterNotifyingHost(Parameters::ShimmerWetGain, SnapValue(static_cast<float>(_shimmerWetGainSlider->getValue()), 0.0f, 0.01f));
+//     };
+
+//     _shimmerWetGainLabel.reset(new juce::Label(juce::String(), TRANS("0.0")));
+//     addAndMakeVisible(_shimmerWetGainLabel.get());
+//     styleLabel(_shimmerWetGainLabel.get(), theme, LABEL_FONT_SIZE);
+
+//     _shimmerFeedbackHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Feedback")));
+//     addAndMakeVisible(_shimmerFeedbackHeaderLabel.get());
+//     styleLabel(_shimmerFeedbackHeaderLabel.get(), theme, LABEL_FONT_SIZE);
+
+//     _shimmerFeedbackSlider.reset(new juce::Slider(juce::String()));
+//     addAndMakeVisible(_shimmerFeedbackSlider.get());
+//     styleSlider(_shimmerFeedbackSlider.get(), _rotarySliderLookAndFeel.get());
+//     _shimmerFeedbackSlider->setRange(0, 1, 0);
+//     _shimmerFeedbackSlider->setDoubleClickReturnValue(true, Parameters::ShimmerFeedback.getDefaultValue());
+//     _shimmerFeedbackSlider->onValueChange = [this] {
+//         _processor.setParameterNotifyingHost(Parameters::ShimmerFeedback, SnapValue(static_cast<float>(_shimmerFeedbackSlider->getValue()), 0.0f, 0.01f));
+//     };
+
+//     _shimmerFeedbackLabel.reset(new juce::Label(juce::String(), TRANS("0.0")));
+//     addAndMakeVisible(_shimmerFeedbackLabel.get());
+//     styleLabel(_shimmerFeedbackLabel.get(), theme, LABEL_FONT_SIZE);
+// }
+
+// ShimmerSliderGroup::~ShimmerSliderGroup() {
+//     _shimmerHeaderLabel = nullptr;
+
+//     _shimmerWetGainHeaderLabel = nullptr;
+//     _shimmerWetGainSlider = nullptr;
+//     _shimmerWetGainLabel = nullptr;
+
+//     _shimmerFeedbackHeaderLabel = nullptr;
+//     _shimmerFeedbackSlider = nullptr;
+//     _shimmerFeedbackLabel = nullptr;
+// }
+
+// void ShimmerSliderGroup::resized() {
+//     constexpr float NOMINAL_WIDTH {72};
+
+//     setFontHeight(_shimmerHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), GROUP_HEADER_FONT_SIZE));
+
+//     setFontHeight(_shimmerWetGainHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+//     setFontHeight(_shimmerWetGainLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+
+//     setFontHeight(_shimmerFeedbackHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+//     setFontHeight(_shimmerFeedbackLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+
+//     juce::Rectangle<int> availableArea = getLocalBounds();
+
+//     _shimmerHeaderLabel->setBounds(availableArea.withHeight(scaled(NOMINAL_WIDTH, getWidth(), 24)));
+//     availableArea.removeFromTop(scaled(NOMINAL_WIDTH, getWidth(), 16));
+
+//     const int sliderAreaWidth {availableArea.getWidth() / 2};
+//     layoutSlider(availableArea.removeFromLeft(sliderAreaWidth), _shimmerWetGainHeaderLabel.get(), _shimmerWetGainSlider.get(), _shimmerWetGainLabel.get(), NOMINAL_WIDTH, getWidth());
+//     layoutSlider(availableArea, _shimmerFeedbackHeaderLabel.get(), _shimmerFeedbackSlider.get(), _shimmerFeedbackLabel.get(), NOMINAL_WIDTH, getWidth());
+// }
+
+// void ShimmerSliderGroup::onUpdate(bool enableSliders) {
+//     const float wetGain = _processor.getParameter(Parameters::ShimmerWetGain);
+//     _shimmerWetGainSlider->setValue(wetGain, juce::dontSendNotification);
+//     _shimmerWetGainSlider->setEnabled(enableSliders);
+//     _shimmerWetGainLabel->setText(juce::String(wetGain, 2), juce::sendNotification);
+
+//     const float feedback = _processor.getParameter(Parameters::ShimmerFeedback);
+//     _shimmerFeedbackSlider->setValue(feedback, juce::dontSendNotification);
+//     _shimmerFeedbackSlider->setEnabled(enableSliders);
+//     _shimmerFeedbackLabel->setText(juce::String(feedback, 2), juce::sendNotification);
+// }
+
+ChorusSliderGroup::ChorusSliderGroup(Processor& processor, UIUtils::Theme theme) :
+        _processor(processor),
+        _rotarySliderLookAndFeel(new UIUtils::RotarySliderLookAndFeel()) {
+    _rotarySliderLookAndFeel->theme = theme;
+
+    _chorusHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Pitch Modulation")));
+    addAndMakeVisible(_chorusHeaderLabel.get());
+    styleLabel(_chorusHeaderLabel.get(), theme, GROUP_HEADER_FONT_SIZE);
+
+    _chorusWetGainHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Wet")));
+    addAndMakeVisible(_chorusWetGainHeaderLabel.get());
+    styleLabel(_chorusWetGainHeaderLabel.get(), theme, LABEL_FONT_SIZE);
+
+    _chorusWetGainSlider.reset(new juce::Slider(juce::String()));
+    addAndMakeVisible(_chorusWetGainSlider.get());
+    styleSlider(_chorusWetGainSlider.get(), _rotarySliderLookAndFeel.get());
+    _chorusWetGainSlider->setRange(0, 1, 0);
+    _chorusWetGainSlider->setDoubleClickReturnValue(true, Parameters::ChorusWetGain.getDefaultValue());
+    _chorusWetGainSlider->onValueChange = [this] {
+        _processor.setParameterNotifyingHost(Parameters::ChorusWetGain, SnapValue(static_cast<float>(_chorusWetGainSlider->getValue()), 0.0f, 0.01f));
+    };
+
+    _chorusWetGainLabel.reset(new juce::Label(juce::String(), TRANS("0.0")));
+    addAndMakeVisible(_chorusWetGainLabel.get());
+    styleLabel(_chorusWetGainLabel.get(), theme, LABEL_FONT_SIZE);
+
+    _chorusFrequencyHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Freq")));
+    addAndMakeVisible(_chorusFrequencyHeaderLabel.get());
+    styleLabel(_chorusFrequencyHeaderLabel.get(), theme, LABEL_FONT_SIZE);
+
+    _chorusFrequencySlider.reset(new juce::Slider(juce::String()));
+    addAndMakeVisible(_chorusFrequencySlider.get());
+    styleSlider(_chorusFrequencySlider.get(), _rotarySliderLookAndFeel.get());
+    _chorusFrequencySlider->setRange(0, 4, 0);
+    _chorusFrequencySlider->setSkewFactor(0.7);
+    _chorusFrequencySlider->setDoubleClickReturnValue(true, Parameters::ChorusFrequency.getDefaultValue());
+    _chorusFrequencySlider->onValueChange = [this] {
+        _processor.setParameterNotifyingHost(Parameters::ChorusFrequency, static_cast<float>(_chorusFrequencySlider->getValue()));
+    };
+
+    _chorusFrequencyLabel.reset(new juce::Label(juce::String(), TRANS("0.0Hz")));
+    addAndMakeVisible(_chorusFrequencyLabel.get());
+    styleLabel(_chorusFrequencyLabel.get(), theme, LABEL_FONT_SIZE);
+
+    _chorusDepthHeaderLabel.reset(new juce::Label(juce::String(), TRANS("Depth")));
+    addAndMakeVisible(_chorusDepthHeaderLabel.get());
+    styleLabel(_chorusDepthHeaderLabel.get(), theme, LABEL_FONT_SIZE);
+
+    _chorusDepthSlider.reset(new juce::Slider(juce::String()));
+    addAndMakeVisible(_chorusDepthSlider.get());
+    styleSlider(_chorusDepthSlider.get(), _rotarySliderLookAndFeel.get());
+    _chorusDepthSlider->setRange(0, 1, 0);
+    _chorusDepthSlider->setDoubleClickReturnValue(true, Parameters::ChorusDepth.getDefaultValue());
+    _chorusDepthSlider->onValueChange = [this] {
+        _processor.setParameterNotifyingHost(Parameters::ChorusDepth, SnapValue(static_cast<float>(_chorusDepthSlider->getValue()), 0.0f, 0.01f));
+    };
+
+    _chorusDepthLabel.reset(new juce::Label(juce::String(), TRANS("0.0")));
+    addAndMakeVisible(_chorusDepthLabel.get());
+    styleLabel(_chorusDepthLabel.get(), theme, LABEL_FONT_SIZE);
+}
+
+ChorusSliderGroup::~ChorusSliderGroup() {
+    _chorusHeaderLabel = nullptr;
+
+    _chorusWetGainHeaderLabel = nullptr;
+    _chorusWetGainSlider = nullptr;
+    _chorusWetGainLabel = nullptr;
+
+    _chorusFrequencyHeaderLabel = nullptr;
+    _chorusFrequencySlider = nullptr;
+    _chorusFrequencyLabel = nullptr;
+
+    _chorusDepthHeaderLabel = nullptr;
+    _chorusDepthSlider = nullptr;
+    _chorusDepthLabel = nullptr;
+}
+
+void ChorusSliderGroup::resized() {
+    constexpr float NOMINAL_WIDTH {108};
+
+    setFontHeight(_chorusHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), GROUP_HEADER_FONT_SIZE));
+
+    setFontHeight(_chorusWetGainHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+    setFontHeight(_chorusWetGainLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+
+    setFontHeight(_chorusFrequencyHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+    setFontHeight(_chorusFrequencyLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+
+    setFontHeight(_chorusDepthHeaderLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+    setFontHeight(_chorusDepthLabel.get(), scaled(NOMINAL_WIDTH, getWidth(), LABEL_FONT_SIZE));
+
+    juce::Rectangle<int> availableArea = getLocalBounds();
+
+    _chorusHeaderLabel->setBounds(availableArea.withHeight(scaled(NOMINAL_WIDTH, getWidth(), 24)));
+    availableArea.removeFromTop(scaled(NOMINAL_WIDTH, getWidth(), 16));
+
+    const int sliderAreaWidth {availableArea.getWidth() / 3};
+    layoutSlider(availableArea.removeFromLeft(sliderAreaWidth), _chorusWetGainHeaderLabel.get(), _chorusWetGainSlider.get(), _chorusWetGainLabel.get(), NOMINAL_WIDTH, getWidth());
+    layoutSlider(availableArea.removeFromLeft(sliderAreaWidth), _chorusFrequencyHeaderLabel.get(), _chorusFrequencySlider.get(), _chorusFrequencyLabel.get(), NOMINAL_WIDTH, getWidth());
+    layoutSlider(availableArea.removeFromLeft(sliderAreaWidth), _chorusDepthHeaderLabel.get(), _chorusDepthSlider.get(), _chorusDepthLabel.get(), NOMINAL_WIDTH, getWidth());
+}
+
+void ChorusSliderGroup::onUpdate(bool enableSliders, int numOutputChannels) {
+    const float wetGain = _processor.getParameter(Parameters::ChorusWetGain);
+    _chorusWetGainSlider->setValue(wetGain, juce::dontSendNotification);
+    _chorusWetGainSlider->setEnabled(enableSliders);
+    _chorusWetGainLabel->setText(juce::String(wetGain, 2), juce::sendNotification);
+
+    const float frequency = _processor.getParameter(Parameters::ChorusFrequency);
+    _chorusFrequencySlider->setValue(frequency, juce::dontSendNotification);
+    _chorusFrequencySlider->setEnabled(enableSliders);
+    _chorusFrequencyLabel->setText(FormatFrequency(frequency, 2), juce::sendNotification);
+
+    const float depth = _processor.getParameter(Parameters::ChorusDepth);
+    _chorusDepthSlider->setValue(depth, juce::dontSendNotification);
+    _chorusDepthSlider->setEnabled(enableSliders);
+    _chorusDepthLabel->setText(juce::String(depth, 2), juce::sendNotification);
 }

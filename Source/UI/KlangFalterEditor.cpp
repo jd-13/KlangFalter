@@ -41,40 +41,6 @@ T SnapValue(T val, T snapValue, T sensitivity)
 
 namespace {
     constexpr int IR_BROWSER_AREA_HEIGHT {300};
-
-    juce::String buildVersionString(juce::AudioProcessor::WrapperType pluginFormat) {
-        juce::String versionString = JucePlugin_Name;
-        versionString += " ";
-        versionString += JucePlugin_VersionString;
-
-        // Format
-        versionString += " ";
-        versionString += juce::AudioProcessor::getWrapperTypeDescription(pluginFormat);
-
-        // OS
-        versionString += " ";
-#if _WIN32
-        versionString += "Win";
-#elif __APPLE__
-        versionString += "macOS";
-#elif __linux__
-        versionString += "Linux";
-#else
-    #error "Unknown OS"
-#endif
-
-        // Arch
-        versionString += " ";
-#if defined(__x86_64__) || defined(_M_AMD64)
-        versionString += "x86_64";
-#elif defined(__aarch64__) || defined(_M_ARM64)
-        versionString += "arm64";
-#else
-    #error "Unknown arch"
-#endif
-
-        return versionString;
-    }
 }
 
 
@@ -94,211 +60,118 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _theme = UIUtils::LoadTheme();
     //[/Constructor_pre]
 
-    _decibelScaleDry.reset (new DecibelScale());
-    addAndMakeVisible (_decibelScaleDry.get());
+    _decibelScaleDry.reset(new DecibelScale());
+    addAndMakeVisible(_decibelScaleDry.get());
 
-    _decibelScaleDry->setBounds (584, 51, 32, 176);
+    _irTabComponent.reset(new juce::TabbedComponent(juce::TabbedButtonBar::TabsAtTop));
+    addAndMakeVisible(_irTabComponent.get());
+    _irTabComponent->setTabBarDepth(0);
+    _irTabComponent->addTab(TRANS ("Placeholder"), juce::Colour(0xffb0b0b6), new IRComponent(_theme, _processor), true);
+    _irTabComponent->setCurrentTabIndex(0);
+    _irTabComponent->setColour(juce::TabbedComponent::backgroundColourId, _theme.waveformContainerBackground);
 
-    _irTabComponent.reset (new juce::TabbedComponent (juce::TabbedButtonBar::TabsAtTop));
-    addAndMakeVisible (_irTabComponent.get());
-    _irTabComponent->setTabBarDepth (0);
-    _irTabComponent->addTab (TRANS ("Placeholder"), juce::Colour (0xffb0b0b6), new IRComponent (_theme), true);
-    _irTabComponent->setCurrentTabIndex (0);
+    _levelMeterDry.reset(new LevelMeter(_theme));
+    addAndMakeVisible(_levelMeterDry.get());
 
-    _irTabComponent->setBounds (16, 51, 462, 176);
-
-    _levelMeterDry.reset (new LevelMeter (_theme));
-    addAndMakeVisible (_levelMeterDry.get());
-
-    _levelMeterDry->setBounds (632, 51, 12, 176);
-
-    _dryLevelLabel.reset (new juce::Label ("DryLevelLabel",
-                                           TRANS ("-inf")));
-    addAndMakeVisible (_dryLevelLabel.get());
-    _dryLevelLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _dryLevelLabel->setJustificationType (juce::Justification::centredRight);
-    _dryLevelLabel->setEditable (false, false, false);
+    _dryLevelLabel.reset(new juce::Label("DryLevelLabel", TRANS("-inf")));
+    addAndMakeVisible(_dryLevelLabel.get());
+    _dryLevelLabel->setFont(juce::Font (11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _dryLevelLabel->setJustificationType(juce::Justification::centredRight);
+    _dryLevelLabel->setEditable(false, false, false);
     _dryLevelLabel->setColour(juce::Label::textColourId, _theme.neutral);
 
-    _dryLevelLabel->setBounds (572, 231, 60, 24);
-
-    _wetLevelLabel.reset (new juce::Label ("WetLevelLabel",
-                                           TRANS ("-inf")));
-    addAndMakeVisible (_wetLevelLabel.get());
-    _wetLevelLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _wetLevelLabel->setJustificationType (juce::Justification::centredRight);
-    _wetLevelLabel->setEditable (false, false, false);
+    _wetLevelLabel.reset(new juce::Label("WetLevelLabel", TRANS("-inf")));
+    addAndMakeVisible(_wetLevelLabel.get());
+    _wetLevelLabel->setFont(juce::Font(11.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    _wetLevelLabel->setJustificationType(juce::Justification::centredRight);
+    _wetLevelLabel->setEditable(false, false, false);
     _wetLevelLabel->setColour(juce::Label::textColourId, _theme.neutral);
 
-    _wetLevelLabel->setBounds (656, 231, 64, 24);
+    auto setLinearSliderColours = [&](juce::Slider* slider) {
+        slider->setColour(juce::Slider::thumbColourId, _theme.highlight);
+        slider->setColour(juce::Slider::trackColourId, _theme.neutral);
+    };
 
-    _drySlider.reset (new juce::Slider (juce::String()));
-    addAndMakeVisible (_drySlider.get());
-    _drySlider->setRange (0, 10, 0);
-    _drySlider->setSliderStyle (juce::Slider::LinearVertical);
-    _drySlider->setTextBoxStyle (juce::Slider::NoTextBox, false, 80, 20);
-    _drySlider->addListener (this);
+    _drySlider.reset(new juce::Slider(juce::String()));
+    addAndMakeVisible(_drySlider.get());
+    _drySlider->setRange(0, 10, 0);
+    _drySlider->setSliderStyle(juce::Slider::LinearVertical);
+    _drySlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
+    _drySlider->addListener(this);
+    _drySlider->setDoubleClickReturnValue(true, DecibelScaling::Db2Scale(Parameters::DryDecibels.getDefaultValue()));
+    _drySlider->setLookAndFeel(_linearSliderLookAndFeel.get());
+    setLinearSliderColours(_drySlider.get());
 
-    _drySlider->setBounds (612, 43, 24, 192);
+    _decibelScaleOut.reset(new DecibelScale());
+    addAndMakeVisible(_decibelScaleOut.get());
 
-    _decibelScaleOut.reset (new DecibelScale());
-    addAndMakeVisible (_decibelScaleOut.get());
+    _wetSlider.reset(new juce::Slider (juce::String()));
+    addAndMakeVisible(_wetSlider.get());
+    _wetSlider->setRange(0, 10, 0);
+    _wetSlider->setSliderStyle(juce::Slider::LinearVertical);
+    _wetSlider->setTextBoxStyle(juce::Slider::NoTextBox, false, 80, 20);
+    _wetSlider->addListener(this);
+    _wetSlider->setDoubleClickReturnValue(true, DecibelScaling::Db2Scale(Parameters::WetDecibels.getDefaultValue()));
+    _wetSlider->setLookAndFeel(_linearSliderLookAndFeel.get());
+    setLinearSliderColours(_wetSlider.get());
 
-    _decibelScaleOut->setBounds (672, 51, 32, 176);
+    _browseButton.reset(new juce::TextButton(juce::String()));
+    addAndMakeVisible(_browseButton.get());
+    _browseButton->setTooltip(TRANS("Show Browser For Impulse Response Selection"));
+    _browseButton->setButtonText(TRANS("Show Browser"));
+    _browseButton->setConnectedEdges(juce::Button::ConnectedOnBottom);
+    _browseButton->addListener(this);
+    _browseButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, _theme.neutral);
+    _browseButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, _theme.neutral);
+    _browseButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
+    _browseButton->setClickingTogglesState(true);
+    _browseButton->setConnectedEdges(juce::Button::ConnectedOnBottom);
 
-    _wetSlider.reset (new juce::Slider (juce::String()));
-    addAndMakeVisible (_wetSlider.get());
-    _wetSlider->setRange (0, 10, 0);
-    _wetSlider->setSliderStyle (juce::Slider::LinearVertical);
-    _wetSlider->setTextBoxStyle (juce::Slider::NoTextBox, false, 80, 20);
-    _wetSlider->addListener (this);
+    _irBrowserComponent.reset(new IRBrowserComponent());
+    addAndMakeVisible(_irBrowserComponent.get());
 
-    _wetSlider->setBounds (700, 43, 24, 192);
+    auto setButtonColours = [&](juce::TextButton* button) {
+        button->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, _theme.neutral);
+        button->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, _theme.highlight);
+    };
 
-    _browseButton.reset (new juce::TextButton (juce::String()));
-    addAndMakeVisible (_browseButton.get());
-    _browseButton->setTooltip (TRANS ("Show Browser For Impulse Response Selection"));
-    _browseButton->setButtonText (TRANS ("Show Browser"));
-    _browseButton->setConnectedEdges (juce::Button::ConnectedOnBottom);
-    _browseButton->addListener (this);
-    _browseButton->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0xffbcbcff));
+    _wetButton.reset(new juce::TextButton(juce::String()));
+    addAndMakeVisible(_wetButton.get());
+    _wetButton->setTooltip(TRANS("Wet Signal On/Off"));
+    _wetButton->setButtonText(TRANS("Wet"));
+    _wetButton->addListener(this);
+    setButtonColours(_wetButton.get());
+    _wetButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
+    _wetButton->setClickingTogglesState(true);
 
-    _browseButton->setBounds (12, 319, 736, 24);
+    _dryButton.reset(new juce::TextButton(juce::String()));
+    addAndMakeVisible(_dryButton.get());
+    _dryButton->setTooltip(TRANS("Dry Signal On/Off"));
+    _dryButton->setButtonText(TRANS("Dry"));
+    _dryButton->addListener(this);
+    setButtonColours(_dryButton.get());
+    _dryButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
+    _dryButton->setClickingTogglesState(true);
 
-    _irBrowserComponent.reset (new IRBrowserComponent());
-    addAndMakeVisible (_irBrowserComponent.get());
+    _autogainButton.reset(new juce::TextButton(juce::String()));
+    addAndMakeVisible(_autogainButton.get());
+    _autogainButton->setTooltip(TRANS("Autogain On/Off"));
+    _autogainButton->setButtonText(TRANS("Autogain 0.0dB"));
+    _autogainButton->addListener(this);
+    setButtonColours(_autogainButton.get());
+    _autogainButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
+    _autogainButton->setClickingTogglesState(true);
 
-    _irBrowserComponent->setBounds (12, 343, 736, 288);
-
-    _wetButton.reset (new juce::TextButton (juce::String()));
-    addAndMakeVisible (_wetButton.get());
-    _wetButton->setTooltip (TRANS ("Wet Signal On/Off"));
-    _wetButton->setButtonText (TRANS ("Wet"));
-    _wetButton->setConnectedEdges (juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
-    _wetButton->addListener (this);
-    _wetButton->setColour (juce::TextButton::buttonColourId, juce::Colour (0x80bcbcbc));
-    _wetButton->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0xffbcbcff));
-    _wetButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xff202020));
-    _wetButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xff202020));
-
-    _wetButton->setBounds (684, 255, 44, 24);
-
-    _dryButton.reset (new juce::TextButton (juce::String()));
-    addAndMakeVisible (_dryButton.get());
-    _dryButton->setTooltip (TRANS ("Dry Signal On/Off"));
-    _dryButton->setButtonText (TRANS ("Dry"));
-    _dryButton->setConnectedEdges (juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
-    _dryButton->addListener (this);
-    _dryButton->setColour (juce::TextButton::buttonColourId, juce::Colour (0x80bcbcbc));
-    _dryButton->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0xffbcbcff));
-    _dryButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xff202020));
-    _dryButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xff202020));
-
-    _dryButton->setBounds (596, 255, 44, 24);
-
-    _autogainButton.reset (new juce::TextButton (juce::String()));
-    addAndMakeVisible (_autogainButton.get());
-    _autogainButton->setTooltip (TRANS ("Autogain On/Off"));
-    _autogainButton->setButtonText (TRANS ("Autogain 0.0dB"));
-    _autogainButton->setConnectedEdges (juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
-    _autogainButton->addListener (this);
-    _autogainButton->setColour (juce::TextButton::buttonColourId, juce::Colour (0x80bcbcbc));
-    _autogainButton->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0xffbcbcff));
-    _autogainButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xff202020));
-    _autogainButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xff202020));
-
-    _autogainButton->setBounds (596, 287, 132, 24);
-
-    _reverseButton.reset (new juce::TextButton (juce::String()));
-    addAndMakeVisible (_reverseButton.get());
-    _reverseButton->setTooltip (TRANS ("Reverse Impulse Response"));
-    _reverseButton->setButtonText (TRANS ("Reverse"));
-    _reverseButton->setConnectedEdges (juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
-    _reverseButton->addListener (this);
-    _reverseButton->setColour (juce::TextButton::buttonColourId, juce::Colour (0x80bcbcbc));
-    _reverseButton->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0xffbcbcff));
-    _reverseButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xff202020));
-    _reverseButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xff202020));
-
-    _reverseButton->setBounds (20, 198, 72, 24);
-
-    _levelMeterOut.reset (new LevelMeter(_theme));
-    addAndMakeVisible (_levelMeterOut.get());
-
-    _levelMeterOut->setBounds (720, 51, 12, 176);
-
-    _levelMeterOutLabelButton.reset (new juce::TextButton (juce::String()));
-    addAndMakeVisible (_levelMeterOutLabelButton.get());
-    _levelMeterOutLabelButton->setTooltip (TRANS ("Switches Between Out/Wet Level Measurement"));
-    _levelMeterOutLabelButton->setButtonText (TRANS ("Out"));
-    _levelMeterOutLabelButton->setConnectedEdges (juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
-    _levelMeterOutLabelButton->addListener (this);
-    _levelMeterOutLabelButton->setColour (juce::TextButton::buttonColourId, juce::Colour (0x00bbbbff));
-    _levelMeterOutLabelButton->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0x00bcbcff));
-    _levelMeterOutLabelButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xffb0b0b6));
-    _levelMeterOutLabelButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xffb0b0b6));
-
-    _levelMeterOutLabelButton->setBounds (712, 31, 28, 18);
-
-    _levelMeterDryLabel.reset (new juce::Label (juce::String(),
-                                                TRANS ("Dry")));
-    addAndMakeVisible (_levelMeterDryLabel.get());
-    _levelMeterDryLabel->setFont (juce::Font (11.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _levelMeterDryLabel->setJustificationType (juce::Justification::centred);
-    _levelMeterDryLabel->setEditable (false, false, false);
-    _levelMeterDryLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
-    _levelMeterDryLabel->setColour (juce::TextEditor::textColourId, juce::Colour (0xffb0b0b6));
-    _levelMeterDryLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
-    _levelMeterDryLabel->setBounds (620, 27, 36, 24);
-
-    _titleLabel.reset (new juce::Label ("Title Label",
-                                        TRANS ("Body & Soul:")));
-    addAndMakeVisible (_titleLabel.get());
-    _titleLabel->setFont (juce::Font (35.30f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _titleLabel->setJustificationType (juce::Justification::centredLeft);
-    _titleLabel->setEditable (false, false, false);
-    _titleLabel->setColour(juce::Label::textColourId, _theme.neutral);
-
-    _titleLabel->setBounds (248, 4, 195, 40);
-
-    _subtitleLabel.reset (new juce::Label ("Subtitle Label",
-                                           TRANS ("Intro")));
-    addAndMakeVisible (_subtitleLabel.get());
-    _subtitleLabel->setFont (juce::Font (35.30f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    _subtitleLabel->setJustificationType (juce::Justification::centredLeft);
-    _subtitleLabel->setEditable (false, false, false);
-    _subtitleLabel->setColour (juce::Label::textColourId, juce::Colour (0xffb0b0b6));
-    _subtitleLabel->setColour (juce::TextEditor::textColourId, juce::Colour (0xffb0b0b6));
-    _subtitleLabel->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
-    _subtitleLabel->setBounds (432, 4, 79, 40);
-
-    _creditsButton.reset (new juce::TextButton (juce::String()));
-    addAndMakeVisible (_creditsButton.get());
-    _creditsButton->setColour (juce::TextButton::buttonColourId, juce::Colour (0x00bbbbff));
-    _creditsButton->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0x002c2cff));
-    _creditsButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xffb0b0b6));
-    _creditsButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xffb0b0b6));
-
-    _creditsButton->setBounds (244, 4, 268, 40);
-
-    _resetButton.reset (new juce::TextButton (juce::String()));
-    addAndMakeVisible (_resetButton.get());
-    _resetButton->setTooltip (TRANS ("Reset all parameters"));
-    _resetButton->setButtonText (TRANS ("Reset"));
-    _resetButton->setColour (juce::TextButton::buttonColourId, juce::Colour (0x80bcbcbc));
-    _resetButton->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0xffbcbcff));
-    _resetButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xff202020));
-    _resetButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xff202020));
-
-    _resetButton->setBounds (16, 14, 52, 24);
-
+    _levelMeterOut.reset(new LevelMeter(_theme));
+    addAndMakeVisible(_levelMeterOut.get());
 
     //[UserPreSize]
     _rotarySliderLookAndFeel->theme = _theme;
     _irSliderGroup.reset(new IRSliderGroup(_processor, _theme));
     addAndMakeVisible(_irSliderGroup.get());
+
+    _tuneSliderGroup.reset(new TuneSliderGroup(_processor, _theme));
+    addAndMakeVisible(_tuneSliderGroup.get());
 
     _attackSliderGroup.reset(new AttackSliderGroup(_processor, _theme));
     addAndMakeVisible(_attackSliderGroup.get());
@@ -315,129 +188,38 @@ KlangFalterEditor::KlangFalterEditor (Processor& processor)
     _highEqSliderGroup.reset(new HighEqSliderGroup(_processor, _theme));
     addAndMakeVisible(_highEqSliderGroup.get());
 
+    // _shimmerSliderGroup.reset(new ShimmerSliderGroup(_processor, _theme));
+    // addAndMakeVisible(_shimmerSliderGroup.get());
+
+    _chorusSliderGroup.reset(new ChorusSliderGroup(_processor, _theme));
+    addAndMakeVisible(_chorusSliderGroup.get());
+
+    _saveLoadComponent.reset(new SaveLoadComponent(_processor, _theme));
+    addAndMakeVisible(_saveLoadComponent.get());
+
+    _tomLogo.reset(new Logo(juce::ImageCache::getFromMemory(BinaryData::tom_png, BinaryData::tom_pngSize)));
+    addAndMakeVisible(_tomLogo.get());
+
+    _weaLogo.reset(new Logo(juce::ImageCache::getFromMemory(BinaryData::wea_png, BinaryData::wea_pngSize)));
+    addAndMakeVisible(_weaLogo.get());
+
     customLookAndFeel->theme = _theme;
     setLookAndFeel(customLookAndFeel);
 
-    _irTabComponent->setColour(juce::TabbedComponent::backgroundColourId, _theme.waveformContainerBackground);
-
-    _creditsWindowOptions.reset(new juce::DialogWindow::LaunchOptions());
-    _creditsWindowOptions->dialogTitle = "Credits";
-    _creditsWindowOptions->dialogBackgroundColour = _theme.background;
-    _creditsWindowOptions->componentToCentreAround = this;
-    _creditsWindowOptions->useNativeTitleBar = false;
-
-    _creditsButton->onClick = [&]() {
-        const juce::String versionString = buildVersionString(getAudioProcessor()->wrapperType);
-
-        const juce::String credits(juce::CharPointer_UTF8(
-            "Concept and IR design: The Sound of Merlin\n"
-            "Programming: White Elephant Audio\n"
-            "Support: info@thesoundofmerlin.com\n"
-            "\n"
-            "Body & Soul: Intro is open source software (GPLv3) and is based on Klangfalter from HiFi-LoFi.\n"
-            "\n"
-            "This convolution reverb was conceived to be used as a module in White Elephant Audio's plugin host Syndicate but can also be used separately from it.\n"
-            "\n"
-            "A special thank you goes to Eirik Gr\xc3\xb8nner from Demningen Studios in Norway for his wonderful suggestions and support.\n"
-            "\n"));
-
-        _creditsWindowOptions->content.set(new juce::Label("Credits", credits + versionString), true);
-        juce::DialogWindow* window = _creditsWindowOptions->launchAsync();
-        window->centreWithSize(500, 300);
-    };
-
-    _titleLabel->setColour(juce::Label::textColourId, _theme.neutral.withAlpha(0.5f));
-    _subtitleLabel->setColour(juce::Label::textColourId, _theme.subtitle);
-    _subtitleLabel->setText(_theme.productName, juce::dontSendNotification);
-
-    auto setButtonColours = [&](juce::TextButton* button) {
-        button->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, _theme.neutral);
-        button->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, _theme.highlight);
-    };
-
-    _dryButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
-    _wetButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
-    _autogainButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
-    _reverseButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
-    _browseButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
-    _resetButton->setLookAndFeel(_toggleButtonLookAndFeel.get());
-
-    setButtonColours(_dryButton.get());
-    setButtonColours(_wetButton.get());
-    setButtonColours(_autogainButton.get());
-    setButtonColours(_reverseButton.get());
-
-    _reverseButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, _theme.waveformContainerNeutral);
-
-    _browseButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, _theme.neutral);
-    _browseButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, _theme.neutral);
-
-    _browseButton->setConnectedEdges(juce::Button::ConnectedOnBottom);
-
-    _resetButton->setColour(UIUtils::ToggleButtonLookAndFeel::offColour, _theme.neutral);
-    _resetButton->setColour(UIUtils::ToggleButtonLookAndFeel::onColour, _theme.neutral);
-    _levelMeterOutLabelButton->setColour(juce::TextButton::textColourOffId, _theme.neutral);
-    _levelMeterOutLabelButton->setColour(juce::TextButton::textColourOnId, _theme.neutral);
-
-    _drySlider->setLookAndFeel(_linearSliderLookAndFeel.get());
-    _wetSlider->setLookAndFeel(_linearSliderLookAndFeel.get());
-
-    auto setLinearSliderColours = [&](juce::Slider* slider) {
-        slider->setColour(juce::Slider::thumbColourId, _theme.highlight);
-        slider->setColour(juce::Slider::trackColourId, _theme.neutral);
-    };
-
-    setLinearSliderColours(_drySlider.get());
-    setLinearSliderColours(_wetSlider.get());
+    _title.reset(new Title(_theme, getAudioProcessor()->wrapperType));
+    addAndMakeVisible(_title.get());
     //[/UserPreSize]
 
     const juce::Rectangle<int> bounds = _processor.getUIBounds();
     setSize(bounds.getWidth(), bounds.getHeight());
 
-
     //[Constructor] You can add your own custom stuff here..
     setResizable(true, true);
-    _constrainer->setFixedAspectRatio(760.0 / 340.0);
-    _constrainer->setMinimumWidth(760);
+    _constrainer->setFixedAspectRatio(UIUtils::NOMINAL_WIDTH / UIUtils::NOMINAL_HEIGHT);
+    _constrainer->setMinimumWidth(UIUtils::NOMINAL_WIDTH);
     setConstrainer(_constrainer.get());
 
     _irTabComponent->clearTabs(); // Remove placeholder only used as dummy in the Jucer
-    _browseButton->setClickingTogglesState(true);
-    _dryButton->setClickingTogglesState(true);
-    _wetButton->setClickingTogglesState(true);
-    _autogainButton->setClickingTogglesState(true);
-    _reverseButton->setClickingTogglesState(true);
-    _levelMeterOutLabelButton->setClickingTogglesState(true);
-
-    _levelMeterOutLabelButton->setLookAndFeel(_simpleButtonLookAndFeel.get());
-
-
-    // Double click to default
-    _drySlider->setDoubleClickReturnValue(true, DecibelScaling::Db2Scale(Parameters::DryDecibels.getDefaultValue()));
-    _wetSlider->setDoubleClickReturnValue(true, DecibelScaling::Db2Scale(Parameters::WetDecibels.getDefaultValue()));
-
-    _resetButton->onClick = [&]() {
-        _processor.setPredelayMs(0.0);
-        _processor.setIRBegin(0.0);
-        _processor.setIREnd(1.0);
-        _processor.setStretch(1.0);
-        _processor.setAttackLength(0.0);
-        _processor.setAttackShape(0.0);
-        _processor.setDecayShape(0.0);
-        _processor.setParameterNotifyingHost(Parameters::StereoWidth, Parameters::StereoWidth.getDefaultValue());
-
-        _processor.setReverse(false);
-
-        _processor.setParameterNotifyingHost(Parameters::EqLowType, Parameters::EqLowType.getDefaultValue());
-        _processor.setParameterNotifyingHost(Parameters::EqLowCutFreq, Parameters::EqLowCutFreq.getDefaultValue());
-        _processor.setParameterNotifyingHost(Parameters::EqLowShelfFreq, Parameters::EqLowShelfFreq.getDefaultValue());
-        _processor.setParameterNotifyingHost(Parameters::EqLowShelfDecibels, Parameters::EqLowShelfDecibels.getDefaultValue());
-
-        _processor.setParameterNotifyingHost(Parameters::EqHighType, Parameters::EqHighType.getDefaultValue());
-        _processor.setParameterNotifyingHost(Parameters::EqHighCutFreq, Parameters::EqHighCutFreq.getDefaultValue());
-        _processor.setParameterNotifyingHost(Parameters::EqHighShelfFreq, Parameters::EqHighShelfFreq.getDefaultValue());
-        _processor.setParameterNotifyingHost(Parameters::EqHighShelfDecibels, Parameters::EqHighShelfDecibels.getDefaultValue());
-    };
 
     _processor.addNotificationListener(this);
     _processor.getSettings().addChangeListener(this);
@@ -456,11 +238,15 @@ KlangFalterEditor::~KlangFalterEditor()
     _processor.getSettings().removeChangeListener(this);
     setConstrainer(nullptr);
     _irSliderGroup = nullptr;
+    _tuneSliderGroup = nullptr;
     _attackSliderGroup = nullptr;
     _decaySliderGroup = nullptr;
     _stereoSliderGroup = nullptr;
     _lowEqSliderGroup = nullptr;
     _highEqSliderGroup = nullptr;
+    // _shimmerSliderGroup = nullptr;
+    _chorusSliderGroup = nullptr;
+    _saveLoadComponent = nullptr;
 
     _processor.setUIBounds(getBounds(), true);
     //[/Destructor_pre]
@@ -478,14 +264,8 @@ KlangFalterEditor::~KlangFalterEditor()
     _wetButton = nullptr;
     _dryButton = nullptr;
     _autogainButton = nullptr;
-    _reverseButton = nullptr;
     _levelMeterOut = nullptr;
-    _levelMeterOutLabelButton = nullptr;
-    _levelMeterDryLabel = nullptr;
-    _titleLabel = nullptr;
-    _subtitleLabel = nullptr;
-    _creditsButton = nullptr;
-    _resetButton = nullptr;
+    _title = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -501,45 +281,7 @@ void KlangFalterEditor::paint (juce::Graphics& g)
     g.fillAll (juce::Colour (0xff313131));
 
     //[UserPaint] Add your own custom painting code here..
-    // constexpr int logoHeight {36};
-    // const int xMid {getWidth() / 2};
-    // constexpr int xOffset {200};
-    // g.setColour(_theme.neutral.withAlpha(0.2f));
-    // {
-    //     juce::Image tomLogo(juce::ImageCache::getFromMemory(BinaryData::tom_png, BinaryData::tom_pngSize));
-    //     const float aspect {tomLogo.getWidth() / static_cast<float>(tomLogo.getHeight())};
-    //     const int width {static_cast<int>(logoHeight * aspect)};
-    //     g.drawImage(tomLogo, xMid - xOffset - width / 2, 8, width, logoHeight, 0, 0, tomLogo.getWidth(), tomLogo.getHeight(), true);
-    // }
-    // {
-    //     juce::Image weaLogo(juce::ImageCache::getFromMemory(BinaryData::wea_png, BinaryData::wea_pngSize));
-    //     const float aspect {weaLogo.getWidth() / static_cast<float>(weaLogo.getHeight())};
-    //     const int width {static_cast<int>(logoHeight * aspect)};
-    //     g.drawImage(weaLogo, xMid + xOffset - width / 2, 8, width, logoHeight, 0, 0, weaLogo.getWidth(), weaLogo.getHeight(), true);
-    // }
-
-    const int logoAreaWidth {_decibelScaleDry->getX() - _irTabComponent->getRight()};
-    const int xMid {_irTabComponent->getRight() + logoAreaWidth / 2};
     g.fillAll(juce::Colour(_theme.background));
-    {
-        const int logoWidth {scaled(35)};
-        juce::Image tomLogo(juce::ImageCache::getFromMemory(BinaryData::tom_png, BinaryData::tom_pngSize));
-        const float aspect {tomLogo.getWidth() / static_cast<float>(tomLogo.getHeight())};
-        const int logoHeight {static_cast<int>(logoWidth / aspect)};
-        g.drawImage(tomLogo,
-                    xMid - logoWidth / 2, scaled(60), logoWidth, logoHeight,
-                    0, 0, tomLogo.getWidth(), tomLogo.getHeight());
-    }
-    {
-        const int logoWidth {scaled(80)};
-        juce::Image weaLogo(juce::ImageCache::getFromMemory(BinaryData::wea_png, BinaryData::wea_pngSize));
-        const float aspect {weaLogo.getWidth() / static_cast<float>(weaLogo.getHeight())};
-        const int logoHeight {static_cast<int>(logoWidth / aspect)};
-        g.drawImage(weaLogo,
-                    xMid - logoWidth / 2, scaled(170), logoWidth, logoHeight,
-                    0, 0, weaLogo.getWidth(), weaLogo.getHeight());
-    }
-
     //[/UserPaint]
 }
 
@@ -553,84 +295,134 @@ void KlangFalterEditor::resized()
         label->setFont(label->getFont().withHeight(height));
     };
 
-    setFontHeight(_titleLabel.get(), scaledFloat(35.30f));
-    setFontHeight(_subtitleLabel.get(), scaledFloat(35.30f));
-
     juce::Rectangle<int> availableArea = getLocalBounds();
 
     // Title row
     {
-        const int TITLE_ROW_HEIGHT {scaled(51)};
-        const int TITLE_TEXT_HEIGHT {scaled(40)};
-        juce::Rectangle<int> titleRow = availableArea.removeFromTop(TITLE_ROW_HEIGHT).withTrimmedTop(scaled(4));
+        const int TITLE_ROW_HEIGHT {scaled(61)};
+        const int TITLE_WIDTH {scaled(250)};
 
-        const int titleRowYCentre {availableArea.getWidth() / 2};
-        const int titleTextWidth {_titleLabel->getFont().getStringWidth(_titleLabel->getText())};
-        const int titleTextTotalWidth {
-            titleTextWidth + _subtitleLabel->getFont().getStringWidth(_subtitleLabel->getText())
-        };
+        juce::Rectangle<int> titleRow = availableArea.removeFromTop(TITLE_ROW_HEIGHT);
+        titleRow.reduce(scaled(10), scaled(10));
 
-        _titleLabel->setBounds(
-            titleRowYCentre - titleTextTotalWidth / 2,
-            scaled(4),
-            titleTextWidth,
-            TITLE_TEXT_HEIGHT);
+        _title->setBounds(titleRow.removeFromRight(TITLE_WIDTH).reduced(0, scaled(5)));
 
-        _subtitleLabel->setBounds(
-            titleRowYCentre - titleTextTotalWidth / 2 + titleTextWidth,
-            scaled(4),
-            titleTextTotalWidth - titleTextWidth,
-            TITLE_TEXT_HEIGHT);
-
-        _creditsButton->setBounds(
-            _titleLabel->getX(),
-            _titleLabel->getY(),
-            titleTextTotalWidth,
-            TITLE_TEXT_HEIGHT);
-
-        _resetButton->setBounds(scaled(16), scaled(14), scaled(52), scaled(24));
+        _saveLoadComponent->setBounds(titleRow);
     }
 
     // Imager row
     const int METERS_TOTAL_WIDTH {scaled(160)};
     {
-        const int IMAGER_ROW_HEIGHT {scaled(176)};
+        const int IMAGER_ROW_HEIGHT {scaled(166)};
         const int IMAGER_ROW_MARGIN {scaled(16)};
         juce::Rectangle<int> imagerRow = availableArea.removeFromTop(IMAGER_ROW_HEIGHT);
         imagerRow.reduce(IMAGER_ROW_MARGIN, 0);
 
-        juce::Rectangle<int> metersArea = imagerRow.removeFromRight(METERS_TOTAL_WIDTH);
+        juce::Rectangle<int> metersArea = imagerRow.removeFromLeft(METERS_TOTAL_WIDTH);
+        metersArea.reduce(0, scaled(8));
+        metersArea.removeFromLeft(scaled(4));
+        metersArea.removeFromRight(scaled(14));
 
         auto getMeterSliderBounds = [&](juce::Rectangle<int> bounds, const juce::Rectangle<int>& metersArea) {
-            return bounds.withBottomY(metersArea.getBottom() - scaled(8)).withHeight(metersArea.getHeight() + scaled(16));
+            return bounds.withBottomY(metersArea.getBottom() - scaled(5)).withHeight(metersArea.getHeight() + scaled(10));
         };
 
-        juce::Rectangle<int> meterButtonsArea = metersArea.removeFromTop(scaled(18));
-
         const int METER_WIDTH {scaled(12)};
-        const int METER_SLIDER_WIDTH {METER_WIDTH * 2};
-        const int METER_SCALE_WIDTH {METER_WIDTH * 3};
-        _levelMeterOut->setBounds(metersArea.removeFromRight(METER_WIDTH));
-        _wetSlider->setBounds(getMeterSliderBounds(metersArea.removeFromRight(METER_SLIDER_WIDTH), metersArea));
-        _decibelScaleOut->setBounds(metersArea.removeFromRight(METER_SCALE_WIDTH));
+        const float METER_SLIDER_WIDTH {METER_WIDTH * 2.0f};
+        const float METER_SCALE_WIDTH {METER_WIDTH * 2.4f};
 
         _decibelScaleDry->setBounds(metersArea.removeFromLeft(METER_SCALE_WIDTH));
         _drySlider->setBounds(getMeterSliderBounds(metersArea.removeFromLeft(METER_SLIDER_WIDTH), metersArea));
         _levelMeterDry->setBounds(metersArea.removeFromLeft(METER_WIDTH));
 
-        auto positionMeterButton = [&](juce::Component* button, const std::unique_ptr<LevelMeter>& meter) {
-            const int BUTTON_WIDTH {scaled(28)};
-            const int xPos {meter->getX() + meter->getWidth() / 2 - BUTTON_WIDTH / 2};
-            button->setBounds(xPos, meterButtonsArea.getY(), BUTTON_WIDTH, meterButtonsArea.getHeight());
-        };
-        positionMeterButton(_levelMeterDryLabel.get(), _levelMeterDry);
-        positionMeterButton(_levelMeterOutLabelButton.get(), _levelMeterOut);
-        setFontHeight(_levelMeterDryLabel.get(), scaledFloat(14.0f));
+        _levelMeterOut->setBounds(metersArea.removeFromRight(METER_WIDTH));
+        _wetSlider->setBounds(getMeterSliderBounds(metersArea.removeFromRight(METER_SLIDER_WIDTH), metersArea));
+        _decibelScaleOut->setBounds(metersArea.removeFromRight(METER_SCALE_WIDTH));
 
-        imagerRow.removeFromRight(scaled(106));
         _irTabComponent->setBounds(imagerRow);
+    }
 
-        _reverseButton->setBounds(scaled(20), scaled(198), scaled(72), scaled(24));
+    // Sliders row
+    juce::Rectangle<int> slidersTopRow = availableArea.removeFromTop(scaled(89));
+    juce::Rectangle<int> slidersBottomRow = availableArea.removeFromTop(scaled(89));
+
+    // Gain buttons
+    {
+        juce::Rectangle<int> gainButtonsArea = slidersTopRow.removeFromLeft(METERS_TOTAL_WIDTH);
+        juce::Rectangle<int> gainButtonLabelsRow = gainButtonsArea.removeFromTop(scaled(24));
+
+        const int LEVEL_LABEL_WIDTH {scaled(60)};
+        const int LEVEL_LABEL_OFFSET {scaled(4)};
+        _dryLevelLabel->setBounds(_drySlider->getRight() - LEVEL_LABEL_WIDTH + LEVEL_LABEL_OFFSET, gainButtonLabelsRow.getY(), LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getHeight());
+        _wetLevelLabel->setBounds(_wetSlider->getRight() - LEVEL_LABEL_WIDTH + LEVEL_LABEL_OFFSET, gainButtonLabelsRow.getY(), LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getHeight());
+
+        setFontHeight(_dryLevelLabel.get(), scaledFloat(11.0f));
+        setFontHeight(_wetLevelLabel.get(), scaledFloat(11.0f));
+
+        const int BUTTON_WIDTH {scaled(44)};
+        const int BUTTON_HEIGHT {scaled(24)};
+        const int ROW_MARGIN {scaled(8)};
+        const int BUTTON_OFFSET {scaled(2)};
+        _dryButton->setBounds(_drySlider->getBounds().getCentreX() - BUTTON_WIDTH / 2 - BUTTON_OFFSET, gainButtonsArea.getY(), BUTTON_WIDTH, BUTTON_HEIGHT);
+        _wetButton->setBounds(_wetSlider->getBounds().getCentreX() - BUTTON_WIDTH / 2 - BUTTON_OFFSET, gainButtonsArea.getY(), BUTTON_WIDTH, BUTTON_HEIGHT);
+
+        _autogainButton->setBounds(_dryButton->getX(), _dryButton->getBottom() + ROW_MARGIN, _wetButton->getRight() - _dryButton->getX(), BUTTON_HEIGHT);
+    }
+
+    // Logos
+    {
+        juce::Rectangle<int> logoArea = slidersBottomRow.removeFromLeft(METERS_TOTAL_WIDTH);
+        logoArea.reduce(0, scaled(16));
+        logoArea.removeFromLeft(scaled(25));
+        logoArea.removeFromRight(scaled(10));
+
+        _tomLogo->setBounds(logoArea.removeFromLeft(scaled(60)));
+        _weaLogo->setBounds(logoArea.removeFromRight(scaled(60)));
+    }
+
+    slidersTopRow.removeFromTop(scaled(4));
+    slidersTopRow.removeFromBottom(scaled(2));
+    slidersTopRow.removeFromLeft(scaled(20));
+    slidersTopRow.removeFromRight(scaled(20));
+
+    slidersBottomRow.removeFromTop(scaled(2));
+    slidersBottomRow.removeFromBottom(scaled(4));
+    slidersBottomRow.removeFromLeft(scaled(20));
+    slidersBottomRow.removeFromRight(scaled(20));
+
+    // Sliders
+    {
+        const juce::FlexItem::Margin marginRight(0, scaled(38), 0, 0);
+        // Top row
+        {
+            juce::FlexBox flexBox;
+            flexBox.flexDirection = juce::FlexBox::Direction::row;
+            flexBox.flexWrap = juce::FlexBox::Wrap::wrap;
+            flexBox.justifyContent = juce::FlexBox::JustifyContent::spaceBetween;
+            flexBox.alignContent = juce::FlexBox::AlignContent::center;
+
+            flexBox.items.add(juce::FlexItem(*_irSliderGroup.get()).withMinWidth(scaled(108)).withMinHeight(slidersTopRow.getHeight()).withMargin(marginRight));
+            flexBox.items.add(juce::FlexItem(*_tuneSliderGroup.get()).withMinWidth(scaled(52)).withMinHeight(slidersTopRow.getHeight()).withMargin(marginRight));
+            flexBox.items.add(juce::FlexItem(*_attackSliderGroup.get()).withMinWidth(scaled(88)).withMinHeight(slidersTopRow.getHeight()).withMargin(marginRight));
+            flexBox.items.add(juce::FlexItem(*_decaySliderGroup.get()).withMinWidth(scaled(52)).withMinHeight(slidersTopRow.getHeight()));
+            flexBox.performLayout(slidersTopRow.toFloat());
+        }
+
+        // Bottom row
+        {
+            juce::FlexBox flexBox;
+            flexBox.flexDirection = juce::FlexBox::Direction::row;
+            flexBox.flexWrap = juce::FlexBox::Wrap::wrap;
+            flexBox.justifyContent = juce::FlexBox::JustifyContent::spaceBetween;
+            flexBox.alignContent = juce::FlexBox::AlignContent::center;
+
+            flexBox.items.add(juce::FlexItem(*_chorusSliderGroup.get()).withMinWidth(scaled(108)).withMinHeight(slidersBottomRow.getHeight()).withMargin(marginRight));
+            flexBox.items.add(juce::FlexItem(*_stereoSliderGroup.get()).withMinWidth(scaled(52)).withMinHeight(slidersBottomRow.getHeight()).withMargin(marginRight));
+            flexBox.items.add(juce::FlexItem(*_lowEqSliderGroup.get()).withMinWidth(scaled(88)).withMinHeight(slidersBottomRow.getHeight()));
+            flexBox.items.add(juce::FlexItem(*_highEqSliderGroup.get()).withMinWidth(scaled(88)).withMinHeight(slidersBottomRow.getHeight()));
+            // flexBox.items.add(juce::FlexItem(*_shimmerSliderGroup.get()).withMinWidth(scaled(72)).withMinHeight(slidersTopRow.getHeight()).withMargin(marginRight));
+            flexBox.performLayout(slidersBottomRow.toFloat());
+        }
     }
 
     // IR Browser
@@ -649,65 +441,10 @@ void KlangFalterEditor::resized()
         }
 
         const int IR_BROWSER_BUTTON_HEIGHT {scaled(24)};
-        availableArea.removeFromBottom(scaled(1));
-
-        const juce::Rectangle<int> browseButtonArea = availableArea.removeFromBottom(IR_BROWSER_BUTTON_HEIGHT)
+        const juce::Rectangle<int> browseButtonArea = availableArea.removeFromTop(IR_BROWSER_BUTTON_HEIGHT)
             .withTrimmedLeft(IR_BROWSER_MARGIN)
             .withTrimmedRight(IR_BROWSER_MARGIN);
         _browseButton->setBounds(browseButtonArea);
-    }
-
-    // Sliders row
-
-    // Gain buttons
-    {
-        juce::Rectangle<int> gainButtonsArea = availableArea.removeFromRight(METERS_TOTAL_WIDTH);
-        juce::Rectangle<int> gainButtonLabelsRow = gainButtonsArea.removeFromTop(scaled(24));
-
-        const int LEVEL_LABEL_WIDTH {scaled(60)};
-        _dryLevelLabel->setBounds(_drySlider->getRight() - LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getY(), LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getHeight());
-        _wetLevelLabel->setBounds(_wetSlider->getRight() - LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getY(), LEVEL_LABEL_WIDTH, gainButtonLabelsRow.getHeight());
-
-        setFontHeight(_dryLevelLabel.get(), scaledFloat(11.0f));
-        setFontHeight(_wetLevelLabel.get(), scaledFloat(11.0f));
-
-        juce::FlexBox flexBox;
-        flexBox.flexDirection = juce::FlexBox::Direction::row;
-        flexBox.flexWrap = juce::FlexBox::Wrap::wrap;
-        flexBox.justifyContent = juce::FlexBox::JustifyContent::spaceAround;
-        flexBox.alignContent = juce::FlexBox::AlignContent::flexStart;
-
-        const juce::FlexItem::Margin marginRight(0, scaled(16), 0, 0);
-        const juce::FlexItem::Margin marginTop(scaled(8), 0, 0, 0);
-        flexBox.items.add(juce::FlexItem(*_dryButton.get()).withMinWidth(scaled(44)).withMinHeight(scaled(24)).withMargin(marginRight));
-        flexBox.items.add(juce::FlexItem(*_wetButton.get()).withMinWidth(scaled(44)).withMinHeight(scaled(24)));
-        flexBox.items.add(juce::FlexItem(*_autogainButton.get()).withMinWidth(scaled(132)).withMinHeight(scaled(24)).withMargin(marginTop));
-        flexBox.performLayout(gainButtonsArea.toFloat());
-    }
-
-    availableArea.removeFromTop(scaled(4));
-    availableArea.removeFromBottom(scaled(4));
-    availableArea.removeFromLeft(scaled(12));
-
-    // Sliders
-    {
-        const int SPACE_WIDTH {scaled(20)};
-        _irSliderGroup->setBounds(availableArea.removeFromLeft(scaled(144)));
-        availableArea.removeFromLeft(SPACE_WIDTH);
-
-        _attackSliderGroup->setBounds(availableArea.removeFromLeft(scaled(88)));
-        availableArea.removeFromLeft(SPACE_WIDTH);
-
-        _decaySliderGroup->setBounds(availableArea.removeFromLeft(scaled(52)));
-        availableArea.removeFromLeft(SPACE_WIDTH);
-
-        _stereoSliderGroup->setBounds(availableArea.removeFromLeft(scaled(52)));
-        availableArea.removeFromLeft(SPACE_WIDTH);
-
-        _lowEqSliderGroup->setBounds(availableArea.removeFromLeft(scaled(72)));
-        availableArea.removeFromLeft(SPACE_WIDTH);
-
-        _highEqSliderGroup->setBounds(availableArea.removeFromLeft(scaled(72)));
     }
 
     //[/UserResized]
@@ -771,18 +508,6 @@ void KlangFalterEditor::buttonClicked (juce::Button* buttonThatWasClicked)
         _processor.setParameterNotifyingHost(Parameters::AutoGainOn, _autogainButton->getToggleState());
         //[/UserButtonCode__autogainButton]
     }
-    else if (buttonThatWasClicked == _reverseButton.get())
-    {
-        //[UserButtonCode__reverseButton] -- add your button handler code here..
-        _processor.setReverse(_reverseButton->getToggleState());
-        //[/UserButtonCode__reverseButton]
-    }
-    else if (buttonThatWasClicked == _levelMeterOutLabelButton.get())
-    {
-        //[UserButtonCode__levelMeterOutLabelButton] -- add your button handler code here..
-        _processor.getSettings().setResultLevelMeterDisplay(_levelMeterOutLabelButton->getToggleState() ? Settings::Out : Settings::Wet);
-        //[/UserButtonCode__levelMeterOutLabelButton]
-    }
 
     //[UserbuttonClicked_Post]
     //[/UserbuttonClicked_Post]
@@ -798,11 +523,15 @@ void KlangFalterEditor::updateUI()
   const size_t numInputChannels = static_cast<size_t>(std::min(_processor.getTotalNumInputChannels(), 2));
   const size_t numOutputChannels = static_cast<size_t>(std::min(_processor.getTotalNumOutputChannels(), 2));
   _irSliderGroup->onUpdate(irAvailable);
+  _tuneSliderGroup->onUpdate(irAvailable);
   _attackSliderGroup->onUpdate(irAvailable);
   _decaySliderGroup->onUpdate(irAvailable);
   _stereoSliderGroup->onUpdate(irAvailable, numOutputChannels);
   _lowEqSliderGroup->onUpdate(irAvailable);
   _highEqSliderGroup->onUpdate(irAvailable);
+//   _shimmerSliderGroup->onUpdate(irAvailable);
+  _chorusSliderGroup->onUpdate(irAvailable, numOutputChannels);
+  _saveLoadComponent->refresh();
   {
     const float db = _processor.getParameter(Parameters::DryDecibels);
     const float scale = DecibelScaling::Db2Scale(db);
@@ -822,10 +551,6 @@ void KlangFalterEditor::updateUI()
     _wetButton->setToggleState(_processor.getParameter(Parameters::WetOn), juce::dontSendNotification);
   }
   {
-    _reverseButton->setEnabled(true);
-    _reverseButton->setToggleState(_processor.getReverse(), juce::dontSendNotification);
-  }
-  {
     const float autoGainDecibels = _processor.getParameter(Parameters::AutoGainDecibels);
     const bool autoGainOn = _processor.getParameter(Parameters::AutoGainOn);
     const juce::String autoGainText = DecibelScaling::DecibelString(autoGainDecibels);
@@ -835,9 +560,6 @@ void KlangFalterEditor::updateUI()
   {
     _levelMeterDry->setChannelCount(numInputChannels);
     _levelMeterOut->setChannelCount(numOutputChannels);
-    Settings::ResultLevelMeterDisplay resultDisplay = _processor.getSettings().getResultLevelMeterDisplay();
-    _levelMeterOutLabelButton->setToggleState(resultDisplay == Settings::Out, juce::dontSendNotification);
-    _levelMeterOutLabelButton->setButtonText((resultDisplay == Settings::Out) ? juce::String("Out") : juce::String("Wet"));
   }
   {
     const size_t numTabs = static_cast<size_t>(_irTabComponent->getNumTabs());
@@ -856,7 +578,7 @@ void KlangFalterEditor::updateUI()
           jassert(agent);
           if (agent)
           {
-            IRComponent* irComponent = new IRComponent(_theme);
+            IRComponent* irComponent = new IRComponent(_theme, _processor);
             irComponent->init(_processor.getAgent(input, output));
             _irTabComponent->addTab(juce::String(static_cast<int>(input+1)) + juce::String("-") + juce::String(static_cast<int>(output+1)),
                                     juce::Colour(0xffb0b0b6),
@@ -888,50 +610,40 @@ void KlangFalterEditor::changeNotification()
 
 void KlangFalterEditor::timerCallback()
 {
-  Settings::ResultLevelMeterDisplay resultDisplay = _processor.getSettings().getResultLevelMeterDisplay();
   _levelMeterDry->setLevel(0, _processor.getLevelDry(0));
   _levelMeterDry->setLevel(1, _processor.getLevelDry(1));
-  _levelMeterOut->setLevel(0, (resultDisplay == Settings::Out) ? _processor.getLevelOut(0) : _processor.getLevelWet(0));
-  _levelMeterOut->setLevel(1, (resultDisplay == Settings::Out) ? _processor.getLevelOut(1) : _processor.getLevelWet(1));
+  _levelMeterOut->setLevel(0, _processor.getLevelWet(0));
+  _levelMeterOut->setLevel(1, _processor.getLevelWet(1));
 }
 
 void KlangFalterEditor::_updateIRBrowserOpen(bool isOpen) {
-    int browserHeight = 0;
-    juce::String browseButtonText;
-    if (isOpen)
-    {
-        browserHeight = IR_BROWSER_AREA_HEIGHT + 1;
-        browseButtonText = juce::String("Hide Browser");
-    }
-    else
-    {
-        browserHeight = 0;
-        browseButtonText = juce::String("Show Browser");
+    if (isOpen) {
+        _constrainer->setFixedAspectRatio(UIUtils::NOMINAL_WIDTH / (UIUtils::NOMINAL_HEIGHT + IR_BROWSER_AREA_HEIGHT));
+        _browseButton->setButtonText("Hide IR Browser");
+    } else {
+        _constrainer->setFixedAspectRatio(UIUtils::NOMINAL_WIDTH / UIUtils::NOMINAL_HEIGHT);
+        _browseButton->setButtonText("Show IR Browser");
     }
 
     // Make sure state is always consistent
     _processor.setIrBrowserOpen(isOpen);
     _browseButton->setToggleState(isOpen, juce::dontSendNotification);
 
-    _constrainer->setFixedAspectRatio(760.0 / (340.0 + browserHeight));
-
     const int newHeight = getWidth() / _constrainer->getFixedAspectRatio();
     setBounds(getBounds().withHeight(newHeight));
 
-    _browseButton->setButtonText(browseButtonText);
 }
 
 int KlangFalterEditor::scaled(float value) const {
     // All measurements based on getWidth(), as getHeight() changes if the browser is open
-    constexpr float NOMINAL_WIDTH {760};
-    return static_cast<int>(getWidth() / (NOMINAL_WIDTH / value));
+    return static_cast<int>(getWidth() / (UIUtils::NOMINAL_WIDTH / value));
 }
 
 float KlangFalterEditor::scaledFloat(float value) const {
     // All measurements based on getWidth(), as getHeight() changes if the browser is open
-    constexpr float NOMINAL_WIDTH {760};
-    return getWidth() / (NOMINAL_WIDTH / value);
+    return getWidth() / (UIUtils::NOMINAL_WIDTH / value);
 }
+
 
 //[/MiscUserCode]
 

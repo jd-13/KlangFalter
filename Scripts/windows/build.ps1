@@ -2,6 +2,36 @@ $ErrorActionPreference = "Stop"
 
 $SCRIPT_DIR = Split-Path -Path $MyInvocation.MyCommand.Definition -Parent
 
+Write-Output "=== Cloning WE-Core ==="
+$WECORE_HOME = Join-Path -Path $SCRIPT_DIR "..\..\WECore"
+git clone --recurse-submodules https://github.com/jd-13/WE-Core $WECORE_HOME
+
+Push-Location
+Set-Location $WECORE_HOME
+$WECORE_COMMIT = git log --pretty=format:'%h' -n 1
+Write-Output "=== Using WE-Core $WECORE_COMMIT ==="
+Pop-Location
+
+Write-Output "=== Cloning Linear ==="
+$LINEAR_HOME = Join-Path -Path $SCRIPT_DIR "..\..\linear"
+git clone --recurse-submodules https://github.com/Signalsmith-Audio/linear $LINEAR_HOME
+
+Push-Location
+Set-Location $LINEAR_HOME
+$LINEAR_COMMIT = git log --pretty=format:'%h' -n 1
+Write-Output "=== Using linear $LINEAR_COMMIT ==="
+Pop-Location
+
+Write-Output "=== Cloning Stretch ==="
+$STRETCH_HOME = Join-Path -Path $SCRIPT_DIR "..\..\signalsmith-stretch"
+git clone --recurse-submodules https://github.com/Signalsmith-Audio/signalsmith-stretch $STRETCH_HOME
+
+Push-Location
+Set-Location $STRETCH_HOME
+$STRETCH_COMMIT = git log --pretty=format:'%h' -n 1
+Write-Output "=== Using stretch $STRETCH_COMMIT ==="
+Pop-Location
+
 Write-Output "=== Downloading JUCE ==="
 $JUCE_VERSION = "8.0.4"
 $JUCE_ZIP = Join-Path -Path $SCRIPT_DIR -ChildPath "..\..\juce-$JUCE_VERSION-windows.zip"

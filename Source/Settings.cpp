@@ -16,7 +16,7 @@
 // ==================================================================================
 
 #include "Settings.h"
-
+#include "UI/UIUtils.hpp"
 
 Settings::Settings() :
   _properties()
@@ -67,30 +67,6 @@ juce::File Settings::getImpulseResponseDirectory()
   return juce::File::getSpecialLocation(juce::File::currentExecutableFile).getParentDirectory().getSiblingFile("Resources").getChildFile("IRs");
 }
 
-Settings::ResultLevelMeterDisplay Settings::getResultLevelMeterDisplay()
-{
-  ResultLevelMeterDisplay resultDisplay = Out;
-  juce::PropertiesFile* propertiesFile = _properties.getUserSettings();
-  if (propertiesFile)
-  {
-    const juce::String resultDisplayStr = propertiesFile->getValue("ResultLevelMeterDisplay");
-    resultDisplay = (resultDisplayStr == juce::String("Out")) ? Out : Wet;
-  }
-  return resultDisplay;
-}
-
-
-void Settings::setResultLevelMeterDisplay(ResultLevelMeterDisplay resultDisplay)
-{
-  juce::PropertiesFile* propertiesFile = _properties.getUserSettings();
-  if (propertiesFile)
-  {
-    propertiesFile->setValue("ResultLevelMeterDisplay", (resultDisplay == Out) ? "Out" : "Wet");
-    propertiesFile->saveIfNeeded();
-  }
-}
-
-
 Settings::TimelineUnit Settings::getTimelineUnit()
 {
   TimelineUnit timelineUnit = Seconds;
@@ -121,7 +97,7 @@ juce::Rectangle<int> Settings::getDefaultUIBounds() {
         return juce::Rectangle<int>::fromString(propertiesFile->getValue("DefaultUIBounds"));
     }
 
-    return juce::Rectangle<int>(0, 0, 760, 340);
+    return juce::Rectangle<int>(0, 0, UIUtils::NOMINAL_WIDTH, UIUtils::NOMINAL_HEIGHT);
 }
 
 void Settings::setDefaultUIBounds(const juce::Rectangle<int>& bounds) {

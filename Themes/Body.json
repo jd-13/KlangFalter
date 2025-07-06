@@ -1,5 +1,6 @@
 {
     "productName": "Body",
+    "presetExtension": "basbody",
 
     "colours": {
         "background": "0xff313131",

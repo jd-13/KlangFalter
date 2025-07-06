@@ -22,8 +22,7 @@
 
 namespace {
   float scaled(int currentRootWidth, float value) {
-    constexpr float NOMINAL_WIDTH {760};
-    return currentRootWidth / (NOMINAL_WIDTH / value);
+    return currentRootWidth / (UIUtils::NOMINAL_WIDTH / value);
   }
 }
 

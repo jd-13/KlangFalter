@@ -32,10 +32,27 @@ private:
     std::unique_ptr<juce::Label> _endHeaderLabel;
     std::unique_ptr<juce::Slider> _endSlider;
     std::unique_ptr<juce::Label> _endLabel;
+};
 
-    std::unique_ptr<juce::Label> _stretchHeaderLabel;
-    std::unique_ptr<juce::Slider> _stretchSlider;
-    std::unique_ptr<juce::Label> _stretchLabel;
+class TuneSliderGroup : public juce::Component {
+public:
+    TuneSliderGroup(Processor& processor, UIUtils::Theme theme);
+    virtual ~TuneSliderGroup();
+
+    void resized() override;
+
+    void onUpdate(bool enableSliders);
+
+private:
+    Processor& _processor;
+
+    std::unique_ptr<UIUtils::RotarySliderLookAndFeel> _rotarySliderLookAndFeel;
+
+    std::unique_ptr<juce::Label> _tuneHeaderLabel;
+
+    std::unique_ptr<juce::Label> _amountHeaderLabel;
+    std::unique_ptr<juce::Slider> _amountSlider;
+    std::unique_ptr<juce::Label> _amountLabel;
 };
 
 class AttackSliderGroup : public juce::Component {
@@ -163,4 +180,58 @@ private:
     std::unique_ptr<juce::Label> _hiGainHeaderLabel;
     std::unique_ptr<juce::Slider> _hiGainSlider;
     std::unique_ptr<juce::Label> _hiGainLabel;
+};
+
+// class ShimmerSliderGroup : public juce::Component {
+// public:
+//     ShimmerSliderGroup(Processor& processor, UIUtils::Theme theme);
+//     virtual ~ShimmerSliderGroup();
+
+//     void resized() override;
+
+//     void onUpdate(bool enableSliders);
+
+// private:
+//     Processor& _processor;
+
+//     std::unique_ptr<UIUtils::RotarySliderLookAndFeel> _rotarySliderLookAndFeel;
+
+//     std::unique_ptr<juce::Label> _shimmerHeaderLabel;
+
+//     std::unique_ptr<juce::Label> _shimmerWetGainHeaderLabel;
+//     std::unique_ptr<juce::Slider> _shimmerWetGainSlider;
+//     std::unique_ptr<juce::Label> _shimmerWetGainLabel;
+
+//     std::unique_ptr<juce::Label> _shimmerFeedbackHeaderLabel;
+//     std::unique_ptr<juce::Slider> _shimmerFeedbackSlider;
+//     std::unique_ptr<juce::Label> _shimmerFeedbackLabel;
+// };
+
+class ChorusSliderGroup : public juce::Component {
+public:
+    ChorusSliderGroup(Processor& processor, UIUtils::Theme theme);
+    virtual ~ChorusSliderGroup();
+
+    void resized() override;
+
+    void onUpdate(bool enableSliders, int numOutputChannels);
+
+private:
+    Processor& _processor;
+
+    std::unique_ptr<UIUtils::RotarySliderLookAndFeel> _rotarySliderLookAndFeel;
+
+    std::unique_ptr<juce::Label> _chorusHeaderLabel;
+
+    std::unique_ptr<juce::Label> _chorusWetGainHeaderLabel;
+    std::unique_ptr<juce::Slider> _chorusWetGainSlider;
+    std::unique_ptr<juce::Label> _chorusWetGainLabel;
+
+    std::unique_ptr<juce::Label> _chorusFrequencyHeaderLabel;
+    std::unique_ptr<juce::Slider> _chorusFrequencySlider;
+    std::unique_ptr<juce::Label> _chorusFrequencyLabel;
+
+    std::unique_ptr<juce::Label> _chorusDepthHeaderLabel;
+    std::unique_ptr<juce::Slider> _chorusDepthSlider;
+    std::unique_ptr<juce::Label> _chorusDepthLabel;
 };

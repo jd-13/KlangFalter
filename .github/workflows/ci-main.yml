@@ -35,12 +35,12 @@ jobs:
           repository: jd-13/body-and-soul-soul-irs
           token: ${{ secrets.IRS_SECRET }}
           path: IRs/Soul
-      - name: Checkout FX IRs
-        uses: actions/checkout@v4
-        with:
-          repository: jd-13/body-and-soul-fx-irs
-          token: ${{ secrets.IRS_SECRET }}
-          path: IRs/FX
+      # - name: Checkout FX IRs
+      #   uses: actions/checkout@v4
+      #   with:
+      #     repository: jd-13/body-and-soul-fx-irs
+      #     token: ${{ secrets.IRS_SECRET }}
+      #     path: IRs/FX
       - name: Checkout CLAP JUCE extensions
         uses: actions/checkout@v4
         with:
@@ -56,7 +56,7 @@ jobs:
           path: Scripts/macos/dist
 
   BuildWindows:
-    runs-on: windows-2019
+    runs-on: windows-2022
     needs: CheckProjects
 
     steps:
@@ -79,12 +79,12 @@ jobs:
           repository: jd-13/body-and-soul-soul-irs
           token: ${{ secrets.IRS_SECRET }}
           path: IRs/Soul
-      - name: Checkout FX IRs
-        uses: actions/checkout@v4
-        with:
-          repository: jd-13/body-and-soul-fx-irs
-          token: ${{ secrets.IRS_SECRET }}
-          path: IRs/FX
+      # - name: Checkout FX IRs
+      #   uses: actions/checkout@v4
+      #   with:
+      #     repository: jd-13/body-and-soul-fx-irs
+      #     token: ${{ secrets.IRS_SECRET }}
+      #     path: IRs/FX
       - name: SetupMSBuild
         uses: microsoft/setup-msbuild@v1.0.2
       - name: Checkout CLAP JUCE extensions

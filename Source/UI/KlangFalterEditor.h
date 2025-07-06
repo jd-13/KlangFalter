@@ -30,6 +30,9 @@
 #include "../Processor.h"
 #include "UIUtils.hpp"
 #include "SliderGroupComponents.hpp"
+#include "SaveLoadComponent.hpp"
+#include "Logo.hpp"
+#include "Title.hpp"
 //[/Headers]
 
 
@@ -79,13 +82,19 @@ private:
     Processor& _processor;
     juce::Component::SafePointer<juce::DialogWindow> _settingsDialogWindow;
     std::map<std::pair<size_t, size_t>, IRComponent*> _irComponents;
-    std::unique_ptr<juce::DialogWindow::LaunchOptions> _creditsWindowOptions;
     std::unique_ptr<IRSliderGroup> _irSliderGroup;
+    std::unique_ptr<TuneSliderGroup> _tuneSliderGroup;
     std::unique_ptr<AttackSliderGroup> _attackSliderGroup;
     std::unique_ptr<DecaySliderGroup> _decaySliderGroup;
     std::unique_ptr<StereoSliderGroup> _stereoSliderGroup;
     std::unique_ptr<LowEqSliderGroup> _lowEqSliderGroup;
     std::unique_ptr<HighEqSliderGroup> _highEqSliderGroup;
+    // std::unique_ptr<ShimmerSliderGroup> _shimmerSliderGroup;
+    std::unique_ptr<ChorusSliderGroup> _chorusSliderGroup;
+    std::unique_ptr<SaveLoadComponent> _saveLoadComponent;
+    std::unique_ptr<Title> _title;
+    std::unique_ptr<Logo> _tomLogo;
+    std::unique_ptr<Logo> _weaLogo;
     std::unique_ptr<juce::ComponentBoundsConstrainer> _constrainer;
     UIUtils::Theme _theme;
 
@@ -108,15 +117,7 @@ private:
     std::unique_ptr<juce::TextButton> _wetButton;
     std::unique_ptr<juce::TextButton> _dryButton;
     std::unique_ptr<juce::TextButton> _autogainButton;
-    std::unique_ptr<juce::TextButton> _reverseButton;
     std::unique_ptr<LevelMeter> _levelMeterOut;
-    std::unique_ptr<juce::TextButton> _levelMeterOutLabelButton;
-    std::unique_ptr<juce::Label> _levelMeterDryLabel;
-    std::unique_ptr<juce::Label> _titleLabel;
-    std::unique_ptr<juce::Label> _subtitleLabel;
-    std::unique_ptr<juce::TextButton> _creditsButton;
-    std::unique_ptr<juce::TextButton> _resetButton;
-
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KlangFalterEditor)

@@ -32,14 +32,6 @@ public:
 
   juce::File getImpulseResponseDirectory();
 
-  enum ResultLevelMeterDisplay
-  {
-    Wet,
-    Out
-  };
-  ResultLevelMeterDisplay getResultLevelMeterDisplay();
-  void setResultLevelMeterDisplay(ResultLevelMeterDisplay resultDisplay);
-
   enum TimelineUnit
   {
     Seconds,

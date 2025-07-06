@@ -52,6 +52,7 @@ Processor::Processor() :
                                   .withOutput("Output", juce::AudioChannelSet::stereo(), true)),
   ChangeNotifier(),
   _wetBuffer(1, 0),
+  _shimmerBuffer(1, 0),
   _convolutionBuffer(),
   _parameterSet(),
   _settings(),
@@ -90,6 +91,11 @@ Processor::Processor() :
   _parameterSet.registerParameter(Parameters::EqHighShelfFreq);
   _parameterSet.registerParameter(Parameters::EqHighShelfDecibels);
   _parameterSet.registerParameter(Parameters::StereoWidth);
+  // _parameterSet.registerParameter(Parameters::ShimmerWetGain);
+  // _parameterSet.registerParameter(Parameters::ShimmerFeedback);
+  _parameterSet.registerParameter(Parameters::ChorusWetGain);
+  _parameterSet.registerParameter(Parameters::ChorusFrequency);
+  _parameterSet.registerParameter(Parameters::ChorusDepth);
   _parameterSet.registerParameter(Parameters::AutoGainOn);
   _parameterSet.registerParameter(Parameters::AutoGainDecibels);
 
@@ -245,7 +251,7 @@ void Processor::changeProgramName (int /*index*/, const String& /*newName*/)
 
 
 //==============================================================================
-void Processor::prepareToPlay(double /*sampleRate*/, int samplesPerBlock)
+void Processor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
   // Play safe to be clean
   releaseResources();
@@ -263,6 +269,7 @@ void Processor::prepareToPlay(double /*sampleRate*/, int samplesPerBlock)
 
   // Prepare convolution buffers
   _wetBuffer.setSize(2, samplesPerBlock);
+  _shimmerBuffer.setSize(2, samplesPerBlock);
   _convolutionBuffer.resize(samplesPerBlock);
 
   // Initialize parameters
@@ -276,14 +283,19 @@ void Processor::prepareToPlay(double /*sampleRate*/, int samplesPerBlock)
 
   notifyAboutChange();
   updateConvolvers();
+
+  // _shimmer.prepareToPlay(sampleRate, samplesPerBlock, getTotalNumOutputChannels());
+  _chorus.prepareToPlay(sampleRate, samplesPerBlock, getTotalNumOutputChannels());
 }
 
 
 void Processor::releaseResources()
 {
   _wetBuffer.setSize(1, 0, false, true, false);
+  _shimmerBuffer.setSize(1, 0, false, true, false);
   _convolutionBuffer.clear();
   _beatsPerMinute.store(0);
+  _chorus.reset();
   notifyAboutChange();
 }
 
@@ -310,17 +322,31 @@ void Processor::processBlock(AudioSampleBuffer& buffer, MidiBuffer& /*midiMessag
   const size_t samplesToProcess = buffer.getNumSamples();
 
   // Determine channel data
+  _shimmerBuffer.clear();
+  _shimmerBuffer.makeCopyOf(buffer, true);
+  // _shimmer.setWetGain(getParameter(Parameters::ShimmerWetGain));
+  // _shimmer.setFeedback(getParameter(Parameters::ShimmerFeedback));
+  // _shimmer.processBlock(_shimmerBuffer);
+
+  _chorus.setWetGain(getParameter(Parameters::ChorusWetGain));
+  _chorus.setFrequency(getParameter(Parameters::ChorusFrequency));
+  _chorus.setDepth(getParameter(Parameters::ChorusDepth));
+
+  juce::AudioPlayHead::CurrentPositionInfo tempoInfo;
+  getPlayHead()->getCurrentPosition(tempoInfo);
+  _chorus.processBlock(_shimmerBuffer, tempoInfo.bpm, tempoInfo.timeInSeconds);
+
   const float* channelData0 = nullptr;
   const float* channelData1 = nullptr;
   if (numInputChannels == 1)
   {
-    channelData0 = buffer.getReadPointer(0);
-    channelData1 = buffer.getReadPointer(0);
+    channelData0 = _shimmerBuffer.getReadPointer(0);
+    channelData1 = _shimmerBuffer.getReadPointer(0);
   }
   else if (numInputChannels == 2)
   {
-    channelData0 = buffer.getReadPointer(0);
-    channelData1 = buffer.getReadPointer(1);
+    channelData0 = _shimmerBuffer.getReadPointer(0);
+    channelData1 = _shimmerBuffer.getReadPointer(1);
   }
 
   // Convolution
@@ -470,27 +496,29 @@ AudioProcessorEditor* Processor::createEditor()
 }
 
 //==============================================================================
-void Processor::getStateInformation (MemoryBlock& destData)
-{
-  const juce::File irDirectory = _settings.getImpulseResponseDirectory();
-  std::unique_ptr<juce::XmlElement> element(SaveState(irDirectory, *this));
-  if (element)
-  {
-    copyXmlToBinary(*element, destData);
-  }
+void Processor::getStateInformation(MemoryBlock& destData) {
+    std::unique_ptr<juce::XmlElement> element(writeToXml());
+    if (element) {
+      copyXmlToBinary(*element, destData);
+    }
 }
 
+std::unique_ptr<juce::XmlElement> Processor::writeToXml() {
+    const juce::File irDirectory = _settings.getImpulseResponseDirectory();
+    return std::unique_ptr<juce::XmlElement>(SaveState(irDirectory, *this));
+}
 
-void Processor::setStateInformation (const void* data, int sizeInBytes)
-{
-  auto element = getXmlFromBinary(data, sizeInBytes);
-  if (element)
-  {
+void Processor::setStateInformation(const void* data, int sizeInBytes) {
+    auto element = getXmlFromBinary(data, sizeInBytes);
+    if (element) {
+      restoreFromXml(std::move(element));
+    }
+}
+
+void Processor::restoreFromXml(std::unique_ptr<juce::XmlElement> element) {
     const juce::File irDirectory = _settings.getImpulseResponseDirectory();
     LoadState(irDirectory, *element, *this);
-  }
 }
-
 
 float Processor::getLevelDry(size_t channel) const
 {
@@ -739,7 +767,6 @@ double Processor::getDecayShape() const
   juce::ScopedLock convolverLock(_convolverMutex);
   return _decayShape;
 }
-
 
 void Processor::setIRBegin(double irBegin)
 {
@@ -996,4 +1023,13 @@ void Processor::setUIBounds(const juce::Rectangle<int>& bounds, bool shouldUpdat
 
 juce::Rectangle<int> Processor::getUIBounds() const {
   return _uiBounds;
+}
+
+void Processor::setPresetName(const juce::String& name) {
+  _presetName = name;
+  notifyAboutChange();
+}
+
+juce::String Processor::getPresetName() const {
+  return _presetName;
 }

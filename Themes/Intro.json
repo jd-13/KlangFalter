@@ -1,5 +1,6 @@
 {
     "productName": "Intro",
+    "presetExtension": "basintro",
 
     "colours": {
         "background": "0xff313131",

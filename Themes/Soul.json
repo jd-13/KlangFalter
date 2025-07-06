@@ -1,5 +1,6 @@
 {
     "productName": "Soul",
+    "presetExtension": "bassoul",
 
     "colours": {
         "background": "0xff313131",

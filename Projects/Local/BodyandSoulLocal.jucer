@@ -11,7 +11,7 @@
               buildAAX="0" buildVST3="1" pluginIsMidiEffectPlugin="0" includeBinaryInAppConfig="1"
               buildAUv3="0" pluginFormats="buildAU,buildVST3" projectLineFeed="&#10;"
               buildStandalone="0" enableIAA="0" defines="JUCE_USE_CUSTOM_PLUGIN_STANDALONE_APP"
-              jucerFormatVersion="1" version="1.0.0" companyWebsite="www.thesoundofmerlin.com"
+              jucerFormatVersion="1" version="1.1.0" companyWebsite="www.thesoundofmerlin.com"
               companyEmail="info@thesoundofmerlin.com" pluginVST3Category="Reverb"
               pluginVSTCategory="kPlugCategEffect">
   <EXPORTFORMATS>
@@ -21,10 +21,10 @@
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="TSoM-BodyandSoulLocal"
                        defines="JUCE_MODAL_LOOPS_PERMITTED=1" macOSDeploymentTarget="10.14"
-                       osxCompatibility="10.14 SDK" osxArchitecture="64BitIntel"/>
+                       osxCompatibility="10.14 SDK" osxArchitecture="64BitIntel" headerPath="../../../../signalsmith-stretch/include/signalsmith-stretch&#10;../../../../linear/include&#10;../../../../WECore/WECore "/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="TSoM-BodyandSoulLocal"
                        defines="JUCE_MODAL_LOOPS_PERMITTED=1" macOSDeploymentTarget="10.14"
-                       osxCompatibility="10.14 SDK"/>
+                       osxCompatibility="10.14 SDK" headerPath="../../../../signalsmith-stretch/include/signalsmith-stretch&#10;../../../../linear/include&#10;../../../../WECore/WECore "/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_gui_extra" path="../../../../../SDKs/JUCE/modules"/>
@@ -44,9 +44,9 @@
     <VS2019 targetFolder="Builds/VisualStudio2019">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" defines="JUCE_MODAL_LOOPS_PERMITTED=1"
-                       targetName="TSoM-BodyandSoulLocal" useRuntimeLibDLL="0"/>
+                       targetName="TSoM-BodyandSoulLocal" useRuntimeLibDLL="0" headerPath="../../../../signalsmith-stretch/include/signalsmith-stretch&#10;../../../../linear/include&#10;../../../../WECore/WECore "/>
         <CONFIGURATION isDebug="0" name="Release" useRuntimeLibDLL="0" defines="JUCE_MODAL_LOOPS_PERMITTED=1"
-                       targetName="TSoM-BodyandSoulLocal"/>
+                       targetName="TSoM-BodyandSoulLocal" headerPath="../../../../signalsmith-stretch/include/signalsmith-stretch&#10;../../../../linear/include&#10;../../../../WECore/WECore "/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_gui_extra" path="..\..\JUCE\modules"/>
@@ -103,10 +103,16 @@
             file="../../Source/UI/KlangFalterEditor.h"/>
       <FILE id="VEaG8F" name="LevelMeter.cpp" compile="1" resource="0" file="../../Source/UI/LevelMeter.cpp"/>
       <FILE id="zRwaj0" name="LevelMeter.h" compile="0" resource="0" file="../../Source/UI/LevelMeter.h"/>
+      <FILE id="o3y17r" name="SaveLoadComponent.cpp" compile="1" resource="0"
+            file="../../Source/UI/SaveLoadComponent.cpp"/>
+      <FILE id="zPU5Ng" name="SaveLoadComponent.hpp" compile="0" resource="0"
+            file="../../Source/UI/SaveLoadComponent.hpp"/>
       <FILE id="EHhfnf" name="SliderGroupComponents.cpp" compile="1" resource="0"
             file="../../Source/UI/SliderGroupComponents.cpp"/>
       <FILE id="fPHWuW" name="SliderGroupComponents.hpp" compile="0" resource="0"
             file="../../Source/UI/SliderGroupComponents.hpp"/>
+      <FILE id="HpsKfN" name="Title.cpp" compile="1" resource="0" file="../../Source/UI/Title.cpp"/>
+      <FILE id="hBxEa3" name="Title.hpp" compile="0" resource="0" file="../../Source/UI/Title.hpp"/>
       <FILE id="atIeXr" name="UIUtils.cpp" compile="1" resource="0" file="../../Source/UI/UIUtils.cpp"/>
       <FILE id="NpWwBu" name="UIUtils.hpp" compile="0" resource="0" file="../../Source/UI/UIUtils.hpp"/>
       <FILE id="xM5QfR" name="WaveformComponent.cpp" compile="1" resource="0"
@@ -118,6 +124,8 @@
           file="../../Source/ChangeNotifier.cpp"/>
     <FILE id="OXPSzy" name="ChangeNotifier.h" compile="0" resource="0"
           file="../../Source/ChangeNotifier.h"/>
+    <FILE id="nqZhOw" name="Chorus.cpp" compile="1" resource="0" file="../../Source/Chorus.cpp"/>
+    <FILE id="idi1SC" name="Chorus.hpp" compile="0" resource="0" file="../../Source/Chorus.hpp"/>
     <FILE id="CCplCO" name="Convolver.cpp" compile="1" resource="0" file="../../Source/Convolver.cpp"/>
     <FILE id="oFPWI7" name="Convolver.h" compile="0" resource="0" file="../../Source/Convolver.h"/>
     <FILE id="d5bCDW" name="CookbookEq.cpp" compile="1" resource="0" file="../../Source/CookbookEq.cpp"/>

@@ -40,8 +40,6 @@ public:
   void init(IRAgent* irAgent, double sampleRate, size_t samplesPerPx);
   void clear();
 
-  virtual void mouseUp(const juce::MouseEvent& mouseEvent);
-
 protected:
   void updateArea();
 

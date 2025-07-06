@@ -29,8 +29,10 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-IRComponent::IRComponent (UIUtils::Theme theme) : _simpleButtonLookAndFeel(new UIUtils::SimpleButtonLookAndFeel())
-{
+IRComponent::IRComponent (UIUtils::Theme theme, Processor& processor)
+        : _simpleButtonLookAndFeel(new UIUtils::SimpleButtonLookAndFeel()),
+          _toggleButtonLookAndFeel(new UIUtils::ToggleButtonLookAndFeel()),
+          _processor(processor) {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
@@ -51,10 +53,33 @@ IRComponent::IRComponent (UIUtils::Theme theme) : _simpleButtonLookAndFeel(new U
     _loadButton->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0x004444ff));
     _loadButton->setColour (juce::TextButton::textColourOffId, juce::Colour (0xff202020));
     _loadButton->setColour (juce::TextButton::textColourOnId, juce::Colour (0xff202020));
+    _loadButton->setLookAndFeel(_simpleButtonLookAndFeel.get());
 
-    _loadButton->setBounds (80, 148, 378, 24);
+    _directionButtons.reset(new UIUtils::IRDirectionButtons(
+      [&]() { _processor.setReverse(false); },
+      [&]() { _processor.setReverse(true); },
+      [&]() { return !_processor.getReverse(); },
+      [&]() { return _processor.getReverse(); },
+      theme
+    ));
+    addAndMakeVisible(_directionButtons.get());
 
-
+    _scaleUnitButtons.reset(new UIUtils::ScaleUnitButtons(
+      [&]() {
+        Settings& settings = _irAgent->getProcessor().getSettings();
+        settings.setTimelineUnit(Settings::Seconds);
+        _waveformComponent->repaint();
+       },
+      [&]() {
+        Settings& settings = _irAgent->getProcessor().getSettings();
+        settings.setTimelineUnit(Settings::Beats);
+        _waveformComponent->repaint();
+      },
+      [&]() { return _processor.getSettings().getTimelineUnit() == Settings::Seconds; },
+      [&]() { return _processor.getSettings().getTimelineUnit() == Settings::Beats; },
+      theme
+    ));
+    addAndMakeVisible(_scaleUnitButtons.get());
     //[UserPreSize]
     //[/UserPreSize]
 
@@ -63,22 +88,17 @@ IRComponent::IRComponent (UIUtils::Theme theme) : _simpleButtonLookAndFeel(new U
 
     //[Constructor] You can add your own custom stuff here..
     _irAgent = nullptr;
-    _loadButton->setLookAndFeel(_simpleButtonLookAndFeel.get());
     //[/Constructor]
 }
 
 IRComponent::~IRComponent()
 {
-    //[Destructor_pre]. You can add your own custom destruction code here..
     IRComponent::init(nullptr);
-    //[/Destructor_pre]
 
     _waveformComponent = nullptr;
     _loadButton = nullptr;
-
-
-    //[Destructor]. You can add your own custom destruction code here..
-    //[/Destructor]
+    _directionButtons = nullptr;
+    _scaleUnitButtons = nullptr;
 }
 
 //==============================================================================
@@ -104,8 +124,16 @@ void IRComponent::resized()
         return static_cast<int>(getWidth() / (NOMINAL_WIDTH / value));
     };
 
-    _waveformComponent->setBounds(scaled(4), scaled(4), scaled(454), scaled(140));
-    _loadButton->setBounds(scaled(80), scaled(148), scaled(378), scaled(24));
+    juce::Rectangle<int> availableArea = getLocalBounds();
+    availableArea.reduce(scaled(4), scaled(4));
+
+    _waveformComponent->setBounds(availableArea.removeFromTop(scaled(140)));
+    availableArea.removeFromTop(scaled(4));
+    _directionButtons->setBounds(availableArea.removeFromLeft(scaled(72)));
+    availableArea.removeFromLeft(scaled(4));
+    _scaleUnitButtons->setBounds(availableArea.removeFromLeft(scaled(72)));
+    availableArea.removeFromLeft(scaled(4));
+    _loadButton->setBounds(availableArea);
     //[/UserResized]
 }
 
@@ -161,14 +189,11 @@ void IRComponent::irChanged()
     const File file = _irAgent->getFile();
     if (file.existsAsFile())
     {
-      const Processor& processor = _irAgent->getProcessor();
-      const unsigned fileSampleCount = static_cast<unsigned>(_irAgent->getFileSampleCount());
-      const double fileSampleRate = _irAgent->getFileSampleRate();
-      const double fileSeconds = static_cast<double>(fileSampleCount) / fileSampleRate;
-      const unsigned fileChannelCount = static_cast<unsigned>(_irAgent->getFileChannelCount());
-      fileLabelText = file.getFileName() + String(", ") + String(fileChannelCount) + String(" Channels, ") + String(fileSeconds, 2) + String(" s");
+      fileLabelText = file.getFileName();
 
+      const Processor& processor = _irAgent->getProcessor();
       sampleRate = processor.getSampleRate();
+
       constexpr int WAVEFORM_NOMINAL_WIDTH {452};
       samplesPerPx = static_cast<size_t>(1.6 * (processor.getMaxFileDuration()+1.0) * sampleRate) / WAVEFORM_NOMINAL_WIDTH;
     }
@@ -182,41 +207,3 @@ void IRComponent::changeNotification()
 {
   irChanged();
 }
-
-
-//[/MiscUserCode]
-
-
-//==============================================================================
-#if 0
-/*  -- Projucer information section --
-
-    This is where the Projucer stores the metadata that describe this GUI layout, so
-    make changes in here at your peril!
-
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="IRComponent" componentName="IRComponent"
-                 parentClasses="public Component, public ChangeNotifier::Listener"
-                 constructorParams="UIUtils::Theme colours" variableInitialisers=""
-                 snapPixels="4" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="462" initialHeight="176">
-  <BACKGROUND backgroundColour="ffb0b0b6"/>
-  <GENERICCOMPONENT name="WaveformComponent" id="c9f33b0ee0917f49" memberName="_waveformComponent"
-                    virtualName="" explicitFocusOrder="0" pos="4 4 454 140" class="WaveformComponent"
-                    params="colours"/>
-  <TEXTBUTTON name="LoadButton" id="5798b8525a699c54" memberName="_loadButton"
-              virtualName="" explicitFocusOrder="0" pos="80 148 378 24" tooltip="Current impulse response information"
-              bgColOff="bbbbff" bgColOn="4444ff" textCol="ff202020" textColOn="ff202020"
-              buttonText="No Impulse Response" connectedEdges="3" needsCallback="1"
-              radioGroupId="0"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
-//[EndFile] You can add extra defines here...
-//[/EndFile]
-
