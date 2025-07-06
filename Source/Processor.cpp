@@ -29,6 +29,12 @@
 
 namespace {
     std::optional<juce::File> getDefaultIRFile(juce::File irFolder) {
+      // Default for Intro
+      const juce::File introDefaultIR(irFolder.getChildFile("08 SOUL Plate 2.wav"));
+      if (introDefaultIR.existsAsFile()) {
+          return std::optional<juce::File>(introDefaultIR);
+      }
+
       // List the child files of the IR folder, select the alphabetically first file
       juce::Array<juce::File> files =
           irFolder.findChildFiles(juce::File::TypesOfFileToFind::findFiles, false, "*.wav", juce::File::FollowSymlinks::no);
